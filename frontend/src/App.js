@@ -1,3 +1,4 @@
+import data from "./data";
 
 function App() {
   return (
@@ -11,7 +12,23 @@ function App() {
         </a>
       </header>
       <main>
-        Lista de produtos test
+        <h1>Produtos em destaque</h1>
+        <div className="products">
+          {data.products.map(product => (
+            <div className="product" key={product.slug}>
+              <a href={`/product/${product.slug}`}>
+                <img src={product.image} alt={product.image} />
+              </a>
+              <div className="product-info">
+                <a href={`/product/${product.slug}`}>
+                  <p>{product.name}</p>
+                </a>
+                <p><strong>{product.price}</strong></p>
+                <button>Adicionar ao carrinho</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );
