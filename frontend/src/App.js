@@ -3,10 +3,15 @@ function App() {
   return (
     <div>
       <header>
-        <a href="/">Sammy's Store</a>
+        <a href="/">
+          <div className="logo-desc">
+            <div>Sammy's</div>
+            <div>Store</div>
+          </div>
+        </a>
       </header>
       <main>
-        Lista de produto na tela
+        Lista de produtos test
       </main>
     </div>
   );
