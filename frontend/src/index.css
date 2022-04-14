@@ -2,6 +2,20 @@
   --primary-color: #2dd5c3;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px     rgba(0,0,0,0.3); 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px     rgba(15, 143, 130, 0.8); 
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -21,35 +35,30 @@ body {
   src: url(./_assets/fonts/Modulus/Modulus.ttf);
 }
 
-header {
-  background-color: #404040;
-  padding: 0.1rem 1rem;
-}
-
-header a {
-  color: #ffffff;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: 'Modulus';
-  font-size: larger;
-}
-
-heaer a .logo-desc {
+.logo-desc {
+  font-family: Modulus;
+  font-weight: bolder;
+  font-size: medium;
   display: flex;
   flex-direction: column;
+  color: #ffffff;
+  cursor: pointer;
 }
 
 .logo-desc div:last-child {
+  width: max-content;
   border-radius: 0.3em;
-  background-color: var(--primary-color);
-  color: #fff;
+  background-color: var(--primary-color);  
   display: inline-block;
-  padding: 0.1rem 0.2rem;
-  margin-bottom: 0.2rem;
+  padding: 0rem 0.2rem;
+}
+
+.site-container {
+  min-height: 100vh;
 }
 
 main {
-  padding: 1rem;
+  flex: 1;
 }
 
 .products {
