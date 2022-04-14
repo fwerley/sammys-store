@@ -61,10 +61,20 @@ main {
   flex: 1;
 }
 
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: bold;
+}
+
 .products {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.rating span {
+  color: #ffc000;
 }
 
 .product {
