@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { Helmet } from 'react-helmet-async';
 
 import {
   fetchFailure,
@@ -29,10 +29,13 @@ function HomeScreen() {
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
+      <Helmet>
+        <title>Sammy's Store</title>
+      </Helmet>
       <h1>Produtos em destaque</h1>
       <div className="products">
         {loading ? (

@@ -15,8 +15,12 @@ function Product(props) {
           <Card.Title>{product.name}</Card.Title>
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
-        <Card.Text>R$ {product.price}</Card.Text>
-        <Button>Add ao carrinho</Button>
+        <Card.Text>
+          <strong>R$ {product.price},00</strong>
+        </Card.Text>
+        <div className="d-flex justify-content-center">
+          <Button>Add ao carrinho</Button>
+        </div>
       </Card.Body>
     </Card>
   );

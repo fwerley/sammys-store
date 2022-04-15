@@ -1,19 +1,19 @@
 export const fetchRequest = () => {
   return {
-    type: 'FETCH_REQUEST_PRODUCTS',
+    type: 'FETCH_REQUEST',
   };
 };
 
 export const fetchSuccess = (data) => {
   return {
-    type: 'FETCH_SUCCESS_PRODUCTS',
+    type: 'FETCH_SUCCESS',
     paylod: data,
   };
 };
 
 export const fetchFailure = (error) => {
   return {
-    type: 'FETCH_FAILURE_PRODUCTS',
+    type: 'FETCH_FAILURE',
     paylod: error,
   };
 };
