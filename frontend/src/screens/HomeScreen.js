@@ -12,6 +12,8 @@ import {
   fetchSuccess,
 } from '../actions/products.actions';
 import Product from '../components/Product';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 function HomeScreen() {
   const { products, loading, error } = useSelector(
@@ -39,9 +41,9 @@ function HomeScreen() {
       <h1>Produtos em destaque</h1>
       <div className="products">
         {loading ? (
-          <div>Loading...</div>
+          <LoadingBox />
         ) : error ? (
-          <div>{error}</div>
+          <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <Row>
             {products.map((product) => (

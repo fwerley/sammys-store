@@ -18,6 +18,9 @@ import {
   fetchSuccess,
 } from '../actions/product.actions';
 import Rating from '../components/Rating';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
+import { getError } from '../utils';
 
 function ProductScreen() {
   const params = useParams();
@@ -35,16 +38,23 @@ function ProductScreen() {
         const result = await axios.get(`/api/products/slug/${slug}`);
         dispatch(fetchSuccess(result.data));
       } catch (err) {
-        dispatch(fetchFailure(err.message));
+        dispatch(fetchFailure(getError(err)));
       }
     };
     fetchData();
   }, [dispatch, slug]);
 
   return loading ? (
-    <div className="d-flex justify-content-center">Loading</div>
+    <div className="d-flex justify-content-center">
+      <LoadingBox />
+    </div>
   ) : error ? (
-    <div>{error}</div>
+    <>
+      <Helmet>
+        <title>Sammy's Store</title>
+      </Helmet>
+      <MessageBox variant="danger">{error}</MessageBox>
+    </>
   ) : (
     <div>
       <Row>
