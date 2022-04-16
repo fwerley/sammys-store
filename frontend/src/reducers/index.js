@@ -9,6 +9,12 @@ const productStore = {
   error: '',
 };
 
+const cartState = {
+  cart: {
+    cartItems: [],
+  },
+};
+
 export const productsReducer = (state = productsStore, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST_PRODUCTS':
@@ -27,6 +33,22 @@ export const productsReducer = (state = productsStore, action) => {
         ...state,
         loading: false,
         error: action.paylod,
+      };
+    default:
+      return state;
+  }
+};
+
+export const cartReducer = (state = cartState, action) => {
+  switch (action.type) {
+    case 'CART_ADD_ITEM':
+      //add to cart
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          cartItems: [...state.cart.cartItems, action.payload],
+        },
       };
     default:
       return state;

@@ -21,6 +21,7 @@ import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
+import { addCartItem } from '../actions/cart.actions';
 
 function ProductScreen() {
   const params = useParams();
@@ -43,6 +44,11 @@ function ProductScreen() {
     };
     fetchData();
   }, [dispatch, slug]);
+
+  const addToCartHandler = () => {
+    console.log(product);
+    dispatch(addCartItem({ ...product, quantity: 1 }));
+  };
 
   return loading ? (
     <div className="d-flex justify-content-center">
@@ -107,7 +113,9 @@ function ProductScreen() {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary">Add ao carrinho</Button>
+                      <Button onClick={addToCartHandler} variant="primary">
+                        Add ao carrinho
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}

@@ -53,6 +53,30 @@ body {
   padding: 0rem 0.2rem;
 }
 
+.nav-link {
+  display: -webkit-box;
+}
+
+.circle {
+  height: 30px;
+  width: 30px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+}
+
+.cart-item i{
+  font-size: medium;
+  position: relative;
+    left: 16%;
+    top: 10%;
+}
+
+.number-cart {
+  position: relative;
+  top: 25%;
+  left: -45%;
+}
+
 .site-container {
   min-height: 100vh;
 }
@@ -93,4 +117,10 @@ main {
 
 .img-large{
   max-width: 100%;
+}
+
+.btn-primary:disabled {
+  color: #fff;
+  background-color: #b3d4d1;
+  border-color: #0d6efd;
 }

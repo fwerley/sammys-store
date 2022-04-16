@@ -20,6 +20,7 @@ function HomeScreen() {
     (state) => state.productsStore
   );
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchData = async () => {
       dispatch(fetchRequest());
