@@ -3,7 +3,8 @@ import Button from 'react-bootstrap/Button';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 import Rating from './Rating';
 import { addCartItem } from '../actions/cart.actions';
@@ -11,9 +12,17 @@ import { addCartItem } from '../actions/cart.actions';
 function Product(props) {
   const dispatch = useDispatch();
   const { product } = props;
+  const cart = useSelector((state) => state.cartStore.cart);
 
-  const addToCartHandler = () => {
-    dispatch(addCartItem({ ...product, quantity: 1 }));
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < quantity) {
+      window.alert('Desculpe. Quantidade insuficiente no estoque');
+      return;
+    }
+    dispatch(addCartItem({ ...product, quantity }));
   };
 
   return (

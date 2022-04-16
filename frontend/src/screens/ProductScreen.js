@@ -26,11 +26,12 @@ import { addCartItem } from '../actions/cart.actions';
 function ProductScreen() {
   const params = useParams();
   const { slug } = params;
+  const dispatch = useDispatch();
 
   const { product, loading, error } = useSelector(
     (state) => state.productStore
   );
-  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cartStore.cart);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,9 +46,15 @@ function ProductScreen() {
     fetchData();
   }, [dispatch, slug]);
 
-  const addToCartHandler = () => {
-    console.log(product);
-    dispatch(addCartItem({ ...product, quantity: 1 }));
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < quantity) {
+      window.alert('Desculpe. Quantidade insuficiente no estoque');
+      return;
+    }
+    dispatch(addCartItem({ ...product, quantity }));
   };
 
   return loading ? (
