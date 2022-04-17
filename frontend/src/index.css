@@ -133,3 +133,7 @@ main {
   background-color: #b3d4d1;
   border-color: #0d6efd;
 }
+
+.small-container {
+  max-width: 600px;
+}
