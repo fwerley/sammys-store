@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import {
   fetchFailure,
@@ -24,6 +24,7 @@ import { getError } from '../utils';
 import { addCartItem } from '../actions/cart.actions';
 
 function ProductScreen() {
+  const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ function ProductScreen() {
       return;
     }
     dispatch(addCartItem({ ...product, quantity }));
+    navigate('/cart');
   };
 
   return loading ? (

@@ -119,6 +119,10 @@ main {
   max-width: 100%;
 }
 
+.img-thumbnail {
+  height: 80px;
+}
+
 .btn-primary:disabled {
   color: #fff;
   background-color: #b3d4d1;
