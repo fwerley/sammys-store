@@ -18,25 +18,27 @@ function App() {
       <div className="d-flex flex-column site-container">
         <header>
           <Navbar bg="dark" variant="dark">
-            <Container className="d-flex justify-content-around">
+            <Container className="d-flex justify-content-between">
               <LinkContainer to="/">
                 <div className="logo-desc">
                   <div>Sammy's</div>
                   <div>Store</div>
                 </div>
               </LinkContainer>
-              <Nav className="me-auto">
+              <Nav>
                 <Link to="/cart" className="nav-link">
-                  <div className="circle">
-                    <span className="cart-item">
-                      <i className="fas fa-shopping-cart" />
-                    </span>
+                  <div className="cart-container">
+                    <div className="circle">
+                      <span className="cart-item">
+                        <i className="fas fa-shopping-cart" />
+                      </span>
+                    </div>
+                    {cart.cartItems.length > 0 && (
+                      <Badge pill bg="danger" className="number-cart">
+                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                      </Badge>
+                    )}
                   </div>
-                  {cart.cartItems.length > 0 && (
-                    <Badge pill bg="danger" className="number-cart">
-                      {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    </Badge>
-                  )}
                 </Link>
               </Nav>
             </Container>

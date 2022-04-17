@@ -57,6 +57,11 @@ body {
   display: -webkit-box;
 }
 
+.cart-container{
+  width: 60px;
+  display: -webkit-box
+}
+
 .circle {
   height: 30px;
   width: 30px;

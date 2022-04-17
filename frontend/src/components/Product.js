@@ -48,7 +48,11 @@ function Product(props) {
               }
             >
               <span className="d-inline-block">
-                <Button disabled style={{ pointerEvents: 'none' }}>
+                <Button
+                  disabled
+                  variant="light"
+                  style={{ pointerEvents: 'none' }}
+                >
                   Add ao carrinho
                 </Button>
               </span>

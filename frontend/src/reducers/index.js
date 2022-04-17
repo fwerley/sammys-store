@@ -11,7 +11,9 @@ const productStore = {
 
 const cartState = {
   cart: {
-    cartItems: [],
+    cartItems: localStorage.getItem('cartItems')
+      ? JSON.parse(localStorage.getItem('cartItems'))
+      : [],
   },
 };
 
@@ -52,7 +54,7 @@ export const cartReducer = (state = cartState, action) => {
             item._id === existItem._id ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
-
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return {
         ...state,
         cart: {
@@ -60,6 +62,19 @@ export const cartReducer = (state = cartState, action) => {
           cartItems,
         },
       };
+    case 'CART_REMOVE_ITEM': {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._id !== action.payload._id
+      );
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          cartItems,
+        },
+      };
+    }
     default:
       return state;
   }
