@@ -21,7 +21,7 @@ export default function CartScreen() {
   const cartItems = cart.cartItems;
 
   const updateCartHandler = async (item, quantity) => {
-    const { data } = await axios.get(`/api/products/${item._id}`);
+    const { data } = await axios.get(`/api/products/${item.id}`);
     if (data.countInStock < quantity) {
       window.alert('Desculpe. Quantidade insuficiente no estoque');
       return;
@@ -51,7 +51,7 @@ export default function CartScreen() {
           ) : (
             <ListGroup>
               {cartItems.map((item) => (
-                <ListGroup.Item key={item._id}>
+                <ListGroup.Item key={item.id}>
                   <Row className="align-items-center">
                     <Col md={4}>
                       <img

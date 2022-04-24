@@ -48,9 +48,9 @@ function ProductScreen() {
   }, [dispatch, slug]);
 
   const addToCartHandler = async () => {
-    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const existItem = cart.cartItems.find((x) => x.id === product.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${product._id}`);
+    const { data } = await axios.get(`/api/products/${product.id}`);
     if (data.countInStock < quantity) {
       window.alert('Desculpe. Quantidade insuficiente no estoque');
       return;
