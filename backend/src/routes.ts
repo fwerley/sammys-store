@@ -1,10 +1,12 @@
 import express from 'express';
 import ProductController from './controllers/ProductController';
+import UserController from './controllers/UserController';
 
 const routes = express.Router();
 
 //api seed
-routes.get('/api/seed', ProductController.insert);
+routes.get('/api/seedP', ProductController.insert);
+routes.get('/api/seedU', UserController.insert);
 
 // Products section section
 routes.get('/api/products', ProductController.store);

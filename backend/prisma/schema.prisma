@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Product {
-  id           String @id @default(uuid())
-  name         String @unique
-  slug         String @unique
+  id           String   @id @default(uuid())
+  name         String   @unique
+  slug         String   @unique
   image        String
   brand        String
   category     String
@@ -23,9 +23,20 @@ model Product {
   rating       Float
   numReviews   Int
   // author    User?   @relation(fields: [authorId], references: [id])
+  createdAt    DateTime @default(now()) @db.Timestamptz(2)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(2)
 
+  @@map("products")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(2)
   updatedAt DateTime @updatedAt @db.Timestamptz(2)
 
-  @@map("products")
+  @@map("users")
 }
