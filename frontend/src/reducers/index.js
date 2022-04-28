@@ -17,6 +17,14 @@ const cartState = {
   },
 };
 
+const user = localStorage.getItem('userInfo');
+
+const userStore = {
+  userInfo: user ? JSON.parse(user) : null,
+  loading: false,
+  error: '',
+};
+
 export const productsReducer = (state = productsStore, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST_PRODUCTS':
@@ -98,6 +106,35 @@ export const productReducer = (state = productStore, action) => {
         ...state,
         loading: false,
         error: action.paylod,
+      };
+    default:
+      return state;
+  }
+};
+
+export const userReducer = (state = userStore, action) => {
+  switch (action.type) {
+    case 'USER_REQUEST':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'USER_SIGNIN':
+      return {
+        ...state,
+        userInfo: action.payload,
+        loading: false
+      };
+    case 'USER_SIGNOUT':
+      return {
+        ...state,
+        userInfo: null,
+      };
+    case 'USER_FAILURE':
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
       };
     default:
       return state;
