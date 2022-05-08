@@ -12,12 +12,12 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { addCartItem, cartRemoveItem } from '../actions/cart.actions';
+import { addCartItem, cartRemoveItem, selectCart } from '../slice/cartSlice';
 
 export default function CartScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const cart = useSelector((state) => state.cartStore.cart);
+  const { cart } = useSelector(selectCart);
   const cartItems = cart.cartItems;
 
   const updateCartHandler = async (item, quantity) => {

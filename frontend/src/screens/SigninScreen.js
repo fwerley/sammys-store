@@ -6,7 +6,12 @@ import Button from 'react-bootstrap/Button';
 import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { userFailure, userResquest, userSignin } from '../actions/user.actions';
+import {
+  selectUser,
+  userFailure,
+  userResquest,
+  userSignin,
+} from '../slice/userSlice';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
@@ -16,7 +21,7 @@ export default function SigninScreen() {
   const { search } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo, loading } = useSelector((state) => state.userStore);
+  const { userInfo, loading } = useSelector(selectUser);
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 

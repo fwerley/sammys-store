@@ -23,8 +23,8 @@ model Product {
   rating       Float
   numReviews   Int
   // author    User?   @relation(fields: [authorId], references: [id])
-  createdAt    DateTime @default(now()) @db.Timestamptz(2)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(2)
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @updatedAt @map(name: "updated_at")
 
   @@map("products")
 }
@@ -35,8 +35,8 @@ model User {
   email     String   @unique
   password  String
   isAdmin   Boolean  @default(false)
-  createdAt DateTime @default(now()) @db.Timestamptz(2)
-  updatedAt DateTime @updatedAt @db.Timestamptz(2)
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
 
   @@map("users")
 }

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import Rating from './Rating';
-import { addCartItem } from '../actions/cart.actions';
+import { addCartItem } from '../slice/cartSlice';
 
 function Product(props) {
   const dispatch = useDispatch();

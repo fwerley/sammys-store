@@ -5,20 +5,18 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Helmet } from 'react-helmet-async';
-
 import {
   fetchFailure,
   fetchRequest,
   fetchSuccess,
-} from '../actions/products.actions';
+  selectProducts,
+} from '../slice/productsSlice';
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
 function HomeScreen() {
-  const { products, loading, error } = useSelector(
-    (state) => state.productsStore
-  );
+  const { products, loading, error } = useSelector(selectProducts);
   const dispatch = useDispatch();
 
   useEffect(() => {

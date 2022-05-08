@@ -14,16 +14,18 @@ import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
-import { userSignout } from './actions/user.actions';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
+
+import { selectUser, userSignout } from './slice/userSlice';
+import { selectCart } from './slice/cartSlice';
 
 function App() {
   const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cartStore.cart);
-  const userInfo = useSelector((state) => state.userStore.userInfo);
+  const { cart } = useSelector(selectCart);
+  const { userInfo } = useSelector(selectUser);
 
   const signoutHandler = () => {
     dispatch(userSignout());
-    localStorage.removeItem('userInfo');
   };
 
   return (
@@ -86,6 +88,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/cart" element={<CartScreen />} />
               <Route path="/signin" element={<SigninScreen />} />
+              <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>

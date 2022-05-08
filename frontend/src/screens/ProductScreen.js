@@ -16,12 +16,13 @@ import {
   fetchFailure,
   fetchRequest,
   fetchSuccess,
-} from '../actions/product.actions';
+  selectProduct,
+} from '../slice/productSlice';
 import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
-import { addCartItem } from '../actions/cart.actions';
+import { addCartItem, selectCart } from '../slice/cartSlice';
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -29,10 +30,8 @@ function ProductScreen() {
   const { slug } = params;
   const dispatch = useDispatch();
 
-  const { product, loading, error } = useSelector(
-    (state) => state.productStore
-  );
-  const cart = useSelector((state) => state.cartStore.cart);
+  const { product, loading, error } = useSelector(selectProduct);
+  const { cart } = useSelector(selectCart);
 
   useEffect(() => {
     const fetchData = async () => {
