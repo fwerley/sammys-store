@@ -18,7 +18,6 @@ export default function CartScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector(selectCart);
-  const cartItems = cart.cartItems;
 
   const updateCartHandler = async (item, quantity) => {
     const { data } = await axios.get(`/api/products/${item.id}`);
@@ -44,13 +43,13 @@ export default function CartScreen() {
       <h1>Carrinho de compras</h1>
       <Row>
         <Col md={8}>
-          {cartItems.length === 0 ? (
+          {cart.length === 0 ? (
             <MessageBox>
               Carrinho vazio. <Link to="/">Ir para o início</Link>
             </MessageBox>
           ) : (
             <ListGroup>
-              {cartItems.map((item) => (
+              {cart.map((item) => (
                 <ListGroup.Item key={item.id}>
                   <Row className="align-items-center">
                     <Col md={4}>
@@ -103,9 +102,9 @@ export default function CartScreen() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>
-                    Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
-                    itens) : R$
-                    {cartItems.reduce((a, c) => a + c.price * c.quantity, 0)},00
+                    Subtotal ({cart.reduce((a, c) => a + c.quantity, 0)} itens)
+                    : R$
+                    {cart.reduce((a, c) => a + c.price * c.quantity, 0)},00
                   </h3>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -114,7 +113,7 @@ export default function CartScreen() {
                       type="button"
                       variant="primary"
                       onClick={checkoutHandler}
-                      disabled={cartItems.length === 0}
+                      disabled={cart.length === 0}
                     >
                       Proceder ao checkout
                     </Button>

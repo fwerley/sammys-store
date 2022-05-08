@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const user = localStorage.getItem('userInfo');
+const shpAddress = localStorage.getItem('shippingAddress');
 
 const userStore = {
   userInfo: user ? JSON.parse(user) : null,
+  shippingAddress: shpAddress ? JSON.parse(shpAddress) : {},
   loading: false,
   error: '',
 };
@@ -34,15 +36,29 @@ const userSlice = createSlice({
     },
     userSignout(state, { payload }) {
       localStorage.removeItem('userInfo');
+      localStorage.removeItem('shippingAddress');
       return {
         ...state,
         userInfo: null,
+        shippingAddress: {},
+      };
+    },
+    saveShippingAddress(state, { payload }) {
+      localStorage.setItem('shippingAddress', JSON.stringify(payload));
+      return {
+        ...state,
+        shippingAddress: payload,
       };
     },
   },
 });
 
-export const { userResquest, userSignin, userFailure, userSignout } =
-  userSlice.actions;
+export const {
+  userResquest,
+  userSignin,
+  userFailure,
+  userSignout,
+  saveShippingAddress,
+} = userSlice.actions;
 export const selectUser = (state) => state.userStore;
 export default userSlice.reducer;

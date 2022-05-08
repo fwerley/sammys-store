@@ -7,15 +7,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import Rating from './Rating';
-import { addCartItem } from '../slice/cartSlice';
+import { addCartItem, selectCart } from '../slice/cartSlice';
 
 function Product(props) {
   const dispatch = useDispatch();
   const { product } = props;
-  const cart = useSelector((state) => state.cartStore.cart);
+  const { cart } = useSelector(selectCart);
 
   const addToCartHandler = async () => {
-    const existItem = cart.cartItems.find((x) => x.id === product.id);
+    const existItem = cart.find((x) => x.id === product.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product.id}`);
     if (data.countInStock < quantity) {

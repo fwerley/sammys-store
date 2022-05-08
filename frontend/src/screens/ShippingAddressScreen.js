@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -6,15 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { selectCart, saveShippingAddress } from '../slice/cartSlice';
+import { selectUser, saveShippingAddress } from '../slice/userSlice';
 
 export default function ShippingAddressScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    cart: { shippingAddress },
-  } = useSelector(selectCart);
+  const { userInfo } = useSelector(selectUser);
+
+  const { shippingAddress } = useSelector(selectUser);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
@@ -23,6 +23,12 @@ export default function ShippingAddressScreen() {
     shippingAddress.postalCode || ''
   );
   const [country, setCountry] = useState(shippingAddress.country || '');
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/signin?redirect=/shipping');
+    }
+  }, [userInfo, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

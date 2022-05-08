@@ -17,7 +17,7 @@ import SigninScreen from './screens/SigninScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 
 import { selectUser, userSignout } from './slice/userSlice';
-import { selectCart } from './slice/cartSlice';
+import { selectCart, cartDelete } from './slice/cartSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -26,6 +26,7 @@ function App() {
 
   const signoutHandler = () => {
     dispatch(userSignout());
+    dispatch(cartDelete());
   };
 
   return (
@@ -49,9 +50,9 @@ function App() {
                         <i className="fas fa-shopping-cart" />
                       </span>
                     </div>
-                    {cart.cartItems.length > 0 && (
+                    {cart.length > 0 && (
                       <Badge pill bg="danger" className="number-cart">
-                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                        {cart.reduce((a, c) => a + c.quantity, 0)}
                       </Badge>
                     )}
                   </div>
