@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { selectUser, saveShippingAddress } from '../slice/userSlice';
+import CheckoutSteps from '../components/CheckoutSteps';
 
 export default function ShippingAddressScreen() {
   const dispatch = useDispatch();
@@ -49,6 +50,7 @@ export default function ShippingAddressScreen() {
       <Helmet>
         <title>Endereço de envio</title>
       </Helmet>
+      <CheckoutSteps step1 step2></CheckoutSteps>
       <div className="container small-container">
         <h1 className="my-3">Endereço de envio</h1>
         <Form onSubmit={submitHandler}>

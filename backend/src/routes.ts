@@ -15,6 +15,7 @@ routes.get('/api/products/slug/:slug', ProductController.slug);
 
 // Users section
 routes.post('/api/users/signin', UserController.signin);
+routes.post('/api/users/signup', UserController.signup);
 
 // routes.post(`/post`, ProductController.store)
 // routes.put(`/post/publish/:id`, ProductController.publisher)
