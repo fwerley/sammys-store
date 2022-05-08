@@ -4,11 +4,9 @@ import Button from 'react-bootstrap/Button';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { saveShippingAddress } from '../actions/cart.actions';
-
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { selectCart } from '../slice/cartSlice';
+import { selectCart, saveShippingAddress } from '../slice/cartSlice';
 
 export default function ShippingAddressScreen() {
   const dispatch = useDispatch();
