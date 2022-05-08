@@ -19,6 +19,7 @@ import ShippingAddressScreen from './screens/ShippingAddressScreen';
 
 import { selectUser, userSignout } from './slice/userSlice';
 import { selectCart, cartDelete } from './slice/cartSlice';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -92,6 +93,7 @@ function App() {
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/shipping" element={<ShippingAddressScreen />} />
+              <Route path="/payment" element={<PaymentMethodScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>
