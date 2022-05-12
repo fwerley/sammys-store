@@ -16,6 +16,7 @@ import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
 import SignupScreen from './screens/SignupScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 import { selectUser, userSignout } from './slice/userSlice';
 import { selectCart, cartDelete } from './slice/cartSlice';
@@ -94,6 +95,7 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
+              <Route path="/placeorder" element={<PlaceOrderScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>
