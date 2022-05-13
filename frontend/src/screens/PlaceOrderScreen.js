@@ -19,13 +19,11 @@ export default function PlaceOrderScreen() {
   const navigate = useNavigate();
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
-  const itemsPrice = round2(
-    cart.reduce((a, c) => a + c.quantity * c.price, 0)
-  );
-  
-  const shippingPrice = itemsPrice > 100 ? round2(0): round2(10)
-  const taxPrice = round2(0.15*itemsPrice)
-  const totalPrice = itemsPrice+shippingPrice+taxPrice
+  const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
+
+  const shippingPrice = itemsPrice > 100 ? round2(0) : round2(10);
+  const taxPrice = round2(0.15 * itemsPrice);
+  const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const placeOrderHandler = async () => {};
 
