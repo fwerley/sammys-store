@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./types"],
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,

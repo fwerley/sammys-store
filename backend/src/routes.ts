@@ -1,6 +1,8 @@
 import express from 'express';
 import ProductController from './controllers/ProductController';
 import UserController from './controllers/UserController';
+import OrderController from './controllers/OrderController';
+import { isAuth } from './utils';
 
 const routes = express.Router();
 
@@ -17,8 +19,8 @@ routes.get('/api/products/slug/:slug', ProductController.slug);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
 
-// routes.post(`/post`, ProductController.store)
-// routes.put(`/post/publish/:id`, ProductController.publisher)
-// routes.delete(`/post/:id`, ProductController.delete)
+
+// Orders section
+routes.post('/api/orders', isAuth, OrderController.insert)
 
 export { routes };

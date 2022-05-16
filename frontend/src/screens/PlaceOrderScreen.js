@@ -8,15 +8,28 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Link, useNavigate } from 'react-router-dom';
-import { selectCart } from '../slice/cartSlice';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import LoadingBox from '../components/LoadingBox';
+
+import { cartDelete, selectCart } from '../slice/cartSlice';
 import { selectUser } from '../slice/userSlice';
+import {
+  createRequest,
+  createFail,
+  createSuccess,
+  selectOrder,
+} from '../slice/orderSlice';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
+import Axios from 'axios';
 
 export default function PlaceOrderScreen() {
-  const cartStore = useSelector(selectCart);
-  const { paymentMethod, cart } = cartStore;
-  const { shippingAddress } = useSelector(selectUser);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cartStore = useSelector(selectCart);
+  const { loading } = useSelector(selectOrder);
+  const { shippingAddress, userInfo } = useSelector(selectUser);
+  const { paymentMethod, cart } = cartStore;
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
@@ -25,7 +38,39 @@ export default function PlaceOrderScreen() {
   const taxPrice = round2(0.15 * itemsPrice);
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
-  const placeOrderHandler = async () => {};
+  const placeOrderHandler = async () => {
+    try {
+      dispatch(createRequest());
+      // TODO: Verificar seção p/ enviar dados internamente pelo node
+
+      const { data } = await Axios.post(
+        '/api/orders',
+        {
+          orderItems: cart,
+          shippingAddress,
+          paymentMethod,
+          orderPrice: {
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+          },          
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      dispatch(cartDelete());
+      dispatch(createSuccess());
+      navigate(`/orders/${data.order.id}`);
+    } catch (err) {
+      dispatch(createFail(err.message));
+      toast.error(getError(err));
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -130,7 +175,7 @@ export default function PlaceOrderScreen() {
                       onClick={placeOrderHandler}
                       disabled={cart.length === 0}
                     >
-                      Finalizar pedido
+                      {loading ? <LoadingBox></LoadingBox> : 'Finalizar pedido'}
                     </Button>
                   </div>
                 </ListGroup.Item>

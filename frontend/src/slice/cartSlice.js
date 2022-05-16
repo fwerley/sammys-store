@@ -8,7 +8,8 @@ const cartState = {
   itemsPrice: null,
   shippingPrice: null,
   totalPrice: null,
-  paymentMethod: pymtMethod ? JSON.parse(pymtMethod) : '',
+  paymentMethod: pymtMethod ? JSON.parse(pymtMethod) : 'Cartao',
+  paymentData: null
 };
 
 const cartSlice = createSlice({
@@ -43,6 +44,12 @@ const cartSlice = createSlice({
         paymentMethod: payload,
       };
     },
+    cartPaymentData(state, { payload }) {    
+      return {
+        ...state,
+        paymentData: payload,
+      };
+    },
     cartDelete(state) {
       localStorage.removeItem('cart');
       localStorage.removeItem('paymentMethod');
@@ -55,7 +62,7 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addCartItem, cartRemoveItem, cartPaymentMethod, cartDelete } =
+export const { addCartItem, cartRemoveItem, cartPaymentMethod, cartPaymentData, cartDelete } =
   cartSlice.actions;
 export const selectCart = (state) => state.cartStore;
 export default cartSlice.reducer;

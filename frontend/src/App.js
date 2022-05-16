@@ -16,11 +16,11 @@ import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
 import SignupScreen from './screens/SignupScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 import { selectUser, userSignout } from './slice/userSlice';
 import { selectCart, cartDelete } from './slice/cartSlice';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 function App() {
   const dispatch = useDispatch();

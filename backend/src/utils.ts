@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import {Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 
 export const generateToken = (user: User) => {
@@ -7,3 +8,23 @@ export const generateToken = (user: User) => {
     expiresIn: '30d',
   });
 };
+
+
+export const isAuth = (req: Request, res: Response, next: NextFunction) => {
+  const authorization = req.headers.authorization;  
+  if (authorization) {
+    const token = authorization.slice(7, authorization.length); //Bearer XXXXXXX
+    jwt.verify(
+      token,
+      '' + process.env.JWT_SECRET,
+      (err, decode) => {
+        if (err) {
+          res.status(401).send({message: 'Token inválido'});
+        }else {
+          req.user = (<any>decode);
+          next();
+        }
+      }
+    )
+  }
+}

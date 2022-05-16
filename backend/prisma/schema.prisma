@@ -19,13 +19,13 @@ model Product {
   category     String
   description  String
   price        Float
-  countInStock Int
+  countInStock Int      @map("count_in_stock")
   rating       Float
-  numReviews   Int
-  // author    User?   @relation(fields: [authorId], references: [id])
+  numReviews   Int      @map("num_reviews")
   createdAt    DateTime @default(now()) @map(name: "created_at")
   updatedAt    DateTime @updatedAt @map(name: "updated_at")
 
+  OrderItem OrderItem[]
   @@map("products")
 }
 
@@ -34,9 +34,84 @@ model User {
   name      String
   email     String   @unique
   password  String
-  isAdmin   Boolean  @default(false)
+  isAdmin   Boolean  @default(false) @map("is_admin")
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
+  Order Order?
   @@map("users")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String   @map("product_id")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  Order   Order?  @relation(fields: [orderId], references: [id])
+  orderId String?
+  @@map("order_items")
+}
+
+model ShippingAddress {
+  id         String   @id @default(uuid())
+  fullName   String   @map("full_name")
+  address    String
+  city       String
+  postalCode String   @map("postal_code")
+  country    String
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+
+  order Order?
+  @@map("shipping_address")
+}
+
+model PaymentResult {
+  id           String   @id @default(uuid())
+  status       String
+  emailAddress String?  @map(name: "email_address")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @updatedAt @map(name: "updated_at")
+
+  order Order?
+  @@map("payment_result")
+}
+
+model PriceOrder {
+  id            String @id @default(uuid())
+  itemsPrice    Float  @map("items_price")
+  shippingPrice Float  @map("shipping_price")
+  taxPrice      Float  @map("tax_price")
+  totalPrice    Float  @map("total_price")
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  Order Order?
+  @@map("price_order")
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  orderItems      OrderItem[]
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  paymentMethod   String
+  paymentResult   PaymentResult   @relation(fields: [paymentResultId], references: [id])
+  orderPrice      PriceOrder      @relation(fields: [priceOrderId], references: [id])
+  user            User            @relation(fields: [userId], references: [id])
+  isPaid          Boolean         @default(false) @map("is_paid")
+  isDelivered     Boolean         @default(false) @map("is_delivered")
+  deliveredAt     DateTime?       @map("delivered_at")
+  createdAt       DateTime        @default(now()) @map(name: "created_at")
+  updatedAt       DateTime        @updatedAt @map(name: "updated_at")
+
+  shippingAddressId String @unique
+  paymentResultId   String @unique
+  priceOrderId      String @unique
+  userId            String @unique
+  @@map("orders")
 }

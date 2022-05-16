@@ -16,22 +16,20 @@ import Cards from 'react-credit-cards';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { selectUser } from '../slice/userSlice';
 import { selectCart } from '../slice/cartSlice';
-import { cartPaymentMethod } from '../slice/cartSlice';
+import { cartPaymentMethod, cartPaymentData } from '../slice/cartSlice';
 
 export default function PaymentMethodScreen() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { shippingAddress } = useSelector(selectUser);
-  const { paymentMethod } = useSelector(selectCart);
+  const { paymentMethod, paymentData } = useSelector(selectCart);
 
-  const [paymentMethodName, setPaymentMethod] = useState(
-    paymentMethod || 'PagueSeguro'
-  );
-  const [cvc, setCvc] = useState('');
-  const [expiry, setExpiry] = useState('');
+  const [paymentMethodName, setPaymentMethod] = useState(paymentMethod);
+  const [cvc, setCvc] = useState(paymentData?.cvc || '');
+  const [expiry, setExpiry] = useState(paymentData?.expiry || '');
   const [focus, setFocus] = useState('');
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [name, setName] = useState(paymentData?.name || '');
+  const [number, setNumber] = useState(paymentData?.number || '');
 
   useEffect(() => {
     if (!shippingAddress.address) {
@@ -46,6 +44,14 @@ export default function PaymentMethodScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(cartPaymentMethod(paymentMethodName));
+    if (paymentMethodName === 'Cartao') {
+      dispatch(cartPaymentData({
+        name,
+        number,
+        expiry,
+        cvc
+      }))
+    }
     navigate('/placeorder');
   };
 
@@ -58,7 +64,7 @@ export default function PaymentMethodScreen() {
       <div className="container small-container">
         <h1 className="my-3">Forma de pagamento</h1>
         <Form onSubmit={submitHandler}>
-          <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+          <Tab.Container id="left-tabs-example" defaultActiveKey={paymentMethodName === 'Cartao'? 'first': 'second'}>
             <Row>
               <Col sm={3}>
                 <Nav variant="pills" className="flex-column">
@@ -66,10 +72,10 @@ export default function PaymentMethodScreen() {
                     <Nav.Link eventKey="first">
                       <Form.Check
                         type="radio"
-                        id="PagueSeguro"
-                        label="PagueSeguro"
-                        value="PagueSeguro"
-                        checked={paymentMethodName === 'PagueSeguro'}
+                        id="Cartao"
+                        label="Cartao"
+                        value="Cartao"
+                        checked={paymentMethodName === 'Cartao'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
                     </Nav.Link>
@@ -107,75 +113,86 @@ export default function PaymentMethodScreen() {
                                 />
                               </div>
                             </ListGroup.Item>
-                            <ListGroup.Item>
-                              <Row>
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="cardNumber"
-                                >
-                                  <Form.Label>Número do cartão</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    name="number"
-                                    onFocus={handleInputFocus}
-                                    required
-                                    onChange={(e) => setNumber(e.target.value)}
-                                  />
-                                </Form.Group>
-                              </Row>
-                              <Row>
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="cardNameUser"
-                                >
-                                  <Form.Label>Nome impresso</Form.Label>
-                                  <Form.Control
-                                    type="text"
-                                    name="name"
-                                    placeholder="Ex. F NASCIMENTO"
-                                    onFocus={handleInputFocus}
-                                    required
-                                    onChange={(e) => setName(e.target.value)}
-                                  />
-                                </Form.Group>
-                              </Row>
-                              <Row>
-                                <Col sm={9}>
+                            {paymentMethodName === 'Cartao' ? (
+                              <ListGroup.Item>
+                                <Row>
                                   <Form.Group
                                     className="mb-3"
-                                    controlId="cardExpiry"
+                                    controlId="cardNumber"
                                   >
-                                    <Form.Label>Validade</Form.Label>
+                                    <Form.Label>Número do cartão</Form.Label>
                                     <Form.Control
-                                      type="text"
-                                      name="expiry"
-                                      placeholder="MM/AA"
+                                      type="number"
+                                      name="number"
+                                      value={number}
                                       onFocus={handleInputFocus}
                                       required
                                       onChange={(e) =>
-                                        setExpiry(e.target.value)
+                                        setNumber(e.target.value)
                                       }
                                     />
                                   </Form.Group>
-                                </Col>
-                                <Col sm={3}>
+                                </Row>
+                                <Row>
                                   <Form.Group
                                     className="mb-3"
-                                    controlId="cardCvc"
+                                    controlId="cardNameUser"
                                   >
-                                    <Form.Label>CVC</Form.Label>
+                                    <Form.Label>Nome impresso</Form.Label>
                                     <Form.Control
                                       type="text"
-                                      name="cvc"
-                                      placeholder="CVV/CVC"
+                                      name="name"
+                                      value={name}
+                                      placeholder="Ex. F NASCIMENTO"
                                       onFocus={handleInputFocus}
                                       required
-                                      onChange={(e) => setCvc(e.target.value)}
+                                      onChange={(e) => setName(e.target.value)}
                                     />
                                   </Form.Group>
-                                </Col>
-                              </Row>
-                            </ListGroup.Item>
+                                </Row>
+                                <Row>
+                                  <Col sm={7}>
+                                    <Form.Group
+                                      className="mb-3"
+                                      controlId="cardExpiry"
+                                    >
+                                      <Form.Label>Validade</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        name="expiry"
+                                        value={expiry}
+                                        placeholder="MM/AA"
+                                        onFocus={handleInputFocus}
+                                        required
+                                        onChange={(e) =>
+                                          setExpiry(e.target.value)
+                                        }
+                                      />
+                                    </Form.Group>
+                                  </Col>
+                                  <Col sm={5}>
+                                    <Form.Group
+                                      className="mb-3"
+                                      controlId="cardCvc"
+                                    >
+                                      <Form.Label>CVC</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        name="cvc"
+                                        value={cvc}
+                                        placeholder="CVV/CVC"
+                                        onFocus={handleInputFocus}
+                                        required
+                                        onChange={(e) => setCvc(e.target.value)}
+                                      />
+                                    </Form.Group>
+                                  </Col>
+                                </Row>
+                              </ListGroup.Item>
+                            ) : (
+                              //FIXME: Tira a renderização do cartão para evitar as chamadas aos campos de texto
+                              ''
+                            )}
                           </ListGroup>
                         </Card.Body>
                       </Card>
