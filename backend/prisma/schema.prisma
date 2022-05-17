@@ -38,7 +38,8 @@ model User {
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  Order Order?
+  Order Order[]
+
   @@map("users")
 }
 
@@ -50,8 +51,8 @@ model OrderItem {
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  Order   Order?  @relation(fields: [orderId], references: [id])
-  orderId String?
+  Order   Order  @relation(fields: [orderId], references: [id])
+  orderId String
   @@map("order_items")
 }
 
@@ -112,6 +113,6 @@ model Order {
   shippingAddressId String @unique
   paymentResultId   String @unique
   priceOrderId      String @unique
-  userId            String @unique
+  userId            String 
   @@map("orders")
 }

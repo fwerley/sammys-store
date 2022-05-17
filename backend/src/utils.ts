@@ -26,5 +26,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
         }
       }
     )
+  }else{
+    res.status(401).send({message: 'Não existe um token associado ao usuario'})
   }
 }
