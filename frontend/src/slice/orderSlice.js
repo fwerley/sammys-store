@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const orderStore = {
+  order: {},
   loading: false,
+  orderLoading: true,
   error: '',
 };
 
@@ -13,13 +15,23 @@ const orderSlice = createSlice({
       return {
         ...state,
         loading: true,
+        error: ''
       };
     },
-    createSuccess(state) {
+    createOrderSuccess(state) {
       return {
         ...state,
         loading: false,
+        error: ''
       };
+    },
+    fetchSuccess(state, {payload}){
+      return {
+        ...state,
+        loading: false,
+        error: '',
+        order: payload,
+      }
     },
     createFail(state, { payload }) {
       return {
@@ -31,6 +43,6 @@ const orderSlice = createSlice({
   },
 });
 
-export const { createRequest, createSuccess ,createFail } = orderSlice.actions;
+export const { createRequest, createOrderSuccess, fetchSuccess, createFail } = orderSlice.actions;
 export const selectOrder = (state) => state.orderStore;
 export default orderSlice.reducer;

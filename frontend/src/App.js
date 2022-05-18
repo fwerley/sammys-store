@@ -21,6 +21,7 @@ import { selectUser, userSignout } from './slice/userSlice';
 import { selectCart, cartDelete } from './slice/cartSlice';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
+import OrderScreen from './screens/OrderScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -96,6 +97,7 @@ function App() {
               <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
+              <Route path="/order/:id" element={<OrderScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>

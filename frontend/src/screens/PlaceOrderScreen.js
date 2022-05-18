@@ -16,7 +16,7 @@ import { selectUser } from '../slice/userSlice';
 import {
   createRequest,
   createFail,
-  createSuccess,
+  createOrderSuccess,
   selectOrder,
 } from '../slice/orderSlice';
 import { toast } from 'react-toastify';
@@ -63,8 +63,8 @@ export default function PlaceOrderScreen() {
         }
       );
       dispatch(cartDelete());
-      dispatch(createSuccess());
-      navigate(`/orders/${data.order.id}`);
+      dispatch(createOrderSuccess());
+      navigate(`/order/${data.order.id}`);
     } catch (err) {
       dispatch(createFail(err.message));
       toast.error(getError(err));

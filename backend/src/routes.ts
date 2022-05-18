@@ -22,5 +22,6 @@ routes.post('/api/users/signup', UserController.signup);
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
+routes.get(`/api/orders/:id`, isAuth, OrderController.find)
 
 export { routes };
