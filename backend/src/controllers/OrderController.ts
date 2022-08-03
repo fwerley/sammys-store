@@ -10,6 +10,8 @@ export default {
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
 
+    // Verificação online do produto. Evitar fraudes na alteração manual do preço dos itens
+    //Teste de retirada
     const priceItems = await orderItems.reduce(
       async (price: number, item: OrderItem) => { 
         const nPrice = await price;     
