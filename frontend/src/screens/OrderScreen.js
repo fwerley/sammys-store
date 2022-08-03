@@ -118,7 +118,7 @@ export default function OrderScreen() {
                           src={item.product.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
-                        />{' '}
+                        />{' '}                       
                         <Link to={`/product/${item.product.slug}`}>{item.name}</Link>
                       </Col>
                       <Col md={3}>

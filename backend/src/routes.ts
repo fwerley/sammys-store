@@ -3,6 +3,7 @@ import ProductController from './controllers/ProductController';
 import UserController from './controllers/UserController';
 import OrderController from './controllers/OrderController';
 import { isAuth } from './utils';
+import PaymentController from './controllers/PaymentController';
 
 const routes = express.Router();
 
@@ -23,5 +24,8 @@ routes.post('/api/users/signup', UserController.signup);
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)
+
+// Payment section
+routes.post('/api/orders/:id/pay', isAuth, PaymentController.insert)
 
 export { routes };
