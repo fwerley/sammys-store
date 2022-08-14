@@ -104,26 +104,26 @@ export default function PlaceOrderScreen() {
         const result = await Axios.post('/api/correios/precoprazo', {
           sCepOrigem: '60870250',
           sCepDestino: shippingAddress.postalCode,
-          nVlPeso: '0.50',
+          nVlPeso: '1',
           nCdFormato: '1',
-          nVlComprimento: '20',
-          nVlAltura: '5',
-          nVlLargura: '20',
-          nCdServico: ['04014', '04510'],
+          nVlComprimento: '18',
+          nVlAltura: '9',
+          nVlLargura: '14',
+          nCdServico: ['04014', '04510', '04227', '41106'],
           nVlDiametro: '0',
         });
         setShippingMethod({
           ...shippingMethod,
           values: {
-            sedex: parseFloat(result.data[0].Valor),
-            pac: parseFloat(result.data[1].Valor),
+            sedex: parseFloat(result.data[0].Valor.replace(',', '.')),
+            pac: parseFloat(result.data[1].Valor.replace(',', '.')),
           },
           time: {
             sedex: result.data[0].PrazoEntrega,
             pac: result.data[1].PrazoEntrega,
           },
           data: result.data,
-        });
+        });        
       } catch (err) {
         console.log(err);
       }

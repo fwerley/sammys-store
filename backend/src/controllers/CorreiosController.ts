@@ -46,7 +46,7 @@ export default {
             nVlDiametro
           };
           try{
-            calcularPrecoPrazo(args).then((response) => {            
+            calcularPrecoPrazo(args).then((response) => {                      
               res.status(200).send(response);
             });
           }catch (e) {
