@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import CheckoutSteps from '../components/CheckoutSteps';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Link, useNavigate } from 'react-router-dom';
@@ -24,19 +25,41 @@ import { getError } from '../utils';
 import Axios from 'axios';
 
 export default function PlaceOrderScreen() {
+  const shippingData = {
+    selected: '',
+    values: {
+      sedex: 0,
+      pac: 0,
+    },
+    time: {
+      sedex: 0,
+      pac: 0,
+    },
+    data: '',
+  };
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartStore = useSelector(selectCart);
   const { loading } = useSelector(selectOrder);
   const { shippingAddress, userInfo } = useSelector(selectUser);
+  const [shippingMethod, setShippingMethod] = useState(shippingData);
   const { paymentMethod, cart } = cartStore;
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
 
-  const shippingPrice = itemsPrice > 100 ? round2(0) : round2(10);
-  const taxPrice = round2(0.15 * itemsPrice);
-  const totalPrice = itemsPrice + shippingPrice + taxPrice;
+  const shippingPriceCalc = (correiosPrice) =>
+    itemsPrice > 250 ? round2(0) : round2(correiosPrice);
+  // const taxPrice = round2(0.15 * itemsPrice);
+  const taxPrice = 0;
+  const valueSelected =
+    shippingMethod.selected !== ''
+      ? shippingMethod.selected === 'sedex'
+        ? shippingMethod.values.sedex
+        : shippingMethod.values.pac
+      : 0.0;
+  const totalPrice = itemsPrice + valueSelected + taxPrice;
 
   const placeOrderHandler = async () => {
     try {
@@ -51,10 +74,10 @@ export default function PlaceOrderScreen() {
           paymentMethod,
           orderPrice: {
             itemsPrice,
-            shippingPrice,
+            shippingPrice: valueSelected,
             taxPrice,
             totalPrice,
-          },          
+          },
         },
         {
           headers: {
@@ -76,7 +99,37 @@ export default function PlaceOrderScreen() {
     if (!paymentMethod) {
       navigate('/payment');
     }
-  }, [navigate, paymentMethod]);
+    const requestShipping = async () => {
+      try {
+        const result = await Axios.post('/api/correios/precoprazo', {
+          sCepOrigem: '60870250',
+          sCepDestino: shippingAddress.postalCode,
+          nVlPeso: '0.50',
+          nCdFormato: '1',
+          nVlComprimento: '20',
+          nVlAltura: '5',
+          nVlLargura: '20',
+          nCdServico: ['04014', '04510'],
+          nVlDiametro: '0',
+        });
+        setShippingMethod({
+          ...shippingMethod,
+          values: {
+            sedex: parseFloat(result.data[0].Valor),
+            pac: parseFloat(result.data[1].Valor),
+          },
+          time: {
+            sedex: result.data[0].PrazoEntrega,
+            pac: result.data[1].PrazoEntrega,
+          },
+          data: result.data,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    requestShipping();
+  }, [navigate]);
 
   return (
     <div>
@@ -143,19 +196,74 @@ export default function PlaceOrderScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Itens</Col>
-                    <Col>${itemsPrice.toFixed(2)}</Col>
+                    <Col>R$ {itemsPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Row>
-                    <Col>Entrega</Col>
-                    <Col>${shippingPrice.toFixed(2)}</Col>
-                  </Row>
+                  <strong>Entrega</strong>
+                  <ListGroup variant="flush">
+                    {shippingMethod.data === '' ? (
+                      <LoadingBox />
+                    ) : (
+                      <Form>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col>
+                              <Form.Check
+                                type="radio"
+                                id="sedex"
+                                value="sedex"
+                                checked={shippingMethod.selected === 'sedex'}
+                                onChange={(e) =>
+                                  setShippingMethod({
+                                    ...shippingMethod,
+                                    selected: e.target.value,
+                                  })
+                                }
+                                label="SEDEX"
+                              />
+                            </Col>
+                            <Col>
+                              {shippingMethod.time.sedex} dia
+                              {shippingMethod.time.sedex > 1 ? 's' : ''}
+                            </Col>
+                            <Col>
+                              R$ {shippingMethod.values.sedex.toFixed(2)}
+                            </Col>
+                          </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col>
+                              <Form.Check
+                                type="radio"
+                                id="pac"
+                                value="pac"
+                                checked={shippingMethod.selected === 'pac'}
+                                onChange={(e) =>
+                                  setShippingMethod({
+                                    ...shippingMethod,
+                                    selected: e.target.value,
+                                  })
+                                }
+                                label="PAC"
+                              />
+                            </Col>
+                            <Col>
+                              {shippingMethod.time.pac} dia
+                              {shippingMethod.time.pac > 1 ? 's' : ''}
+                            </Col>
+                            <Col>R$ {shippingMethod.values.pac.toFixed(2)}</Col>
+                          </Row>
+                        </ListGroup.Item>
+                      </Form>
+                    )}
+                  </ListGroup>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Taxas</Col>
-                    <Col>${taxPrice.toFixed(2)}</Col>
+                    <Col>R$ {taxPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -164,7 +272,7 @@ export default function PlaceOrderScreen() {
                       <strong>Total</strong>
                     </Col>
                     <Col>
-                      <strong>${totalPrice.toFixed(2)}</strong>
+                      <strong>R$ {totalPrice.toFixed(2)}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -173,7 +281,7 @@ export default function PlaceOrderScreen() {
                     <Button
                       type="button"
                       onClick={placeOrderHandler}
-                      disabled={cart.length === 0}
+                      disabled={cart.length === 0 || shippingMethod.selected === ''}
                     >
                       {loading ? <LoadingBox></LoadingBox> : 'Finalizar pedido'}
                     </Button>

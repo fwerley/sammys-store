@@ -2,8 +2,9 @@ import express from 'express';
 import ProductController from './controllers/ProductController';
 import UserController from './controllers/UserController';
 import OrderController from './controllers/OrderController';
-import { isAuth } from './utils';
 import PaymentController from './controllers/PaymentController';
+import CorreiosController from './controllers/CorreiosController';
+import { isAuth } from './utils';
 
 const routes = express.Router();
 
@@ -20,6 +21,8 @@ routes.get('/api/products/slug/:slug', ProductController.slug);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
 
+// Correios section
+routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)

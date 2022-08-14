@@ -10,7 +10,7 @@ export default {
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
 
-    // Verificação online do produto. Evitar fraudes na alteração manual do preço dos itens
+    // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
     //Teste de retirada
     const priceItems = await orderItems.reduce(
       async (price: number, item: OrderItem) => { 
@@ -26,8 +26,6 @@ export default {
       },
       Promise.resolve(0)
     );
-
-    console.log(priceItems)
 
     const createOrder = await prismaClient.order.create({
       data: {
