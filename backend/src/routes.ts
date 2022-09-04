@@ -29,6 +29,6 @@ routes.post('/api/orders', isAuth, OrderController.insert)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)
 
 // Payment section
-routes.post('/api/orders/:id/pay', isAuth, PaymentController.insert)
+routes.post('/api/orders/:id/pay', isAuth, PaymentController.create)
 
 export { routes };

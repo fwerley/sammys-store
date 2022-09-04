@@ -6,12 +6,10 @@ export default {
   async insert(req: Request, res: Response) {
     const { orderPrice, paymentMethod, shippingAddress, orderItems } = req.body;
 
-    // TODO: Mudar futuramente o modo de verificação de preços de entrega
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
 
     // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
-    //Teste de retirada
     const priceItems = await orderItems.reduce(
       async (price: number, item: OrderItem) => { 
         const nPrice = await price;     

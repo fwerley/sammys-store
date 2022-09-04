@@ -44,7 +44,7 @@ export default function PaymentMethodScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(cartPaymentMethod(paymentMethodName));
-    if (paymentMethodName === 'Cartao') {
+    if (paymentMethodName === 'CREDIT_CARD') {
       dispatch(cartPaymentData({
         name,
         number,
@@ -74,8 +74,8 @@ export default function PaymentMethodScreen() {
                         type="radio"
                         id="Cartao"
                         label="Cartao"
-                        value="Cartao"
-                        checked={paymentMethodName === 'Cartao'}
+                        value="CREDIT_CARD"
+                        checked={paymentMethodName === 'CREDIT_CARD'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
                     </Nav.Link>
@@ -86,8 +86,8 @@ export default function PaymentMethodScreen() {
                         type="radio"
                         id="Boleto"
                         label="Boleto"
-                        value="Boleto"
-                        checked={paymentMethodName === 'Boleto'}
+                        value="BIILET"
+                        checked={paymentMethodName === 'BILLET'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
                     </Nav.Link>
@@ -113,7 +113,7 @@ export default function PaymentMethodScreen() {
                                 />
                               </div>
                             </ListGroup.Item>
-                            {paymentMethodName === 'Cartao' ? (
+                            {paymentMethodName === 'CREDIT_CARD' ? (
                               <ListGroup.Item>
                                 <Row>
                                   <Form.Group

@@ -46,6 +46,9 @@ export default function PlaceOrderScreen() {
   const [shippingMethod, setShippingMethod] = useState(shippingData);
   const { paymentMethod, cart } = cartStore;
 
+
+  const paymentTranslate = {CREDIT_CARD : "Cartão", BILLET : "Boleto"}
+
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
 
@@ -144,9 +147,10 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Dados de entrega</Card.Title>
               <Card.Text>
-                <strong>Nome: </strong> {shippingAddress.fullName} <br />
+                <strong>Destinatário: </strong> {shippingAddress.fullName} <br />
                 <strong>Endereço: </strong> {shippingAddress.address},{' '}
-                {shippingAddress.city}, {shippingAddress.postalCode},{' '}
+                {shippingAddress.number}, {shippingAddress.city}, {' '}
+                {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
               </Card.Text>
               <Link to="/shipping">Editar</Link>
@@ -156,7 +160,7 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Pagamento</Card.Title>
               <Card.Text>
-                <strong>Método: </strong> {paymentMethod} <br />
+                <strong>Método: </strong> {paymentTranslate[paymentMethod]} <br />
               </Card.Text>
               <Link to="/payment">Editar</Link>
             </Card.Body>

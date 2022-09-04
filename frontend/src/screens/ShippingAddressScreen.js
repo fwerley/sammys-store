@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,12 +20,13 @@ export default function ShippingAddressScreen() {
   const { shippingAddress } = useSelector(selectUser);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
+  const [number, setNumber] = useState(shippingAddress.number || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
   const [city, setCity] = useState(shippingAddress.city || '');
   const [postalCode, setPostalCode] = useState(
     shippingAddress.postalCode || ''
   );
-  const [country, setCountry] = useState(shippingAddress.country || '');
+  const [federativeUnity, setCountry] = useState(shippingAddress.federativeUnity || '');
 
   useEffect(() => {
     if (!userInfo) {
@@ -36,10 +39,11 @@ export default function ShippingAddressScreen() {
     dispatch(
       saveShippingAddress({
         fullName,
+        number,
         address,
         city,
         postalCode,
-        country,
+        federativeUnity,
       })
     );
     navigate('/payment');
@@ -62,14 +66,28 @@ export default function ShippingAddressScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="address">
+          <Row>
+            <Col sm={9}>
+            <Form.Group className="mb-3" controlId="address">
             <Form.Label>Endereço</Form.Label>
             <Form.Control
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               required
+            />            
+          </Form.Group>
+            </Col>
+            <Col sm={3}>
+          <Form.Group className="mb-3" controlId="address">
+          <Form.Label>Numero</Form.Label>
+            <Form.Control
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              required
             />
           </Form.Group>
+            </Col>
+          </Row>
           <Form.Group className="mb-3" controlId="city">
             <Form.Label>Cidade</Form.Label>
             <Form.Control
@@ -87,9 +105,9 @@ export default function ShippingAddressScreen() {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="country">
-            <Form.Label>País</Form.Label>
+            <Form.Label>Estado</Form.Label>
             <Form.Control
-              value={country}
+              value={federativeUnity}
               onChange={(e) => setCountry(e.target.value)}
               required
             />

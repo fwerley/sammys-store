@@ -31,6 +31,7 @@ export default function OrderScreen() {
 
   const { id: orderId } = params;
 
+  const paymentTranslate = {CREDIT_CARD : "Cartão", BILLET : "Boleto"}
   
   useEffect(() => {
     const fetchOrder = async () => {
@@ -77,7 +78,8 @@ export default function OrderScreen() {
                 <strong>Nome: </strong> {order.shippingAddress.fullName}
                 <br />
                 <strong>Endereço: </strong>
-                {order.shippingAddress.address},{order.shippingAddress.city},{' '}
+                {order.shippingAddress.address},{' '}
+                {order.shippingAddress.number}, {order.shippingAddress.city},{' '}
                 {order.shippingAddress.postalCode},{' '}
                 {order.shippingAddress.country}
               </Card.Text>
@@ -94,7 +96,7 @@ export default function OrderScreen() {
             <Card.Body>
               <Card.Title>Pagamento</Card.Title>
               <Card.Text>
-                <strong>Método: </strong> {order.paymentMethod}
+                <strong>Método: </strong> {paymentTranslate[order.paymentMethod]}
                 <br />
               </Card.Text>    
               {order.isPaid ? (
@@ -124,7 +126,7 @@ export default function OrderScreen() {
                       <Col md={3}>
                         <span>{item.quantity}</span>
                       </Col>
-                      <Col md={3}>${item.product.price}</Col>
+                      <Col md={3}>R$ {item.product.price}</Col>
                     </Row>
                   </ListGroup.Item>
                 ))}
