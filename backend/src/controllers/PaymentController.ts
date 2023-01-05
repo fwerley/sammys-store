@@ -4,15 +4,18 @@ import parsePhoneNumber from 'libphonenumber-js';
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 import * as Yup from 'yup';
 import transactionService from '../services/TransactionServide';
-
+/**
+ * Controller responsavel por lincar a criação de uma transação de compra, com todos os dados necessarios para registrar a requisição
+ * @param {Request} req
+ * @param {Response} res
+ */
 export default {
   async create(req: Request, res: Response) {
     const { id: orderId } = req.params;
 
-// TODO: Reavaliar os tipos para Customer e Billing, retirar do prisma a tipagem
+    // TODO: Reavaliar os tipos para Customer e Billing, retirar do prisma a tipagem
 
     const {
-      orderCode,
       paymentType,
       installments,
       customerName,
@@ -34,7 +37,7 @@ export default {
     try {
 
       const schema = Yup.object({
-        orderCode: Yup.string().required(),
+        // orderCode: Yup.string().required(),
         paymentType: Yup.mixed().oneOf(["BILLET", "CREDIT_CARD"]).required(),
         installments: Yup.number().min(1).when("paymentType", (paymentType, schema) => paymentType === "CREDIT_CARD" ? schema.max(12) : schema.max(1)),
         customerName: Yup.string().required(),
@@ -69,30 +72,24 @@ export default {
           paymentType === "CREDIT_CARD" ? schema.required() : schema
         ),
       })
-
+      
       if (!(await schema.isValid(req.body))) {
-        return res.status(400).send({
-          error: "Error on validate schema"
+        return res.status(400).send({        
+          error: "Por favor, verifique os dados enviados e tente novamente"
         })
       }
       const order = await prismaClient.order.findUnique({
         where: {
           id: orderId,
         },
-        include: {
-          orderItems: {
-            include: {
-              product: true,
-            },
-          },
-          orderPrice: true,
-          paymentResult: true,
+        include: {          
           user: true
         },
       });
       if (!order) {
-        return res.status(404).send({message: "Order not found"})
+        return res.status(404).send({ message: "Order not found" })
       }
+
       const service = await transactionService({
         billing: {
           address: billingAddress,
@@ -103,7 +100,7 @@ export default {
           number: billingNumber,
           neighborhood: billingNeighborhood,
           createdAt: new Date(),
-          id: "",
+          id: "pkpojpo",
           updatedAt: new Date(),
           userId: ""
         },
@@ -113,14 +110,17 @@ export default {
           holderName: creditCardHolderName,
           number: creditCardNumber
         },
-        customer: order.user,
+        customer: {
+          ...order.user,
+          //mobile: parsePhoneNumber(order.user.mobile!, "BR")!.format('E.164').toString()
+        },
         installments,
-        orderCode,
+        orderCode: order.id,
         paymentType
       })
-      res.send({ message: "ok", service})
+      res.send({ message: "ok", service })
     } catch (error) {
-      res.status(400).send({ message: 'Pedido não encontrdo ' + error })
+      res.status(400).send({ message: 'Erro ao criar a transação: ' + error })
     }
   },
 };

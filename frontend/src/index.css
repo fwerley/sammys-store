@@ -41,6 +41,7 @@ body {
   font-weight: bolder;
   font-size: medium;
   display: flex;
+  line-height: normal;
   flex-direction: column;
   color: #ffffff;
   cursor: pointer;
@@ -51,7 +52,7 @@ body {
   border-radius: 0.3em;
   background-color: var(--primary-color);
   display: inline-block;
-  padding: 0rem 0.2rem;
+  padding: 0.1rem 0.2rem;
 }
 
 .nav-link {

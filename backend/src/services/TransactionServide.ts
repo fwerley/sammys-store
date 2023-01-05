@@ -1,29 +1,30 @@
-import { Transaction } from "@prisma/client";
+import { Order, Transaction } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { prismaClient } from "../database/prismaClient";
-import { ProcessParams } from "./ITransactionService";
+import PagarmeProvider from "../providers/pagarmeProvider";
+import { IPaymentProvider, ProcessParams } from "./IPaymentProvider";
 
+/**
+ * Cria uma transação baseado no gatway utilizado
+ * @param  {ProcessParams} params 
+ * @returns {Promise<Transaction>}
+ */
 
-// async function transactionService(params: ProcessParams): Promise<string> {
-async function transactionService(params: ProcessParams): Promise<Transaction> {    
-    const order = await prismaClient.order.findUnique({
-        where: {
-            id: params.orderCode,
-        }
-    });
-    if (!order) {
-        throw `Order ${order} was not found`;
-    }
+const gatwayPay:IPaymentProvider = new PagarmeProvider()
 
-    const transaction = await prismaClient.transaction.create({
-        data: {
-           orderId: params.orderCode,
-           code: randomUUID(),
-           installments: params.installments,   
-        }
-    })
+async function transactionService(params: ProcessParams) {    
+
+    // const transaction = await prismaClient.transaction.create({
+    //     data: {
+    //        orderId: params.orderCode,
+    //        code: randomUUID(),
+    //        installments: params.installments,   
+    //     }
+    // });
     
-    return transaction;
+    gatwayPay.process(params)
+
+    // return transaction = ;
 }
 
 export default transactionService;

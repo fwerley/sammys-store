@@ -1,4 +1,4 @@
-import { ShippingAddress, User } from "@prisma/client";
+import { Order, PriceOrder, ShippingAddress, Transaction, User } from "@prisma/client";
 
 type CreditCard = {
     number: string;
@@ -16,11 +16,11 @@ type ProcessParams = {
     creditCard: CreditCard;
 }
 
-interface ITransactionService {
-    (params: ProcessParams): Promise<string>;
+interface IPaymentProvider {
+    process(params: ProcessParams): Promise<string>;
 }
 
 export {
-    ITransactionService,
+    IPaymentProvider,
     ProcessParams
 }
