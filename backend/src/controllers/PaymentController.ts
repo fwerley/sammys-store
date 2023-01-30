@@ -33,7 +33,6 @@ export default {
       creditCardHolderName,
       creditCardCvv
     } = req.body;
-
     try {
 
       const schema = Yup.object({
@@ -45,9 +44,7 @@ export default {
         customerMobile: Yup.string()
           .required()
           .test("is-valid-mobile", "${path} is not a number", (value) =>
-            parsePhoneNumber(value!, "BR")!.isValid()
-
-          ),
+            parsePhoneNumber(value!, "BR")!.isValid()),
         customerDocument: Yup.string()
           .required()
           .test("is-valid-document", "${path} is not a valid CPF / CNPJ", (value) =>
@@ -72,9 +69,9 @@ export default {
           paymentType === "CREDIT_CARD" ? schema.required() : schema
         ),
       })
-      
+
       if (!(await schema.isValid(req.body))) {
-        return res.status(400).send({        
+        return res.status(400).send({
           error: "Por favor, verifique os dados enviados e tente novamente"
         })
       }
@@ -82,7 +79,7 @@ export default {
         where: {
           id: orderId,
         },
-        include: {          
+        include: {
           user: true
         },
       });
@@ -112,15 +109,49 @@ export default {
         },
         customer: {
           ...order.user,
+          document: customerDocument
           //mobile: parsePhoneNumber(order.user.mobile!, "BR")!.format('E.164').toString()
         },
         installments,
         orderCode: order.id,
         paymentType
       })
-      res.send({ message: "ok", service })
+
+      const statusTransaction = service.status;
+      switch (statusTransaction) {
+        case 'APPROVED':
+          res.status(201).json({ message: 'Pagamento aprovado', payment: service })
+          break;
+        case 'PENDING':
+          res.status(202).json({ message: 'Pagamento em análise', payment: service })
+          break;
+        case 'PROCESSING':
+          res.status(202).json({ message: 'Pagamento em análise', payment: service })
+          break;
+        case 'STARTED':
+          res.status(202).json({ message: 'Pagamento em análise', payment: service })
+          break;
+        default:
+          res.status(200).json({ message: "Transação criada." })
+      }
     } catch (error) {
       res.status(400).send({ message: 'Erro ao criar a transação: ' + error })
     }
   },
+  async transaction(req: Request, res: Response) {
+    const { id: orderId } = req.params
+
+    const result = await prismaClient.transaction.findUnique({
+      where: {
+        orderId,
+      },
+    });
+
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(404).send({ message: 'Transação não encontrado' });
+    }
+
+  }
 };

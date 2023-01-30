@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const itsCarts = localStorage.getItem('cart');
 const pymtMethod = localStorage.getItem('paymentMethod');
 
-const cartState = {
+const cartStore = {
   cart: itsCarts ? JSON.parse(itsCarts) : [],
   itemsPrice: null,
   shippingPrice: null,
@@ -14,7 +14,7 @@ const cartState = {
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: cartState,
+  initialState: cartStore,
   reducers: {
     addCartItem(state, { payload }) {
       //add to cart

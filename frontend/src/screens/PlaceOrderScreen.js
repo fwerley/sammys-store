@@ -73,7 +73,7 @@ export default function PlaceOrderScreen() {
         '/api/orders',
         {
           orderItems: cart,
-          shippingAddress,
+          shippingAddress: {...shippingAddress, federativeUnity: shippingAddress.federativeUnity[0].sigla},
           paymentMethod,
           orderPrice: {
             itemsPrice,
@@ -91,6 +91,7 @@ export default function PlaceOrderScreen() {
       dispatch(cartDelete());
       dispatch(createOrderSuccess());
       navigate(`/order/${data.order.id}`);
+      toast.success('Seu pedido foi criado!')
     } catch (err) {
       dispatch(createFail(err.message));
       toast.error(getError(err));
@@ -149,9 +150,11 @@ export default function PlaceOrderScreen() {
               <Card.Text>
                 <strong>Destinatário: </strong> {shippingAddress.fullName} <br />
                 <strong>Endereço: </strong> {shippingAddress.address},{' '}
-                {shippingAddress.number}, {shippingAddress.city}, {' '}
-                {shippingAddress.postalCode},{' '}
-                {shippingAddress.country}
+                {shippingAddress.number}{' - '}
+                {shippingAddress.neighborhood}{', '}
+                {shippingAddress.city}{' - '}
+                {shippingAddress.federativeUnity[0].sigla}{', '}
+                {shippingAddress.postalCode}
               </Card.Text>
               <Link to="/shipping">Editar</Link>
             </Card.Body>

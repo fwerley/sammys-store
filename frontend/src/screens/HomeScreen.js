@@ -14,6 +14,7 @@ import {
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { shuffle } from '../utils';
 
 function HomeScreen() {
   const { products, loading, error } = useSelector(selectProducts);
@@ -24,7 +25,7 @@ function HomeScreen() {
       dispatch(fetchRequest());
       try {
         const result = await axios.get('/api/products');
-        dispatch(fetchSuccess(result.data));
+        dispatch(fetchSuccess(shuffle(result.data)));
       } catch (err) {
         dispatch(fetchFailure(err.message));
       }
@@ -46,7 +47,7 @@ function HomeScreen() {
         ) : (
           <Row>
             {products.map((product) => (
-              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+              <Col key={product.slug} sm={6} md={4} lg={3} xs={6} className="mb-3">
                 <Product product={product}></Product>
               </Col>
             ))}

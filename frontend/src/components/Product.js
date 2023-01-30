@@ -38,9 +38,12 @@ function Product(props) {
         <Card.Text>
           <strong>R$ {product.price},00</strong>
         </Card.Text>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center position-absolute cart-button shadow rounded">
           {product.countInStock > 0 ? (
-            <Button onClick={addToCartHandler}>Add ao carrinho</Button>
+            <Button onClick={addToCartHandler}>
+              + <i className="fas fa-shopping-cart" />
+              {/* Add ao carrinho */}
+            </Button>
           ) : (
             <OverlayTrigger
               overlay={
@@ -53,7 +56,8 @@ function Product(props) {
                   variant="light"
                   style={{ pointerEvents: 'none' }}
                 >
-                  Add ao carrinho
+                  + <i className="fas fa-shopping-cart" />
+                  {/* Add ao carrinho */}
                 </Button>
               </span>
             </OverlayTrigger>

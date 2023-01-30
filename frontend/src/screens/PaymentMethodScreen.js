@@ -67,34 +67,42 @@ export default function PaymentMethodScreen() {
           <Tab.Container id="left-tabs-example" defaultActiveKey={paymentMethodName === 'Cartao'? 'first': 'second'}>
             <Row>
               <Col sm={3}>
-                <Nav variant="pills" className="flex-column">
+                {/* <Nav variant="pills" className="flex-column">
                   <Nav.Item>
-                    <Nav.Link eventKey="first">
+                    <Nav.Link eventKey="first"> */}
                       <Form.Check
                         type="radio"
                         id="Cartao"
-                        label="Cartao"
+                        label="Cartão"
                         value="CREDIT_CARD"
                         checked={paymentMethodName === 'CREDIT_CARD'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
-                    </Nav.Link>
+                    {/* </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="second">
+                    <Nav.Link eventKey="second"> */}
                       <Form.Check
                         type="radio"
                         id="Boleto"
                         label="Boleto"
-                        value="BIILET"
+                        value="BILLET"
                         checked={paymentMethodName === 'BILLET'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
-                    </Nav.Link>
+                      <Form.Check
+                        type="radio"
+                        id="PIX"
+                        label="PIX"
+                        value="PIX"
+                        checked={paymentMethodName === 'PIX'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />
+                    {/* </Nav.Link>
                   </Nav.Item>
-                </Nav>
+                </Nav> */}
               </Col>
-              <Col sm={9}>
+              {/* <Col sm={9}>
                 <Tab.Content className="ms-3">
                   <Tab.Pane eventKey="first">
                     <div className="mb-3">
@@ -202,7 +210,7 @@ export default function PaymentMethodScreen() {
                     <div className="mb-3">World</div>
                   </Tab.Pane>
                 </Tab.Content>
-              </Col>
+              </Col> */}
             </Row>
           </Tab.Container>
           <div className="my-3">

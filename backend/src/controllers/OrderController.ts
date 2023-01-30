@@ -11,8 +11,8 @@ export default {
 
     // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
     const priceItems = await orderItems.reduce(
-      async (price: number, item: OrderItem) => { 
-        const nPrice = await price;     
+      async (price: number, item: OrderItem) => {
+        const nPrice = await price;
         const countPrice = await prismaClient.product.findUnique({
           where: {
             id: item.id,
@@ -49,13 +49,7 @@ export default {
         paymentMethod: paymentMethod,
         user: {
           connect: { id: req.user?.id },
-        },
-        paymentResult: {
-          create: {
-            status: 'Pending',
-            emailAddress: req.user?.email,
-          },
-        },
+        }
       },
     });
     res.status(201).json({ order: createOrder });
@@ -74,7 +68,6 @@ export default {
           },
         },
         orderPrice: true,
-        paymentResult: true,
         shippingAddress: true,
         user: {
           select: {
@@ -93,4 +86,27 @@ export default {
       res.status(404).send({ message: 'Ordem não encontrada' });
     }
   },
+
+  async updatePrice(req: Request, res: Response) {
+    const idOrder = req.params.id;
+    const { taxPrice, totalPrice } = req.body;
+    try {
+      const order = await prismaClient.order.update({
+        where: {
+          id: idOrder,
+        },
+        data: {
+          orderPrice: {
+            update: {
+              taxPrice,
+              totalPrice
+            }
+          }
+        }
+      });
+      res.status(201).json({ message: "Taxa de compra atualizado" })
+    } catch (error) {
+      res.status(401).send({ message: 'Requisição não autorizada' });
+    }
+  }
 };

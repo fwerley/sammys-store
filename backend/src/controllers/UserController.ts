@@ -26,7 +26,9 @@ export default {
           id: user.id,
           name: user.name,
           email: user.email,
+          mobile: user.mobile,
           isAdmin: user.isAdmin,
+          document: user.document,
           token: generateToken(user),
         });
         return;

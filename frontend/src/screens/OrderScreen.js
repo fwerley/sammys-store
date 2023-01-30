@@ -7,7 +7,9 @@ import { Helmet } from 'react-helmet-async';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { Wallet2 } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 
 import LoadingBox from '../components/LoadingBox';
@@ -19,23 +21,30 @@ import {
 } from '../slice/orderSlice';
 import { selectUser } from '../slice/userSlice';
 import { getError } from '../utils';
+import { paymentReset, selectPayment } from '../slice/paymentSlice';
+import ModalBox from '../components/ModalBox';
 
 export default function OrderScreen() {
   const { error, order } = useSelector(selectOrder);
   const { userInfo } = useSelector(selectUser);
+  const { successPay } = useSelector(selectPayment)
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
 
   const [findOrder, setFindOrder] = useState(true);
+  const [transaction, setTransaction] = useState({});
+
+  const [modalShow, setModalShow] = useState(false);
+
 
   const { id: orderId } = params;
 
-  const paymentTranslate = {CREDIT_CARD : "Cartão", BILLET : "Boleto"}
-  
+  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto" }
+
   useEffect(() => {
     const fetchOrder = async () => {
-      try {        
+      try {
         const { data } = await axios.get(`/api/orders/${orderId}`, {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
@@ -47,24 +56,61 @@ export default function OrderScreen() {
       }
     };
 
+    const fetchTransactionData = async () => {
+      try {
+        const { data } = await axios.get(`/api/orders/${orderId}/transaction`, {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        let paidAt = data.paidAt.split(':')[0];
+        let paidAtArray = paidAt.split("-")
+        let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
+        let transaction = { ...data, paidAt: paidAtFormated }
+        setTransaction(transaction)
+      } catch (error) {
+        console.log("order without transaction: ", error)
+      }
+    };
+
     if (!userInfo) {
       return navigate('/signin');
     }
-    if (!order.id || (order.id && order.id !== orderId)) {      
+    if (!order.id || successPay || (order.id && order.id !== orderId)) {
       fetchOrder();
+      fetchTransactionData();
+      if (successPay) {
+        setInterval(function () {
+          if (modalShow) {
+            setModalShow(false)
+          }
+        }, 4000)
+        setTimeout(function () {
+          fetchTransactionData();
+          if (Object.keys(transaction).length !== 0) {
+            dispatch(paymentReset())
+          }
+        }, 2000)
+      }
     }
-  }, [order, userInfo, orderId, navigate, dispatch]);
+  }, [order, userInfo, orderId, navigate, dispatch, successPay]);
 
   return findOrder ? (
-    <LoadingBox></LoadingBox>
+    <div className="container small-container">
+      <LoadingBox></LoadingBox>
+    </div>
   ) : error ? (
     <div className="container small-container">
       <MessageBox variant="danger">
         {error}. <Link to='/'>Retornar ao início</Link>
-        </MessageBox>
+      </MessageBox>
     </div>
   ) : (
     <div>
+      <ModalBox
+        show={modalShow}
+        title='Pagamento'
+        type={order.paymentMethod}
+        onHide={() => setModalShow(false)}
+      />
       <Helmet>
         <title>Pedido - {orderId}</title>
       </Helmet>
@@ -78,10 +124,12 @@ export default function OrderScreen() {
                 <strong>Nome: </strong> {order.shippingAddress.fullName}
                 <br />
                 <strong>Endereço: </strong>
-                {order.shippingAddress.address},{' '}
-                {order.shippingAddress.number}, {order.shippingAddress.city},{' '}
-                {order.shippingAddress.postalCode},{' '}
-                {order.shippingAddress.country}
+                {order.shippingAddress.address}{', '}
+                {order.shippingAddress.number}{' - '}
+                {order.shippingAddress.neighborhood}{', '}
+                {order.shippingAddress.city}{' - '}
+                {order.shippingAddress.federativeUnity}{', '}
+                {order.shippingAddress.postalCode}
               </Card.Text>
               {order.isDelivered ? (
                 <MessageBox variant="succes">
@@ -98,14 +146,18 @@ export default function OrderScreen() {
               <Card.Text>
                 <strong>Método: </strong> {paymentTranslate[order.paymentMethod]}
                 <br />
-              </Card.Text>    
+              </Card.Text>
               {order.isPaid ? (
-                <MessageBox variant="succes">
-                  Pago no dia {order.paidAt}
+                <MessageBox variant="success">
+                  Pagamento efetuado dia {transaction.paidAt}
                 </MessageBox>
-              ) : (
-                <MessageBox variant="danger">Pagamento pendente</MessageBox>
-              )}
+              ) : successPay ?
+                <MessageBox>
+                  <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+                </MessageBox>
+                : (
+                  <MessageBox variant="danger">Pagamento pendente</MessageBox>
+                )}
             </Card.Body>
           </Card>
           <Card className="mb-3">
@@ -120,7 +172,7 @@ export default function OrderScreen() {
                           src={item.product.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
-                        />{' '}                       
+                        />{' '}
                         <Link to={`/product/${item.product.slug}`}>{item.name}</Link>
                       </Col>
                       <Col md={3}>
@@ -165,6 +217,24 @@ export default function OrderScreen() {
                     <Col><strong>R$ {order.orderPrice.totalPrice.toFixed(2)}</strong></Col>
                   </Row>
                 </ListGroup.Item>
+                {
+                  !order.isPaid ?
+                    <ListGroup.Item>
+                      <div className="d-grid">
+                        <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>
+                          <div className='me-2'>
+                            <Wallet2
+                              className=""
+                              color='white'
+                              size={20}
+                            />
+                          </div>
+                          Vamos ao pagamento
+                        </Button>
+                      </div>
+                    </ListGroup.Item>
+                    : ''
+                }
               </ListGroup>
             </Card.Body>
           </Card>

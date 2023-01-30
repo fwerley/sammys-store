@@ -80,38 +80,16 @@ model ShippingAddress {
   @@map("shipping_address")
 }
 
-model PaymentResult {
-  id           String   @id @default(uuid())
-  status       String
-  emailAddress String?  @map(name: "email_address")
-  createdAt    DateTime @default(now()) @map(name: "created_at")
-  updatedAt    DateTime @updatedAt @map(name: "updated_at")
-
-  order Order?
-
-  @@map("payment_result")
-}
-
 model Transaction {
-  id                String  @id @default(uuid())
-  code              String  @unique
-  status            Status  @default(STARTED)
+  id                String    @id @default(uuid())
+  code              String    @unique
+  status            Status    @default(STARTED)
+  paidAt            DateTime?
   installments      Int
   processorResponse String?
-  order             Order   @relation(fields: [orderId], references: [id])
-  orderId           String  @unique
-  // paymentType         PaymentType @default(BILLET)
-  // total               Float
-  // customerEmail       String
-  // customerName        String
-  // customerMobile      String
-  // customerDocument    String
-  // billingAdress       String
-  // billingNumber       String
-  // billingNeighborhood String?
-  // billingCity         String
-  // billingState        String
-  // billingZipCode      String
+  order             Order     @relation(fields: [orderId], references: [id])
+  orderId           String    @unique
+  transactionId     String?   @unique
 
   @@map("transaction")
 }
@@ -137,7 +115,6 @@ model Order {
   orderItems      OrderItem[]
   shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
   paymentMethod   PaymentType     @default(BILLET)
-  paymentResult   PaymentResult   @relation(fields: [paymentResultId], references: [id])
   orderPrice      PriceOrder      @relation(fields: [priceOrderId], references: [id])
   user            User            @relation(fields: [userId], references: [id])
   isPaid          Boolean         @default(false) @map("is_paid")
@@ -148,7 +125,6 @@ model Order {
   transaction     Transaction?
 
   shippingAddressId String @unique
-  paymentResultId   String @unique
   priceOrderId      String @unique
   userId            String
 

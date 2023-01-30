@@ -409,7 +409,13 @@ declare module "pagarme" {
   }
 
   export interface BoletoImputs {
-
+    bank: string;
+    document_number: string;
+    instructions: string;
+    due_at: Date
+    //  document_number: transaction.code,
+    type: string;
+    statement_descriptor: string;
   }
 
   export interface Payments {

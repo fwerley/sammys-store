@@ -1,51 +1,14 @@
-import { Transaction } from "@prisma/client";
-import { rejects } from "assert";
+import { Status, Transaction } from "@prisma/client";
 import { cpf } from "cpf-cnpj-validator";
-import { Address, BoletoImputs, CreateTransacaoInput, CreditCardImputs, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
-import { resolve } from "path";
+import moment from 'moment';
+import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
 import { prismaClient } from "../database/prismaClient";
-import { IPaymentProvider, ProcessParams } from "../services/IPaymentProvider";
+import { IPaymentProvider, ProcessParams, StatusTransaction, StatusType, UpdateParams } from "../services/IPaymentProvider";
 import { basePagarme } from "./pagarmeClient";
-
-// export default {
-//     async process(params: ProcessParams) {
-
-//         const order = await prismaClient.order.findUnique({
-//             where: {
-//               id: params.orderCode,
-//             },
-//             include: {
-//               orderItems: {
-//                 include: {
-//                   product: true,
-//                 },
-//               },
-//               orderPrice: true,
-//               paymentResult: true,
-//               user: true
-//             },
-//         });
-//         const billetParams = {
-//             payment_method: "boleto",
-//             boleto: {
-//                 instructions: "Pagar até o vencimento",
-//                 due_at: new Date().setDate(new Date().getDate()+4),
-//                 document_number: order?.user.document,
-//                 type: "BDP" 
-//             }
-//             // amount: order?.orderPrice.totalPrice! * 100,
-
-//         }
-
-//         const transactionParams = {
-
-//         }
-//     }
-// }
 
 class PagarmeProvider implements IPaymentProvider {
 
-  async process(params: ProcessParams): Promise<string> {
+  async process(params: ProcessParams): Promise<StatusTransaction> {
 
     const order = await prismaClient.order.findUnique({
       where: {
@@ -92,7 +55,7 @@ class PagarmeProvider implements IPaymentProvider {
       type: clientType,
       email: order.user.email,
       // document: order.user.document!,
-      document: order.user.document!,
+      document: order.user.document!.replace(/[^?0-9]/g, ""),
       //Adress
       address,
       //Phones
@@ -128,20 +91,20 @@ class PagarmeProvider implements IPaymentProvider {
     })
 
     )
+
     const billetParams: Payments[] = [{
       boleto: {
         bank: '001',
         document_number: "ID TRANSACTION",
         instructions: 'Pagar até a data limite',
-        due_at: new Date(new Date().getDay() + 3),
+        due_at: new Date(moment().add(3, "days").toISOString()),
         //  document_number: transaction.code,
         type: 'BDP',
         statement_descriptor: "Sammys Store"
       },
       amount: order.orderPrice.totalPrice * 100,
       payment_method: 'boleto'
-    }
-    ]
+    }]
 
     const creditCardParams: Payments[] = [{
       credit_card: {
@@ -158,7 +121,7 @@ class PagarmeProvider implements IPaymentProvider {
         installments: params.installments,
         statement_descriptor: `Sammys Store`
       },
-      amount: order.orderPrice.totalPrice * 100,
+      amount: Math.trunc(order.orderPrice.totalPrice * 100),
       payment_method: 'credit_card'
     }]
 
@@ -183,13 +146,85 @@ class PagarmeProvider implements IPaymentProvider {
         payments
       }
       const response = await basePagarme.post("orders", data)
-      console.debug(response.data);
+
+      const returnStatus: StatusTransaction = {
+        transactionId: response.data.id,
+        status: this.translateStatus(response.data.status),
+        card: params.paymentType == "CREDIT_CARD" ? {
+          id: response.data.charges[0].last_transaction.card.id
+        } : undefined,
+        billet: params.paymentType == "BILLET" ? {
+          barcode: response.data.charges[0].last_transaction.barcode,
+          url: response.data.charges[0].last_transaction.url,
+        } : undefined,
+        processorResponse: JSON.stringify(response.data)
+      }
+      return returnStatus;
+
     } catch (errors: any) {
-      console.debug(errors.response.data)
+      console.debug(errors.response.data.errors)
+      throw `Error creating transaction.`
     }
 
-    return new Promise((resolve, rejects) => resolve(""))
   }
+
+  async updatestatus(params: UpdateParams): Promise<Transaction> {
+    const transaction = await prismaClient.transaction.findUnique({
+      where: {
+        code: params.code
+      }
+    })
+
+    if (!transaction) {
+      throw `Transaction ${params.code} not found.`
+    }
+
+    const status = this.translateStatus(params.providerStatus)
+
+    if (!status) {
+      throw `Status is empty.`
+    }
+
+    const transactionUpdated = await prismaClient.transaction.update({
+      where: {
+        code: params.code
+      },
+      data: {
+        status
+      }
+    })
+
+    return transactionUpdated;
+  }
+
+  translateStatus(status: string): any {
+    const statusMap: StatusType<string> = {
+      processing: "PROCESSING",
+      waiting_payment: "PENDING",
+      authorized: "PENDING",
+      paid: "APPROVED",
+      refused: "REFUSED",
+      pending_refund: "REFUNDED",
+      refunded: "REFUNDED",
+      canceled: "REFUNDED",
+      chargedback: "CHARGBACK",
+      failed: "ERROR",
+      with_error: "ERROR",
+      partial_void: "ERROR",
+      error_on_refunding: "ERROR",
+      authorized_pending_capture: "PROCESSING",
+      not_authorized: "REFUSED",
+      captured: "APPROVED",
+      partial_capture: "PROCESSING",
+      waiting_capture: "PROCESSING",
+      voided: "REFUSED",
+      generated: "PROCESSING",
+      viewed: "PENDING",
+    }
+
+    return statusMap[status]
+  }
+
 }
 
 export default PagarmeProvider

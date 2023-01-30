@@ -40,6 +40,13 @@ const orderSlice = createSlice({
         error: payload,
       };
     },
+    // addTaxPrice(state, {payload}) {
+    //   return {
+    //     ...state,
+    //     ...order,
+    //     taxPrice: payload
+    //   }
+    // }
   },
 });
 
