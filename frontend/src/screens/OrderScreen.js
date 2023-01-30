@@ -61,11 +61,15 @@ export default function OrderScreen() {
         const { data } = await axios.get(`/api/orders/${orderId}/transaction`, {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
-        let paidAt = data.paidAt.split(':')[0];
-        let paidAtArray = paidAt.split("-")
-        let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
-        let transaction = { ...data, paidAt: paidAtFormated }
-        setTransaction(transaction)
+        if (data.status !== 'ERROR'){
+          let paidAt = data.paidAt.split(':')[0];
+          let paidAtArray = paidAt.split("-")
+          let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
+          let transaction = { ...data, paidAt: paidAtFormated }
+          setTransaction(transaction)
+        }else {
+          setTransaction(data)
+        }
       } catch (error) {
         console.log("order without transaction: ", error)
       }
@@ -77,20 +81,23 @@ export default function OrderScreen() {
     if (!order.id || successPay || (order.id && order.id !== orderId)) {
       fetchOrder();
       fetchTransactionData();
-      if (successPay) {
-        setInterval(function () {
+    }
+    if (successPay) {
+        setTimeout(function () {
           if (modalShow) {
+            console.log(modalShow)
             setModalShow(false)
           }
         }, 4000)
-        setTimeout(function () {
+        let contador = 0;
+        setInterval(function () {
           fetchTransactionData();
-          if (Object.keys(transaction).length !== 0) {
+          if (Object.keys(transaction).length !== 0 && contador === 3) {
             dispatch(paymentReset())
           }
-        }, 2000)
+          contador = contador+1;
+        }, 4000)
       }
-    }
   }, [order, userInfo, orderId, navigate, dispatch, successPay]);
 
   return findOrder ? (
@@ -147,17 +154,22 @@ export default function OrderScreen() {
                 <strong>Método: </strong> {paymentTranslate[order.paymentMethod]}
                 <br />
               </Card.Text>
-              {order.isPaid ? (
-                <MessageBox variant="success">
-                  Pagamento efetuado dia {transaction.paidAt}
-                </MessageBox>
-              ) : successPay ?
-                <MessageBox>
-                  <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
-                </MessageBox>
-                : (
-                  <MessageBox variant="danger">Pagamento pendente</MessageBox>
-                )}
+              {
+                order.isPaid ? (
+                  <MessageBox variant="success">
+                    Pagamento efetuado dia {transaction.paidAt}
+                  </MessageBox>
+                ) : successPay ?
+                  <MessageBox>
+                    <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+                  </MessageBox>
+                  : Object.keys(transaction).length !== 0 && !order.isPaid ?
+                  <MessageBox>
+                    Sua tentativa de pagamento não foi concluída ❌ <br/>
+                    Tente novamente!
+                  </MessageBox> :(
+                    <MessageBox variant="danger">Pagamento pendente</MessageBox>
+                  )}
             </Card.Body>
           </Card>
           <Card className="mb-3">

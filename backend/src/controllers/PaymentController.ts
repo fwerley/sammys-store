@@ -138,6 +138,7 @@ export default {
       res.status(400).send({ message: 'Erro ao criar a transação: ' + error })
     }
   },
+  
   async transaction(req: Request, res: Response) {
     const { id: orderId } = req.params
 

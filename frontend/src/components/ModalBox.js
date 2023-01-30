@@ -9,9 +9,9 @@ import Form from 'react-bootstrap/Form';
 import InputMask from 'react-input-mask';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { useEffect, useState } from 'react';
-import { paymentFail, paymentRequest, paymentSuccess, selectPayment } from '../slice/paymentSlice';
+import { paymentFail, paymentRequest, paymentReset, paymentSuccess, selectPayment } from '../slice/paymentSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import { selectUser } from '../slice/userSlice';
 import { selectOrder } from '../slice/orderSlice';
 
@@ -67,7 +67,7 @@ function CardItem() {
     const dispatch = useDispatch();
     const { order } = useSelector(selectOrder);
     const { userInfo } = useSelector(selectUser);
-    const { successPay, loadingPay, error: errorPay } = useSelector(selectPayment)
+    const { successPay, loadingPay, errorPay } = useSelector(selectPayment)
 
     const handleInputFocus = (e) => {
         setFocus(e.target.name);
@@ -138,13 +138,13 @@ function CardItem() {
                         authorization: `Bearer ${userInfo.token}`
                     }
                 }
-            )            
+            )
             dispatch(paymentSuccess());
             toast.success('Pagamento aprovado!')
         } catch (error) {
             dispatch(paymentFail(error.message));
             toast.error(getError(error));
-            console.log(error)
+            console.log(error);            
         }
     }
 
@@ -157,131 +157,137 @@ function CardItem() {
                         <LoadingBox></LoadingBox> :
                         successPay ?
                             <MessageBox variant="success">
-                                Pagamento efetuado com sucesso! 😊
-                            </MessageBox> : (
-                                <ListGroup variant="flush">
-                                    <ListGroup.Item>
-                                        <div id="PaymentForm">
-                                            <Cards
-                                                cvc={cvc}
-                                                expiry={expiry}
-                                                focused={focus}
-                                                name={name}
-                                                number={number}
-                                            />
-                                        </div>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col sm={6}>
-                                                <Form.Group
-                                                    className="mb-3"
-                                                    controlId="cardNumber"
-                                                >
-                                                    <Form.Label>Número do cartão</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        as={InputMask}
-                                                        mask="9999 9999 9999 9999"
-                                                        placeholder='9999 9999 9999 9999'
-                                                        name="number"
-                                                        value={number}
-                                                        onFocus={handleInputFocus}
-                                                        required
-                                                        onChange={(e) =>
-                                                            setNumber(e.target.value)
-                                                        }
-                                                    />
-                                                </Form.Group>
-                                            </Col>
-                                            <Col sm={6}>
-                                                <Form.Group className="mb-3" controlId="installments">
-                                                    <Form.Label>Parcelas</Form.Label>
-                                                    <Typeahead
-                                                        id="basic-example"
-                                                        onChange={setInstallments}
-                                                        options={arrayInstallments()}
-                                                        placeholder="N° de parcelas"
-                                                        selected={installments}
-                                                    />
-                                                </Form.Group>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col sm={6}>
-                                                <Form.Group
-                                                    className="mb-3"
-                                                    controlId="cardNameUser"
-                                                >
-                                                    <Form.Label>Nome impresso</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        name="name"
-                                                        value={name}
-                                                        placeholder="Ex. F NASCIMENTO"
-                                                        onFocus={handleInputFocus}
-                                                        required
-                                                        onChange={(e) => setName(e.target.value)}
-                                                    />
-                                                </Form.Group>
-                                            </Col>
-                                            <Col sm={3}>
-                                                <Form.Group
-                                                    className="mb-3"
-                                                    controlId="cardExpiry"
-                                                >
-                                                    <Form.Label>Validade</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        as={InputMask}
-                                                        mask="99/99"
-                                                        name="expiry"
-                                                        value={expiry}
-                                                        placeholder="MM/AA"
-                                                        onFocus={handleInputFocus}
-                                                        required
-                                                        onChange={(e) =>
-                                                            setExpiry(e.target.value)
-                                                        }
-                                                    />
-                                                </Form.Group>
-                                            </Col>
-                                            <Col sm={3}>
-                                                <Form.Group
-                                                    className="mb-3"
-                                                    controlId="cardCvc"
-                                                >
-                                                    <Form.Label>CVV</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        as={InputMask}
-                                                        mask="999"
-                                                        name="cvc"
-                                                        value={cvc}
-                                                        placeholder="CVV"
-                                                        onFocus={handleInputFocus}
-                                                        required
-                                                        onChange={(e) => setCvc(e.target.value)}
-                                                    />
-                                                </Form.Group>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col sm={7}>
-                                            </Col>
-                                            <Col sm={5}>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item>
-                                        <div className="d-grid">
-                                            <Button type="button" className='d-flex flex-row justify-content-center' onClick={payOrder}>
-                                                Pagar
-                                            </Button>
-                                        </div>
-                                    </ListGroup.Item>
-                                </ListGroup>
-                            )
+                                Sua solicitação foi recebida e está em processamento! 😊
+                            </MessageBox> :
+                            errorPay !== '' ?
+                                <MessageBox>
+                                    Infelizmente não foi possivel concluir a transação ⚠️
+                                    Tente novamente em alguns minutos!
+                                </MessageBox> :
+                                (
+                                    <ListGroup variant="flush">
+                                        <ListGroup.Item>
+                                            <div id="PaymentForm">
+                                                <Cards
+                                                    cvc={cvc}
+                                                    expiry={expiry}
+                                                    focused={focus}
+                                                    name={name}
+                                                    number={number}
+                                                />
+                                            </div>
+                                        </ListGroup.Item>
+                                        <ListGroup.Item>
+                                            <Row>
+                                                <Col sm={6}>
+                                                    <Form.Group
+                                                        className="mb-3"
+                                                        controlId="cardNumber"
+                                                    >
+                                                        <Form.Label>Número do cartão</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            as={InputMask}
+                                                            mask="9999 9999 9999 9999"
+                                                            placeholder='9999 9999 9999 9999'
+                                                            name="number"
+                                                            value={number}
+                                                            onFocus={handleInputFocus}
+                                                            required
+                                                            onChange={(e) =>
+                                                                setNumber(e.target.value)
+                                                            }
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col sm={6}>
+                                                    <Form.Group className="mb-3" controlId="installments">
+                                                        <Form.Label>Parcelas</Form.Label>
+                                                        <Typeahead
+                                                            id="basic-example"
+                                                            onChange={setInstallments}
+                                                            options={arrayInstallments()}
+                                                            placeholder="N° de parcelas"
+                                                            selected={installments}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col sm={6}>
+                                                    <Form.Group
+                                                        className="mb-3"
+                                                        controlId="cardNameUser"
+                                                    >
+                                                        <Form.Label>Nome impresso</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            name="name"
+                                                            value={name}
+                                                            placeholder="Ex. F NASCIMENTO"
+                                                            onFocus={handleInputFocus}
+                                                            required
+                                                            onChange={(e) => setName(e.target.value)}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col sm={3}>
+                                                    <Form.Group
+                                                        className="mb-3"
+                                                        controlId="cardExpiry"
+                                                    >
+                                                        <Form.Label>Validade</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            as={InputMask}
+                                                            mask="99/99"
+                                                            name="expiry"
+                                                            value={expiry}
+                                                            placeholder="MM/AA"
+                                                            onFocus={handleInputFocus}
+                                                            required
+                                                            onChange={(e) =>
+                                                                setExpiry(e.target.value)
+                                                            }
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col sm={3}>
+                                                    <Form.Group
+                                                        className="mb-3"
+                                                        controlId="cardCvc"
+                                                    >
+                                                        <Form.Label>CVV</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            as={InputMask}
+                                                            mask="999"
+                                                            name="cvc"
+                                                            value={cvc}
+                                                            placeholder="CVV"
+                                                            onFocus={handleInputFocus}
+                                                            required
+                                                            onChange={(e) => setCvc(e.target.value)}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col sm={7}>
+                                                </Col>
+                                                <Col sm={5}>
+                                                </Col>
+                                            </Row>
+                                        </ListGroup.Item>
+                                        <ListGroup.Item>
+                                            <div className="d-grid">
+                                                <Button type="button" className='d-flex flex-row justify-content-center' onClick={payOrder}>
+                                                    Pagar
+                                                </Button>
+                                            </div>
+                                        </ListGroup.Item>
+                                    </ListGroup>
+                                )
                 }
             </Card.Body>
         </Card>

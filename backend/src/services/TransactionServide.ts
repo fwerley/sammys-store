@@ -15,17 +15,39 @@ const gatwayPay: IPaymentProvider = new PagarmeProvider()
 async function transactionService(params: ProcessParams): Promise<Transaction> {
 
     try {
-        const transaction = await prismaClient.transaction.create({
+        const createOrUpdateTransanction = await prismaClient.order.update({
+            where: {
+                id: params.orderCode
+            },
             data: {
-                orderId: params.orderCode,
-                code: randomUUID(),
-                installments: params.installments,
+                transaction: {
+                    upsert: {
+                        create: {
+                            code: randomUUID(),
+                            installments: params.installments
+                        },
+                        update: {
+                            code: randomUUID(),
+                            installments: params.installments
+                        }
+                    }
+                }
+            },
+            include: {
+                transaction: true
             }
-        });
+        })
+        // const transaction = await prismaClient.transaction.create({
+        //     data: {
+        //         orderId: params.orderCode,
+        //         code: randomUUID(),
+        //         installments: params.installments,
+        //     }
+        // });
         const response = await gatwayPay.process(params)
         const updateTransaction = await prismaClient.transaction.update({
             where: {
-                id: transaction.id
+                id: createOrUpdateTransanction.transaction?.id
             },
             data: {
                 transactionId: response.transactionId,
