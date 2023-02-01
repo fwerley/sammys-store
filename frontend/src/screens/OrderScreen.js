@@ -20,7 +20,7 @@ import {
   selectOrder,
 } from '../slice/orderSlice';
 import { selectUser } from '../slice/userSlice';
-import { getError } from '../utils';
+import { formatedDate, getError } from '../utils';
 import { paymentReset, selectPayment } from '../slice/paymentSlice';
 import ModalBox from '../components/ModalBox';
 
@@ -61,13 +61,11 @@ export default function OrderScreen() {
         const { data } = await axios.get(`/api/orders/${orderId}/transaction`, {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
-        if (data.status !== 'ERROR'){
-          let paidAt = data.paidAt.split(':')[0];
-          let paidAtArray = paidAt.split("-")
-          let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
+        if (data.status !== 'ERROR') {
+          let paidAtFormated = formatedDate(data.paidAt);          
           let transaction = { ...data, paidAt: paidAtFormated }
           setTransaction(transaction)
-        }else {
+        } else {
           setTransaction(data)
         }
       } catch (error) {
@@ -78,27 +76,67 @@ export default function OrderScreen() {
     if (!userInfo) {
       return navigate('/signin');
     }
-    if (!order.id || successPay || (order.id && order.id !== orderId)) {
+    if (!order.id || (order.id && order.id !== orderId)) {
       fetchOrder();
       fetchTransactionData();
     }
+
     if (successPay) {
-        setTimeout(function () {
-          if (modalShow) {
-            console.log(modalShow)
-            setModalShow(false)
-          }
-        }, 4000)
-        let contador = 0;
-        setInterval(function () {
-          fetchTransactionData();
-          if (Object.keys(transaction).length !== 0 && contador === 3) {
-            dispatch(paymentReset())
-          }
-          contador = contador+1;
-        }, 4000)
-      }
+      setTimeout(function () {
+        if (modalShow) {
+          setModalShow(false)
+        }
+      }, 4000)
+      let contador = 0;
+      setInterval(function () {
+        fetchTransactionData();
+        if (Object.keys(transaction).length !== 0 && (transaction.status === 'STARTED' || transaction.status === 'PENDING' || transaction.status === 'PROCESSING')) {
+          dispatch(paymentReset())
+        }
+        contador = contador + 1;
+      }, 4000)
+    }
   }, [order, userInfo, orderId, navigate, dispatch, successPay]);
+
+  const switchOrderMessage = (state) => {
+    switch (state) {
+      case 'PROCESSING':
+        <MessageBox>
+          <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+        </MessageBox>
+        break;
+      case 'PENDING':
+        <MessageBox>
+          Pagamento com pendência de confirmação.
+        </MessageBox>
+        break;
+      case 'REFUNDED':
+        <MessageBox>
+          O pagamento foi extornado.
+        </MessageBox>
+        break;
+      case 'REFUSED':
+        <MessageBox>
+          O pagamento foi recusado pelo operador do cartão.
+        </MessageBox>
+        break;
+      case 'CHARGBACK':
+        <MessageBox>
+          O cancelamento da compra foi solicitado.
+        </MessageBox>
+        break;
+      case 'ERROR':
+        <MessageBox variant='danger'>
+          Sua tentativa de pagamento não foi concluída ❌ <br />
+          Tente novamente!
+        </MessageBox>
+        break;
+      default:
+        <MessageBox>
+          Não conseguimos buscar as informações :( 
+        </MessageBox>
+    }
+  }
 
   return findOrder ? (
     <div className="container small-container">
@@ -155,21 +193,20 @@ export default function OrderScreen() {
                 <br />
               </Card.Text>
               {
-                order.isPaid ? (
-                  <MessageBox variant="success">
-                    Pagamento efetuado dia {transaction.paidAt}
-                  </MessageBox>
-                ) : successPay ?
-                  <MessageBox>
-                    <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
-                  </MessageBox>
-                  : Object.keys(transaction).length !== 0 && !order.isPaid ?
-                  <MessageBox>
-                    Sua tentativa de pagamento não foi concluída ❌ <br/>
-                    Tente novamente!
-                  </MessageBox> :(
-                    <MessageBox variant="danger">Pagamento pendente</MessageBox>
-                  )}
+                order.isPaid ?
+                  (
+                    <MessageBox variant="success">
+                      Pagamento efetuado dia {transaction.paidAt}
+                    </MessageBox>
+                  ) : successPay ?
+                    <MessageBox>
+                      <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+                    </MessageBox>
+                    : Object.keys(transaction).length !== 0 && transaction.status !== 'APPROVED' ?
+                      switchOrderMessage(transaction.status)
+                      :
+                      <MessageBox variant="danger">Pagamento pendente</MessageBox>
+              }
             </Card.Body>
           </Card>
           <Card className="mb-3">

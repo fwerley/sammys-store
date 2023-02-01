@@ -15,6 +15,9 @@ const gatwayPay: IPaymentProvider = new PagarmeProvider()
 async function transactionService(params: ProcessParams): Promise<Transaction> {
 
     try {
+    
+        const response = await gatwayPay.process(params);
+
         const createOrUpdateTransanction = await prismaClient.order.update({
             where: {
                 id: params.orderCode
@@ -24,11 +27,18 @@ async function transactionService(params: ProcessParams): Promise<Transaction> {
                     upsert: {
                         create: {
                             code: randomUUID(),
-                            installments: params.installments
+                            installments: params.installments,
+                            transactionId: response.transactionId,
+                            status: response.status,
+                            processorResponse: response.processorResponse
+
                         },
                         update: {
                             code: randomUUID(),
-                            installments: params.installments
+                            installments: params.installments,
+                            transactionId: response.transactionId,
+                            status: response.status,
+                            processorResponse: response.processorResponse
                         }
                     }
                 }
@@ -37,25 +47,9 @@ async function transactionService(params: ProcessParams): Promise<Transaction> {
                 transaction: true
             }
         })
-        // const transaction = await prismaClient.transaction.create({
-        //     data: {
-        //         orderId: params.orderCode,
-        //         code: randomUUID(),
-        //         installments: params.installments,
-        //     }
-        // });
-        const response = await gatwayPay.process(params)
-        const updateTransaction = await prismaClient.transaction.update({
-            where: {
-                id: createOrUpdateTransanction.transaction?.id
-            },
-            data: {
-                transactionId: response.transactionId,
-                status: response.status,
-                processorResponse: response.processorResponse
-            }
-        })
-        return updateTransaction
+
+        return createOrUpdateTransanction.transaction!
+        
     } catch (error) {
         console.debug(error)
         return Promise.reject(error)

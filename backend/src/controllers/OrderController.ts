@@ -55,6 +55,18 @@ export default {
     res.status(201).json({ order: createOrder });
   },
 
+  async mine(req: Request, res: Response) {
+    const orders = await prismaClient.order.findMany({
+      where: {
+        userId: req.user?.id
+      },
+      include: {
+        orderPrice: true
+      }
+    });
+    res.send(orders);
+  },
+
   async find(req: Request, res: Response) {
     const idOrder = req.params.id;
     const order = await prismaClient.order.findUnique({

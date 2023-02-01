@@ -63,7 +63,7 @@ function CardItem() {
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
     const [installments, setInstallments] = useState([]);
-    const [taxPrice, setTaxPrice] = useState(undefined);
+    const [taxPrice, setTaxPrice] = useState(0);
     const dispatch = useDispatch();
     const { order } = useSelector(selectOrder);
     const { userInfo } = useSelector(selectUser);
@@ -98,18 +98,14 @@ function CardItem() {
             dispatch(paymentRequest())
 
             // Se foi feito compra parcelada, o preço deve ser atualiado com acrescimo da taxa
-            if (taxPrice !== undefined) {
+            if (taxPrice !== order.orderPrice.taxPrice) {
                 const { response } = await axios.put(
                     `/api/orders/${order.id}`,
                     {
                         taxPrice,
-                        totalPrice: order.orderPrice.totalPrice + taxPrice
+                        totalPrice: order.orderPrice.itemsPrice + order.orderPrice.shippingPrice + taxPrice
                     },
-                    {
-                        headers: {
-                            authorization: `Bearer ${userInfo.token}`
-                        }
-                    }
+                    { headers: { authorization: `Bearer ${userInfo.token}` } }
                 )
             }
 
@@ -140,11 +136,10 @@ function CardItem() {
                 }
             )
             dispatch(paymentSuccess());
-            toast.success('Pagamento aprovado!')
         } catch (error) {
             dispatch(paymentFail(error.message));
             toast.error(getError(error));
-            console.log(error);            
+            console.log(error);
         }
     }
 

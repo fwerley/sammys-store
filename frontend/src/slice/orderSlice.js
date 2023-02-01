@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const orderStore = {
   order: {},
+  orders: [],
   loading: false,
   orderLoading: true,
   error: '',
@@ -25,12 +26,27 @@ const orderSlice = createSlice({
         error: ''
       };
     },
-    fetchSuccess(state, {payload}){
+    fetchSuccess(state, { payload }) {
       return {
         ...state,
         loading: false,
         error: '',
         order: payload,
+      }
+    },
+    fetchOrdersSuccess(state, { payload }) {
+      return {
+        ...state,
+        loading: false,
+        error: '',
+        orders: payload,
+      }
+    },
+    fetchFail(state, { payload }){
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       }
     },
     createFail(state, { payload }) {
@@ -40,16 +56,9 @@ const orderSlice = createSlice({
         error: payload,
       };
     },
-    // addTaxPrice(state, {payload}) {
-    //   return {
-    //     ...state,
-    //     ...order,
-    //     taxPrice: payload
-    //   }
-    // }
   },
 });
 
-export const { createRequest, createOrderSuccess, fetchSuccess, createFail } = orderSlice.actions;
+export const { createRequest, createOrderSuccess, fetchSuccess, fetchOrdersSuccess, fetchFail, createFail } = orderSlice.actions;
 export const selectOrder = (state) => state.orderStore;
 export default orderSlice.reducer;
