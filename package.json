@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/dist/server.js",
-    "build": "cd backend && npm install && npm run tsc && cd ../frontend && npm install --legacy-peer-deps && npm run build",
+    "build": "cd backend && npm install --only=dev && cd ../frontend && npm install --legacy-peer-deps && npm run build",
     "postinstall":"cd backend && npm run tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
