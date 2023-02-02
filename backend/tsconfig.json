@@ -13,6 +13,6 @@
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts"
-, "server.ts"  ],
+, "src/server.ts"  ],
 "exclude": ["node_modules", ".vscode"]
 }

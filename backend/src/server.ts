@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import path, { dirname } from 'path';
 
-import { routes } from './src/routes';
+import { routes } from './routes';
 
 const app = express();
 
