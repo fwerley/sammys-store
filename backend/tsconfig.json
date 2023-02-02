@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES5",
     "typeRoots": ["./types", "./node_modules/@types"],
     "moduleResolution": "node",
     "sourceMap": true,
