@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var cpf_cnpj_validator_1 = require("cpf-cnpj-validator");
 var moment_1 = __importDefault(require("moment"));
 var prismaClient_1 = require("../database/prismaClient");
@@ -54,7 +54,7 @@ var PagarmeProvider = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.order.findUnique({
                             where: {
-                                id: params.orderCode
+                                id: params.orderCode,
                             },
                             include: {
                                 orderItems: true,
@@ -137,7 +137,7 @@ var PagarmeProvider = /** @class */ (function () {
                                     bank: '001',
                                     document_number: "ID TRANSACTION",
                                     instructions: 'Pagar até a data limite',
-                                    due_at: new Date((0, moment_1["default"])().add(3, "days").toISOString()),
+                                    due_at: new Date((0, moment_1.default)().add(3, "days").toISOString()),
                                     //  document_number: transaction.code,
                                     type: 'BDP',
                                     statement_descriptor: "Sammys Store"
@@ -193,7 +193,7 @@ var PagarmeProvider = /** @class */ (function () {
                             } : undefined,
                             billet: params.paymentType == "BILLET" ? {
                                 barcode: response.data.charges[0].last_transaction.barcode,
-                                url: response.data.charges[0].last_transaction.url
+                                url: response.data.charges[0].last_transaction.url,
                             } : undefined,
                             processorResponse: JSON.stringify(response.data)
                         };
@@ -263,11 +263,11 @@ var PagarmeProvider = /** @class */ (function () {
             waiting_capture: "PROCESSING",
             voided: "REFUSED",
             generated: "PROCESSING",
-            viewed: "PENDING"
+            viewed: "PENDING",
         };
         return statusMap[status];
     };
     return PagarmeProvider;
 }());
-exports["default"] = PagarmeProvider;
+exports.default = PagarmeProvider;
 //# sourceMappingURL=PagarmeProvider.js.map

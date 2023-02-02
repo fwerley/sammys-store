@@ -38,10 +38,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var prismaClient_1 = require("../database/prismaClient");
 var data_1 = __importDefault(require("../data"));
-exports["default"] = {
+exports.default = {
     insert: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var createdProducts;
@@ -51,7 +51,7 @@ exports["default"] = {
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.product.createMany({
-                                data: data_1["default"].products
+                                data: data_1.default.products,
                             })];
                     case 2:
                         createdProducts = _a.sent();
@@ -84,8 +84,8 @@ exports["default"] = {
                         slugParam = req.params.slug;
                         return [4 /*yield*/, prismaClient_1.prismaClient.product.findFirst({
                                 where: {
-                                    slug: slugParam
-                                }
+                                    slug: slugParam,
+                                },
                             })];
                     case 1:
                         result = _a.sent();
@@ -108,7 +108,7 @@ exports["default"] = {
                     case 0:
                         id = req.params.id;
                         return [4 /*yield*/, prismaClient_1.prismaClient.product.findUnique({
-                                where: { id: id }
+                                where: { id: id },
                             })];
                     case 1:
                         product = _a.sent();
@@ -122,6 +122,13 @@ exports["default"] = {
                 }
             });
         });
-    }
+    },
+    // async delete(req: Request, res: Response) {
+    //     const { id } = req.params
+    //     const post = await prismaClient.post.delete({
+    //         where: { id: String(id) },
+    //     })
+    //     res.json(post)
+    // }
 };
 //# sourceMappingURL=ProductController.js.map

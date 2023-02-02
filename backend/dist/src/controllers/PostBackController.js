@@ -38,18 +38,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var prismaClient_1 = require("../database/prismaClient");
 var PagarmeProvider_1 = __importDefault(require("../providers/PagarmeProvider"));
 var gatwayPay;
-exports["default"] = {
+exports.default = {
     pagarme: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b, status, id, type, _c, transaction, transactionUpdated, error_1;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        gatwayPay = new PagarmeProvider_1["default"]();
+                        gatwayPay = new PagarmeProvider_1.default();
                         _a = req.body, _b = _a.data, status = _b.status, id = _b.id, type = _a.type;
                         console.log("Chargeback: STATUS -> ".concat(status, " |  ID -> ").concat(id, " | TYPE -> ").concat(type));
                         _d.label = 1;
@@ -89,7 +89,7 @@ exports["default"] = {
                                     id: transactionUpdated.orderId
                                 },
                                 data: {
-                                    isPaid: true
+                                    isPaid: true,
                                 }
                             })];
                     case 6:

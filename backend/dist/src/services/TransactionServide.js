@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var crypto_1 = require("crypto");
 var prismaClient_1 = require("../database/prismaClient");
 var PagarmeProvider_1 = __importDefault(require("../providers/PagarmeProvider"));
@@ -47,7 +47,7 @@ var PagarmeProvider_1 = __importDefault(require("../providers/PagarmeProvider"))
  * @param  {ProcessParams} params
  * @returns {Promise<Transaction>}
  */
-var gatwayPay = new PagarmeProvider_1["default"]();
+var gatwayPay = new PagarmeProvider_1.default();
 function transactionService(params) {
     return __awaiter(this, void 0, void 0, function () {
         var response, createOrUpdateTransanction, error_1;
@@ -98,5 +98,5 @@ function transactionService(params) {
         });
     });
 }
-exports["default"] = transactionService;
+exports.default = transactionService;
 //# sourceMappingURL=TransactionServide.js.map

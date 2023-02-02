@@ -35,9 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var prismaClient_1 = require("../database/prismaClient");
-exports["default"] = {
+exports.default = {
     insert: function (req, res) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
@@ -58,8 +58,8 @@ exports["default"] = {
                                             nPrice = _a.sent();
                                             return [4 /*yield*/, prismaClient_1.prismaClient.product.findUnique({
                                                     where: {
-                                                        id: item.id
-                                                    }
+                                                        id: item.id,
+                                                    },
                                                 })];
                                         case 2:
                                             countPrice = _a.sent();
@@ -78,26 +78,26 @@ exports["default"] = {
                                         createMany: {
                                             data: orderItems.map(function (item) { return ({
                                                 quantity: item.quantity,
-                                                productId: item.id
-                                            }); })
-                                        }
+                                                productId: item.id,
+                                            }); }),
+                                        },
                                     },
                                     shippingAddress: {
-                                        create: shippingAddress
+                                        create: shippingAddress,
                                     },
                                     orderPrice: {
                                         create: {
                                             itemsPrice: priceItems,
                                             shippingPrice: shippingPrice,
                                             taxPrice: taxPrice,
-                                            totalPrice: priceItems + shippingPrice + taxPrice
-                                        }
+                                            totalPrice: priceItems + shippingPrice + taxPrice,
+                                        },
                                     },
                                     paymentMethod: paymentMethod,
                                     user: {
-                                        connect: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }
+                                        connect: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
                                     }
-                                }
+                                },
                             })];
                     case 2:
                         createOrder = _c.sent();
@@ -139,22 +139,22 @@ exports["default"] = {
                         idOrder = req.params.id;
                         return [4 /*yield*/, prismaClient_1.prismaClient.order.findUnique({
                                 where: {
-                                    id: idOrder
+                                    id: idOrder,
                                 },
                                 include: {
                                     orderItems: {
                                         include: {
-                                            product: true
-                                        }
+                                            product: true,
+                                        },
                                     },
                                     orderPrice: true,
                                     shippingAddress: true,
                                     user: {
                                         select: {
-                                            id: true
-                                        }
-                                    }
-                                }
+                                            id: true,
+                                        },
+                                    },
+                                },
                             })];
                     case 1:
                         order = _b.sent();
@@ -187,7 +187,7 @@ exports["default"] = {
                         _b.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.order.update({
                                 where: {
-                                    id: idOrder
+                                    id: idOrder,
                                 },
                                 data: {
                                     orderPrice: {
