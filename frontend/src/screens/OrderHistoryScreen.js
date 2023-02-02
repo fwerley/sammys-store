@@ -20,7 +20,6 @@ export default function OrderHistoryScreen() {
     useEffect(() => {
         const fetchData = async () => {
             dispatch(createRequest());
-            console.log('data')
             try {
                 const { data } = await axios.get(
                     `/api/orders/mine`,
