@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon --watch src/ --exec npx ts-node src/server.ts",
+    "postinstall": "npm run tsc",
     "tsc": "tsc"
   },
   "author": {
