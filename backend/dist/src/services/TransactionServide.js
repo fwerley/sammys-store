@@ -41,13 +41,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var crypto_1 = require("crypto");
 var prismaClient_1 = require("../database/prismaClient");
-var pagarmeProvider_1 = __importDefault(require("../providers/pagarmeProvider"));
+var PagarmeProvider_1 = __importDefault(require("../providers/PagarmeProvider"));
 /**
  * Cria uma transação baseado no gatway utilizado
  * @param  {ProcessParams} params
  * @returns {Promise<Transaction>}
  */
-var gatwayPay = new pagarmeProvider_1["default"]();
+var gatwayPay = new PagarmeProvider_1["default"]();
 function transactionService(params) {
     return __awaiter(this, void 0, void 0, function () {
         var response, createOrUpdateTransanction, error_1;

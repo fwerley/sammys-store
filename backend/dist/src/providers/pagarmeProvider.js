@@ -270,4 +270,4 @@ var PagarmeProvider = /** @class */ (function () {
     return PagarmeProvider;
 }());
 exports["default"] = PagarmeProvider;
-//# sourceMappingURL=pagarmeProvider.js.map
+//# sourceMappingURL=PagarmeProvider.js.map
