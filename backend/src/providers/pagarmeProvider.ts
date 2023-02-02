@@ -227,4 +227,4 @@ class PagarmeProvider implements IPaymentProvider {
 
 }
 
-export default PagarmeProvider
+export { PagarmeProvider }
