@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "cd backend && npm install && cd ../frontend && npm install --legacy-peer-deps && npm run build",
-    "start": "node backend/dist/server.js",
     "postinstall":"cd backend && npm run tsc",
+    "start": "node backend/dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
