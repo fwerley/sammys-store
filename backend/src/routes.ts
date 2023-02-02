@@ -5,7 +5,7 @@ import OrderController from './controllers/OrderController';
 import PaymentController from './controllers/PaymentController';
 import CorreiosController from './controllers/CorreiosController';
 import { isAuth } from './utils';
-import PostBackController from './controllers/PostBackController';
+import PostBackController from './controllers/PBC';
 
 const routes = express.Router();
 

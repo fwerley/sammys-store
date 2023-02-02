@@ -1,7 +1,7 @@
 import { Transaction } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { prismaClient } from "../database/prismaClient";
-import PagarmeProvider from "../providers/PP";
+import PagarmeProvider from "../providers/PagarmeProvider";
 import { IPaymentProvider, ProcessParams } from "./IPaymentProvider";
 
 /**
