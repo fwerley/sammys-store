@@ -1,4 +1,4 @@
-import { Status, Transaction } from "@prisma/client";
+import { Transaction } from "@prisma/client";
 import { cpf } from "cpf-cnpj-validator";
 import moment from 'moment';
 import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
