@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon --watch src/ --exec npx ts-node src/server.ts",
-    "tsc": "tsc"
+    "tsc": "./node_modules/typescript/bin/tsc"
   },
   "author": {
     "name": "Werley Ferreira",
