@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prismaClient } from "../database/prismaClient";
-import PagarmeProvider from "../providers/pagarmeProvider";
+import PagarmeProvider from "../providers/PagarmeProvider";
 import { IPaymentProvider } from "../services/IPaymentProvider";
 
 var gatwayPay: IPaymentProvider;
