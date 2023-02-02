@@ -4,9 +4,9 @@ import moment from 'moment';
 import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
 import { prismaClient } from "../database/prismaClient";
 import { IPaymentProvider, ProcessParams, StatusTransaction, StatusType, UpdateParams } from "../services/IPaymentProvider";
-import { basePagarme } from "./pagarmeClient";
+import { basePagarme } from "./PagarmeClient";
 
-class PagarmeProvider implements IPaymentProvider {
+class PP implements IPaymentProvider {
 
   async process(params: ProcessParams): Promise<StatusTransaction> {
 
@@ -227,4 +227,4 @@ class PagarmeProvider implements IPaymentProvider {
 
 }
 
-export { PagarmeProvider }
+export default PP
