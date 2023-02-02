@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
 import { prismaClient } from "../database/prismaClient";
 import { IPaymentProvider, ProcessParams, StatusTransaction, StatusType, UpdateParams } from "../services/IPaymentProvider";
-import { basePagarme } from "./PC";
+import { basePagarme } from "./PagarmeClient";
 
 class PP implements IPaymentProvider {
 
