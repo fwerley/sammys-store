@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/fwerley/sammys-store/issues"
   },
-  "homepage": "https://github.com/fwerley/sammys-store#readme"
+  "homepage": "https://github.com/fwerley/sammys-store#readme",
+  "dependencies": {
+    "@types/express": "^4.17.16"
+  }
 }
