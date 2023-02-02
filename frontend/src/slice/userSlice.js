@@ -7,6 +7,7 @@ const userStore = {
   userInfo: user ? JSON.parse(user) : null,
   shippingAddress: shpAddress ? JSON.parse(shpAddress) : {},
   loading: false,
+  loadingUpdate: false,
   error: '',
 };
 
@@ -18,6 +19,24 @@ const userSlice = createSlice({
       return {
         ...state,
         loading: true,
+      };
+    },
+    userUpdateResquest(state) {
+      return {
+        ...state,
+        loadingUpdate: true,
+      };
+    },
+    userUpdateSuccess(state) {
+      return {
+        ...state,
+        loadingUpdate: false,
+      };
+    },
+    userUpdateFail(state) {
+      return {
+        ...state,
+        loadingUpdate: false,
       };
     },
     userSignin(state, { payload }) {
@@ -58,6 +77,9 @@ export const {
   userSignin,
   userFailure,
   userSignout,
+  userUpdateFail,
+  userUpdateSuccess,
+  userUpdateResquest,
   saveShippingAddress,
 } = userSlice.actions;
 export const selectUser = (state) => state.userStore;

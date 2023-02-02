@@ -56,4 +56,35 @@ export default {
       token: generateToken(creatUser),
     });
   },
+
+  async profile(req: Request, res: Response) {
+    const { name, email, password } = req.body;
+
+    var dataUser = {
+      name: name || req.user?.name,
+      email: email || req.user?.email,
+    }
+    if (password){
+      Object.assign(dataUser, {password: bcrypt.hashSync(password, 10)})
+    }
+
+    try {
+      const updatedUser = await prismaClient.user.update({        
+        where: {
+          id: req.user?.id
+        },
+        data: dataUser,
+      });
+      res.send({
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+        token: generateToken(updatedUser),
+      });
+    }catch (err) {
+      res.status(404).send({message: 'Usuário não encontrado'});
+      console.log(err)
+    }
+  },
 };

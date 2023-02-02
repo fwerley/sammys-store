@@ -21,6 +21,7 @@ routes.get('/api/products/slug/:slug', ProductController.slug);
 // Users section
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
+routes.put('/api/users/profile', isAuth, UserController.profile);
 
 // Correios section
 routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
