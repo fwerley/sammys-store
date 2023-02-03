@@ -11,9 +11,9 @@ app.use(routes);
 
 const _dirname = path.resolve();
 console.log(_dirname)
-app.use(express.static(path.join(_dirname, '/frontend/build')));
+app.use(express.static(path.join(_dirname, '../frontend/build')));
 app.get("*", (req: Request, res: Response) =>
-  res.sendFile(path.join(_dirname, '/frontend/build/index.html'))
+  res.sendFile(path.join(_dirname, '/../frontend/build/index.html'))
 )
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
