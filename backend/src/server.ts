@@ -9,10 +9,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '/frontend/build')));
+const _dirname = path.resolve();
+console.log(_dirname)
+app.use(express.static(path.join(_dirname, '../frontend/build')));
 app.get("*", (req: Request, res: Response) =>
-  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+  res.sendFile(path.join(_dirname, '../frontend/build/index.html'))
 )
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
