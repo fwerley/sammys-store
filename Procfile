@@ -1,1 +1,1 @@
-worker: npm start
+web: node --experimental-modules backend/dist/server.js
