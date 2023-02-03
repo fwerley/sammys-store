@@ -20,6 +20,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 const port = Number(process.env.PORT) || 5000;
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
   console.log(`Server at http://localhost:${port}`);
 });
