@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,19 +35,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { prismaClient } from '../database/prismaClient';
-import data from '../data';
-export default {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var prismaClient_1 = require("../database/prismaClient");
+var data_1 = __importDefault(require("../data"));
+exports["default"] = {
     insert: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var createdProducts;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.product.deleteMany({})];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.product.deleteMany({})];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, prismaClient.product.createMany({
-                                data: data.products,
+                        return [4 /*yield*/, prismaClient_1.prismaClient.product.createMany({
+                                data: data_1["default"].products
                             })];
                     case 2:
                         createdProducts = _a.sent();
@@ -61,7 +66,7 @@ export default {
             var products;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.product.findMany({})];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.product.findMany({})];
                     case 1:
                         products = _a.sent();
                         res.json(products);
@@ -77,10 +82,10 @@ export default {
                 switch (_a.label) {
                     case 0:
                         slugParam = req.params.slug;
-                        return [4 /*yield*/, prismaClient.product.findFirst({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.product.findFirst({
                                 where: {
-                                    slug: slugParam,
-                                },
+                                    slug: slugParam
+                                }
                             })];
                     case 1:
                         result = _a.sent();
@@ -102,8 +107,8 @@ export default {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        return [4 /*yield*/, prismaClient.product.findUnique({
-                                where: { id: id },
+                        return [4 /*yield*/, prismaClient_1.prismaClient.product.findUnique({
+                                where: { id: id }
                             })];
                     case 1:
                         product = _a.sent();
@@ -117,13 +122,6 @@ export default {
                 }
             });
         });
-    },
-    // async delete(req: Request, res: Response) {
-    //     const { id } = req.params
-    //     const post = await prismaClient.post.delete({
-    //         where: { id: String(id) },
-    //     })
-    //     res.json(post)
-    // }
+    }
 };
 //# sourceMappingURL=ProductController.js.map

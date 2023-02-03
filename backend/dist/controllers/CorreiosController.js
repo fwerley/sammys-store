@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,8 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { calcularPrecoPrazo } from 'correios-brasil';
-export default {
+exports.__esModule = true;
+var correios_brasil_1 = require("correios-brasil");
+exports["default"] = {
     precoprazo: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, sCepOrigem, sCepDestino, nVlPeso, nCdFormato, nVlComprimento, nVlAltura, nVlLargura, nVlDiametro, nCdServico, args;
@@ -54,7 +56,7 @@ export default {
                     nVlDiametro: nVlDiametro
                 };
                 try {
-                    calcularPrecoPrazo(args).then(function (response) {
+                    (0, correios_brasil_1.calcularPrecoPrazo)(args).then(function (response) {
                         res.status(200).send(response);
                     });
                 }

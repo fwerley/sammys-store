@@ -1,14 +1,19 @@
-import express from 'express';
-import path from 'path';
-import { routes } from './routes';
-var app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(routes);
-var __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '/frontend/build')));
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var express_1 = __importDefault(require("express"));
+var path_1 = __importDefault(require("path"));
+var routes_1 = require("./routes");
+var app = (0, express_1["default"])();
+app.use(express_1["default"].json());
+app.use(express_1["default"].urlencoded({ extended: true }));
+app.use(routes_1.routes);
+var __dirname = path_1["default"].resolve();
+app.use(express_1["default"].static(path_1["default"].join(__dirname, '/frontend/build')));
 app.get("*", function (req, res) {
-    return res.sendFile(path.join(__dirname, '/frontend/build/index.html'));
+    return res.sendFile(path_1["default"].join(__dirname, '/frontend/build/index.html'));
 });
 app.use(function (err, req, res, next) {
     res.status(500).send({ message: err.message });

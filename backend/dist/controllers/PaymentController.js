@@ -1,3 +1,4 @@
+"use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -8,6 +9,29 @@ var __assign = (this && this.__assign) || function () {
         return t;
     };
     return __assign.apply(this, arguments);
+};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -45,17 +69,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { prismaClient } from '../database/prismaClient';
-import parsePhoneNumber from 'libphonenumber-js';
-import { cpf, cnpj } from 'cpf-cnpj-validator';
-import * as Yup from 'yup';
-import transactionService from '../services/TransactionServide';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var prismaClient_1 = require("../database/prismaClient");
+var libphonenumber_js_1 = __importDefault(require("libphonenumber-js"));
+var cpf_cnpj_validator_1 = require("cpf-cnpj-validator");
+var Yup = __importStar(require("yup"));
+var TransactionServide_1 = __importDefault(require("../services/TransactionServide"));
 /**
  * Controller responsavel por lincar a criação de uma transação de compra, com todos os dados necessarios para registrar a requisição
  * @param {Request} req
  * @param {Response} res
  */
-export default {
+exports["default"] = {
     create: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var orderId, _a, paymentType, installments, customerName, customerEmail, customerMobile, customerDocument, billingAddress, billingNumber, billingNeighborhood, billingCity, billingState, billingZipCode, creditCardNumber, creditCardExpiration, creditCardHolderName, creditCardCvv, schema, order, service, statusTransaction, error_1;
@@ -76,12 +104,12 @@ export default {
                             customerMobile: Yup.string()
                                 .required()
                                 .test("is-valid-mobile", "${path} is not a number", function (value) {
-                                return parsePhoneNumber(value, "BR").isValid();
+                                return (0, libphonenumber_js_1["default"])(value, "BR").isValid();
                             }),
                             customerDocument: Yup.string()
                                 .required()
                                 .test("is-valid-document", "${path} is not a valid CPF / CNPJ", function (value) {
-                                return cpf.isValid(value) || cnpj.isValid(value);
+                                return cpf_cnpj_validator_1.cpf.isValid(value) || cpf_cnpj_validator_1.cnpj.isValid(value);
                             }),
                             billingAddress: Yup.string().required(),
                             billingNumber: Yup.string().required(),
@@ -100,7 +128,7 @@ export default {
                             }),
                             creditCardCvv: Yup.string().when("paymentType", function (paymentType, schema) {
                                 return paymentType === "CREDIT_CARD" ? schema.required() : schema;
-                            }),
+                            })
                         });
                         return [4 /*yield*/, schema.isValid(req.body)];
                     case 2:
@@ -109,20 +137,20 @@ export default {
                                     error: "Por favor, verifique os dados enviados e tente novamente"
                                 })];
                         }
-                        return [4 /*yield*/, prismaClient.order.findUnique({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.order.findUnique({
                                 where: {
-                                    id: orderId,
+                                    id: orderId
                                 },
                                 include: {
                                     user: true
-                                },
+                                }
                             })];
                     case 3:
                         order = _b.sent();
                         if (!order) {
                             return [2 /*return*/, res.status(404).send({ message: "Order not found" })];
                         }
-                        return [4 /*yield*/, transactionService({
+                        return [4 /*yield*/, (0, TransactionServide_1["default"])({
                                 billing: {
                                     address: billingAddress,
                                     city: billingCity,
@@ -183,10 +211,10 @@ export default {
                 switch (_a.label) {
                     case 0:
                         orderId = req.params.id;
-                        return [4 /*yield*/, prismaClient.transaction.findUnique({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.transaction.findUnique({
                                 where: {
-                                    orderId: orderId,
-                                },
+                                    orderId: orderId
+                                }
                             })];
                     case 1:
                         result = _a.sent();

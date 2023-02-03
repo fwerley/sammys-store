@@ -6,7 +6,7 @@ import { prismaClient } from "../database/prismaClient";
 import { IPaymentProvider, ProcessParams, StatusTransaction, StatusType, UpdateParams } from "../services/IPaymentProvider";
 import { basePagarme } from "./PagarmeClient";
 
-class PP implements IPaymentProvider {
+export default class PagarmeProvider implements IPaymentProvider {
 
   async process(params: ProcessParams): Promise<StatusTransaction> {
 
@@ -227,4 +227,4 @@ class PP implements IPaymentProvider {
 
 }
 
-export default PP
+// export default PagarmeProvider

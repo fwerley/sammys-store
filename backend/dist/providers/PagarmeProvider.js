@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,10 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { cpf } from "cpf-cnpj-validator";
-import moment from 'moment';
-import { prismaClient } from "../database/prismaClient";
-import { basePagarme } from "./pagarmeClient";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var cpf_cnpj_validator_1 = require("cpf-cnpj-validator");
+var moment_1 = __importDefault(require("moment"));
+var prismaClient_1 = require("../database/prismaClient");
+var PagarmeClient_1 = require("./PagarmeClient");
 var PagarmeProvider = /** @class */ (function () {
     function PagarmeProvider() {
     }
@@ -47,9 +52,9 @@ var PagarmeProvider = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.order.findUnique({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.order.findUnique({
                             where: {
-                                id: params.orderCode,
+                                id: params.orderCode
                             },
                             include: {
                                 orderItems: true,
@@ -63,7 +68,7 @@ var PagarmeProvider = /** @class */ (function () {
                         if (!order) {
                             throw "Order ".concat(order, " was not found");
                         }
-                        clientType = cpf.isValid(order.user.document) ? 'individual' : 'company';
+                        clientType = cpf_cnpj_validator_1.cpf.isValid(order.user.document) ? 'individual' : 'company';
                         address = {
                             line_1: order.shippingAddress.address,
                             line_2: order.shippingAddress.number,
@@ -108,7 +113,7 @@ var PagarmeProvider = /** @class */ (function () {
                                 var arrayItems, dbProduct;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0: return [4 /*yield*/, prismaClient.product.findUnique({
+                                        case 0: return [4 /*yield*/, prismaClient_1.prismaClient.product.findUnique({
                                                 where: {
                                                     id: item.productId
                                                 }
@@ -132,7 +137,7 @@ var PagarmeProvider = /** @class */ (function () {
                                     bank: '001',
                                     document_number: "ID TRANSACTION",
                                     instructions: 'Pagar até a data limite',
-                                    due_at: new Date(moment().add(3, "days").toISOString()),
+                                    due_at: new Date((0, moment_1["default"])().add(3, "days").toISOString()),
                                     //  document_number: transaction.code,
                                     type: 'BDP',
                                     statement_descriptor: "Sammys Store"
@@ -177,7 +182,7 @@ var PagarmeProvider = /** @class */ (function () {
                             items: items,
                             payments: payments
                         };
-                        return [4 /*yield*/, basePagarme.post("orders", data)];
+                        return [4 /*yield*/, PagarmeClient_1.basePagarme.post("orders", data)];
                     case 4:
                         response = _a.sent();
                         returnStatus = {
@@ -188,7 +193,7 @@ var PagarmeProvider = /** @class */ (function () {
                             } : undefined,
                             billet: params.paymentType == "BILLET" ? {
                                 barcode: response.data.charges[0].last_transaction.barcode,
-                                url: response.data.charges[0].last_transaction.url,
+                                url: response.data.charges[0].last_transaction.url
                             } : undefined,
                             processorResponse: JSON.stringify(response.data)
                         };
@@ -207,7 +212,7 @@ var PagarmeProvider = /** @class */ (function () {
             var transaction, status, transactionUpdated;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.transaction.findUnique({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.transaction.findUnique({
                             where: {
                                 code: params.code
                             }
@@ -221,7 +226,7 @@ var PagarmeProvider = /** @class */ (function () {
                         if (!status) {
                             throw "Status is empty.";
                         }
-                        return [4 /*yield*/, prismaClient.transaction.update({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.transaction.update({
                                 where: {
                                     code: params.code
                                 },
@@ -258,11 +263,12 @@ var PagarmeProvider = /** @class */ (function () {
             waiting_capture: "PROCESSING",
             voided: "REFUSED",
             generated: "PROCESSING",
-            viewed: "PENDING",
+            viewed: "PENDING"
         };
         return statusMap[status];
     };
     return PagarmeProvider;
 }());
-export { PagarmeProvider };
+exports["default"] = PagarmeProvider;
+// export default PagarmeProvider
 //# sourceMappingURL=PagarmeProvider.js.map

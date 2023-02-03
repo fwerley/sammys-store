@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,22 +35,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import bcrypt from 'bcrypt';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var bcrypt_1 = __importDefault(require("bcrypt"));
 // import asyncHandler  from 'express-async-handler';
-import { prismaClient } from '../database/prismaClient';
-import dataUsers from '../dataUsers';
-import { generateToken } from '../utils';
-export default {
+var prismaClient_1 = require("../database/prismaClient");
+var dataUsers_1 = __importDefault(require("../dataUsers"));
+var utils_1 = require("../utils");
+exports["default"] = {
     insert: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var createdUsers;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.user.deleteMany({})];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.deleteMany({})];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, prismaClient.user.createMany({
-                                data: dataUsers.users,
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.createMany({
+                                data: dataUsers_1["default"].users
                             })];
                     case 2:
                         createdUsers = _a.sent();
@@ -64,15 +69,15 @@ export default {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient.user.findFirst({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
                             where: {
-                                email: req.body.email,
-                            },
+                                email: req.body.email
+                            }
                         })];
                     case 1:
                         user = _a.sent();
                         if (user) {
-                            if (bcrypt.compareSync(req.body.password, user.password)) {
+                            if (bcrypt_1["default"].compareSync(req.body.password, user.password)) {
                                 res.send({
                                     id: user.id,
                                     name: user.name,
@@ -80,7 +85,7 @@ export default {
                                     mobile: user.mobile,
                                     isAdmin: user.isAdmin,
                                     document: user.document,
-                                    token: generateToken(user),
+                                    token: (0, utils_1.generateToken)(user)
                                 });
                                 return [2 /*return*/];
                             }
@@ -98,13 +103,13 @@ export default {
                 switch (_b.label) {
                     case 0:
                         _a = req.body, name = _a.name, email = _a.email;
-                        password = bcrypt.hashSync(req.body.password, 10);
-                        return [4 /*yield*/, prismaClient.user.create({
+                        password = bcrypt_1["default"].hashSync(req.body.password, 10);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: {
                                     name: name,
                                     email: email,
-                                    password: password,
-                                },
+                                    password: password
+                                }
                             })];
                     case 1:
                         creatUser = _b.sent();
@@ -113,7 +118,7 @@ export default {
                             name: creatUser.name,
                             email: creatUser.email,
                             isAdmin: creatUser.isAdmin,
-                            token: generateToken(creatUser),
+                            token: (0, utils_1.generateToken)(creatUser)
                         });
                         return [2 /*return*/];
                 }
@@ -130,19 +135,19 @@ export default {
                         _d = req.body, name = _d.name, email = _d.email, password = _d.password;
                         dataUser = {
                             name: name || ((_a = req.user) === null || _a === void 0 ? void 0 : _a.name),
-                            email: email || ((_b = req.user) === null || _b === void 0 ? void 0 : _b.email),
+                            email: email || ((_b = req.user) === null || _b === void 0 ? void 0 : _b.email)
                         };
                         if (password) {
-                            Object.assign(dataUser, { password: bcrypt.hashSync(password, 10) });
+                            Object.assign(dataUser, { password: bcrypt_1["default"].hashSync(password, 10) });
                         }
                         _e.label = 1;
                     case 1:
                         _e.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, prismaClient.user.update({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                                 where: {
                                     id: (_c = req.user) === null || _c === void 0 ? void 0 : _c.id
                                 },
-                                data: dataUser,
+                                data: dataUser
                             })];
                     case 2:
                         updatedUser = _e.sent();
@@ -151,7 +156,7 @@ export default {
                             name: updatedUser.name,
                             email: updatedUser.email,
                             isAdmin: updatedUser.isAdmin,
-                            token: generateToken(updatedUser),
+                            token: (0, utils_1.generateToken)(updatedUser)
                         });
                         return [3 /*break*/, 4];
                     case 3:
@@ -163,6 +168,6 @@ export default {
                 }
             });
         });
-    },
+    }
 };
 //# sourceMappingURL=UserController.js.map

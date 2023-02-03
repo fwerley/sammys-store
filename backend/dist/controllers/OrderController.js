@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,8 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { prismaClient } from '../database/prismaClient';
-export default {
+exports.__esModule = true;
+var prismaClient_1 = require("../database/prismaClient");
+exports["default"] = {
     insert: function (req, res) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
@@ -54,10 +56,10 @@ export default {
                                         case 0: return [4 /*yield*/, price];
                                         case 1:
                                             nPrice = _a.sent();
-                                            return [4 /*yield*/, prismaClient.product.findUnique({
+                                            return [4 /*yield*/, prismaClient_1.prismaClient.product.findUnique({
                                                     where: {
-                                                        id: item.id,
-                                                    },
+                                                        id: item.id
+                                                    }
                                                 })];
                                         case 2:
                                             countPrice = _a.sent();
@@ -70,32 +72,32 @@ export default {
                             }); }, Promise.resolve(0))];
                     case 1:
                         priceItems = _c.sent();
-                        return [4 /*yield*/, prismaClient.order.create({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.order.create({
                                 data: {
                                     orderItems: {
                                         createMany: {
                                             data: orderItems.map(function (item) { return ({
                                                 quantity: item.quantity,
-                                                productId: item.id,
-                                            }); }),
-                                        },
+                                                productId: item.id
+                                            }); })
+                                        }
                                     },
                                     shippingAddress: {
-                                        create: shippingAddress,
+                                        create: shippingAddress
                                     },
                                     orderPrice: {
                                         create: {
                                             itemsPrice: priceItems,
                                             shippingPrice: shippingPrice,
                                             taxPrice: taxPrice,
-                                            totalPrice: priceItems + shippingPrice + taxPrice,
-                                        },
+                                            totalPrice: priceItems + shippingPrice + taxPrice
+                                        }
                                     },
                                     paymentMethod: paymentMethod,
                                     user: {
-                                        connect: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
+                                        connect: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }
                                     }
-                                },
+                                }
                             })];
                     case 2:
                         createOrder = _c.sent();
@@ -111,7 +113,7 @@ export default {
             var orders;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, prismaClient.order.findMany({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.order.findMany({
                             where: {
                                 userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id
                             },
@@ -135,24 +137,24 @@ export default {
                 switch (_b.label) {
                     case 0:
                         idOrder = req.params.id;
-                        return [4 /*yield*/, prismaClient.order.findUnique({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.order.findUnique({
                                 where: {
-                                    id: idOrder,
+                                    id: idOrder
                                 },
                                 include: {
                                     orderItems: {
                                         include: {
-                                            product: true,
-                                        },
+                                            product: true
+                                        }
                                     },
                                     orderPrice: true,
                                     shippingAddress: true,
                                     user: {
                                         select: {
-                                            id: true,
-                                        },
-                                    },
-                                },
+                                            id: true
+                                        }
+                                    }
+                                }
                             })];
                     case 1:
                         order = _b.sent();
@@ -183,9 +185,9 @@ export default {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, prismaClient.order.update({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.order.update({
                                 where: {
-                                    id: idOrder,
+                                    id: idOrder
                                 },
                                 data: {
                                     orderPrice: {

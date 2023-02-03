@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,15 +35,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { randomUUID } from "crypto";
-import { prismaClient } from "../database/prismaClient";
-import { PagarmeProvider } from "../providers/PagarmeProvider";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var crypto_1 = require("crypto");
+var prismaClient_1 = require("../database/prismaClient");
+var PagarmeProvider_1 = __importDefault(require("../providers/PagarmeProvider"));
 /**
  * Cria uma transação baseado no gatway utilizado
  * @param  {ProcessParams} params
  * @returns {Promise<Transaction>}
  */
-var gatwayPay = new PagarmeProvider();
+var gatwayPay = new PagarmeProvider_1["default"]();
 function transactionService(params) {
     return __awaiter(this, void 0, void 0, function () {
         var response, createOrUpdateTransanction, error_1;
@@ -53,7 +58,7 @@ function transactionService(params) {
                     return [4 /*yield*/, gatwayPay.process(params)];
                 case 1:
                     response = _a.sent();
-                    return [4 /*yield*/, prismaClient.order.update({
+                    return [4 /*yield*/, prismaClient_1.prismaClient.order.update({
                             where: {
                                 id: params.orderCode
                             },
@@ -61,14 +66,14 @@ function transactionService(params) {
                                 transaction: {
                                     upsert: {
                                         create: {
-                                            code: randomUUID(),
+                                            code: (0, crypto_1.randomUUID)(),
                                             installments: params.installments,
                                             transactionId: response.transactionId,
                                             status: response.status,
                                             processorResponse: response.processorResponse
                                         },
                                         update: {
-                                            code: randomUUID(),
+                                            code: (0, crypto_1.randomUUID)(),
                                             installments: params.installments,
                                             transactionId: response.transactionId,
                                             status: response.status,
@@ -93,5 +98,5 @@ function transactionService(params) {
         });
     });
 }
-export default transactionService;
+exports["default"] = transactionService;
 //# sourceMappingURL=TransactionServide.js.map

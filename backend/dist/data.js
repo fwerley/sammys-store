@@ -1,3 +1,5 @@
+"use strict";
+exports.__esModule = true;
 var data = {
     products: [
         {
@@ -11,7 +13,7 @@ var data = {
             brand: 'Nike',
             rating: 4.5,
             numReviews: 10,
-            description: 'high quality shirt',
+            description: 'high quality shirt'
         },
         {
             // _id: '2',
@@ -24,7 +26,7 @@ var data = {
             brand: 'Adidas',
             rating: 4.0,
             numReviews: 10,
-            description: 'high quality product',
+            description: 'high quality product'
         },
         {
             // _id: '3',
@@ -37,7 +39,7 @@ var data = {
             brand: 'Nike',
             rating: 4.5,
             numReviews: 14,
-            description: 'high quality product',
+            description: 'high quality product'
         },
         {
             // _id: '4',
@@ -50,9 +52,9 @@ var data = {
             brand: 'Puma',
             rating: 4.5,
             numReviews: 10,
-            description: 'high quality product',
+            description: 'high quality product'
         },
-    ],
+    ]
 };
-export default data;
+exports["default"] = data;
 //# sourceMappingURL=data.js.map
