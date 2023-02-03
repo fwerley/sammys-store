@@ -5,6 +5,10 @@ node_modules
 /.pnp
 .pnp.js
 
+backend/dist
+frontend/build
+
+
 # Keep environment variables out of version control
 .env
 
