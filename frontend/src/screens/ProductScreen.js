@@ -79,14 +79,14 @@ function ProductScreen() {
         <Col md={3}>
           <ListGroup variante="flush">
             <ListGroup.Item>
-              <SEO 
+              {/* <SEO 
                 title={product.name}
                 description={product.description}
                 type="product.item"
-              />
-              {/* <Helmet>
+              /> */}
+              <Helmet>
                 <title>{product.name}</title>
-              </Helmet> */}
+              </Helmet>
               <h1>{product.name}</h1>
             </ListGroup.Item>
             <ListGroup.Item>
