@@ -12,7 +12,7 @@ app.use(routes);
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 app.get("*", (req: Request, res: Response) =>
-  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+  res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
 )
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
