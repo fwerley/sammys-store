@@ -23,7 +23,6 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { addCartItem, selectCart } from '../slice/cartSlice';
-import SEO from '../components/SEO';
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -79,11 +78,6 @@ function ProductScreen() {
         <Col md={3}>
           <ListGroup variante="flush">
             <ListGroup.Item>
-              {/* <SEO 
-                title={product.name}
-                description={product.description}
-                type="product.item"
-              /> */}
               <Helmet>
                 <title>{product.name}</title>
               </Helmet>
