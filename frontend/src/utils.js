@@ -19,11 +19,15 @@ export const shuffle = (array) => {
 }
 
 export const formatedDate = (date) => {
-  let paidAt = date.split(':')[0];
-  let paidAtArray = paidAt.split("-")
-  let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
-
-  return paidAtFormated;
+  try {
+    let paidAt = date.split(':')[0];
+    let paidAtArray = paidAt.split("-")
+    let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
+  
+    return paidAtFormated;    
+  } catch (error) {
+        
+  }
 }
 
 export const estados = [
