@@ -108,7 +108,7 @@ function CardItem() {
                     { headers: { authorization: `Bearer ${userInfo.token}` } }
                 )
             }
-
+            // Aguardar atualização de taxa do BD
             const { data } = await axios.post(
                 `/api/orders/${order.id}/pay`,
                 {

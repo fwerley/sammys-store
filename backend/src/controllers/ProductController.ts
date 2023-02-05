@@ -16,6 +16,13 @@ export default {
     res.json(products);
   },
 
+  async categories(req: Request, res: Response) {
+    const categories = await prismaClient.product.groupBy({
+     by: ["category"]    
+    });
+    res.json(categories);
+  },
+
   async slug(req: Request, res: Response) {
     const slugParam = req.params.slug;
     const result = await prismaClient.product.findFirst({
