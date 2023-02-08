@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
+import { Prisma } from '@prisma/client'; '@prisma/client';
 import data from '../data';
 
 export default {
@@ -16,9 +17,91 @@ export default {
     res.json(products);
   },
 
+
+  async search(req: Request, res: Response) {
+
+    interface IQueryFilter {
+      contains?: string;
+      mode?: Prisma.QueryMode
+    }
+
+    const PAGE_SIZE = 3
+    const { query } = req;
+
+    const pageSize = Number(query.pageSize) || PAGE_SIZE;
+    const page = Number(query.page) || 1;
+    const category = <string>query.category || '';
+    const brand = query.brand || '';
+    const price = <string>query.price || '';
+    const rating = <string>query.rating || '';
+    const order = query.order || '';
+    const searchQuery = <string>query.query || '';
+
+    const queryFilter: IQueryFilter = searchQuery && searchQuery !== 'all' ?
+      {
+        contains: searchQuery,
+        mode: 'insensitive',
+      }
+      : {};
+    const categoryFilter = category && category !== 'all' ?
+      { contains: category }
+      : {};
+    const brandFilter = brand && brand !== 'all' ?
+      { contains: category }
+      : undefined;
+    const priceFilter = price && price !== 'all' ?
+      {
+        gt: Number(price.split('-')[0]),
+        lte: Number(price.split('-')[1])
+      }
+      : {};
+    const ratingFilter = rating && rating !== 'all' ?
+      { gt: Number(rating) }
+      : {};
+    const orderFilter: Prisma.ProductOrderByWithRelationInput = order === 'newest'
+      ? { createdAt: 'asc' }
+      : order === 'lowest'
+        ? { price: 'asc' }
+        : order === 'highest'
+          ? { price: 'desc' }
+          : order === 'toprated'
+            ? { rating: 'desc' }
+            : { id: 'desc' }
+
+    const products = await prismaClient.product.findMany({
+      where: {
+        name: queryFilter,
+        category: categoryFilter,
+        brand: brandFilter,
+        price: priceFilter,
+        rating: ratingFilter
+      },
+      orderBy: orderFilter,
+      skip: pageSize * (page - 1),
+      take: pageSize
+    });
+
+    const countProducts = await prismaClient.product.count({
+      where: {
+        name: queryFilter,
+        category: categoryFilter,
+        brand: brandFilter,
+        price: priceFilter,
+        rating: ratingFilter
+      }
+    })
+
+    res.json({
+      products,
+      page,
+      countProducts,
+      pages: Math.ceil(countProducts / pageSize)
+    });
+  },
+
   async categories(req: Request, res: Response) {
     const categories = await prismaClient.product.groupBy({
-     by: ["category"]    
+      by: ["category"]
     });
     res.json(categories);
   },
