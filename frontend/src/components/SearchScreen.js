@@ -118,7 +118,7 @@ export default function SearchScreen() {
             <Row>
                 <Col md={3}>
                     <div>
-                        <h3>Departamento</h3>
+                        <h4>Departamento</h4>
                         <ul>
                             <li>
                                 <Link
@@ -141,7 +141,7 @@ export default function SearchScreen() {
                         </ul>
                     </div>
                     <div>
-                        <h3>Preço</h3>
+                        <h4>Preço</h4>
                         <ul>
                             <li>
                                 <Link
@@ -164,7 +164,7 @@ export default function SearchScreen() {
                         </ul>
                     </div>
                     <div>
-                        <h3>Avaliações</h3>
+                        <h4>Avaliações</h4>
                         <ul>
                             {ratings.map((r) => (
                                 <li key={r.name}>

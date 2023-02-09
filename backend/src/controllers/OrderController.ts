@@ -55,6 +55,37 @@ export default {
     res.status(201).json({ order: createOrder });
   },
 
+  async summary(req: Request, res: Response) {
+    const orders = await prismaClient.priceOrder.aggregate({
+      _sum: {
+        totalPrice: true
+      },
+      _count: true
+    });
+
+    const users = await prismaClient.user.aggregate({
+      _count: true
+    });
+
+    const dailyOrders = await prismaClient.priceOrder.groupBy({
+      by: ['createdAt'],
+      _sum: {
+        totalPrice: true
+      },
+      orderBy: {
+        createdAt: 'asc'
+      }
+    });
+
+    const productCategories = await prismaClient.product.groupBy({
+      by: ['category'],
+      _count: true
+     
+    });
+
+    res.send({ orders, users, dailyOrders, productCategories })
+  },
+
   async mine(req: Request, res: Response) {
     const orders = await prismaClient.order.findMany({
       where: {

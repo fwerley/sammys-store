@@ -195,3 +195,7 @@ main {
 .active-nav {
   left: 0;
 }
+
+ul > li {
+  list-style: none;
+}

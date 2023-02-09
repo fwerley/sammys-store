@@ -4,7 +4,7 @@ import UserController from './controllers/UserController';
 import OrderController from './controllers/OrderController';
 import PaymentController from './controllers/PaymentController';
 import CorreiosController from './controllers/CorreiosController';
-import { isAuth } from './utils';
+import { isAdmin, isAuth } from './utils';
 import PostBackController from './controllers/PostBackControler';
 
 const routes = express.Router();
@@ -30,6 +30,7 @@ routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
+routes.get('/api/orders/summary', isAuth, isAdmin, OrderController.summary)
 routes.get('/api/orders/mine', isAuth, OrderController.mine)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)
 routes.put(`/api/orders/:id`, isAuth, OrderController.updatePrice)
