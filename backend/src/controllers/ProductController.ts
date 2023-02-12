@@ -33,6 +33,33 @@ export default {
     res.send({ message: 'Produto criado', product: createdProduct });
   },
 
+  async update(req: Request, res: Response) {
+
+    const productId = req.params.id;
+    const { name, slug, price, image, category, countInStock, brand, description } = req.body;
+    try {
+      const product = await prismaClient.product.update({
+        where: {
+          id: productId
+        },
+        data: {
+          name,
+          slug,
+          price,
+          image,
+          category,
+          countInStock,
+          brand,
+          description
+        }
+      });
+      res.send({ message: 'Produto atualizado', product })
+    } catch (error) {
+      res.status(404).send({ message: 'Produto não encontrado \n'+error })
+    }
+
+  },
+
   async store(req: Request, res: Response) {
     const products = await prismaClient.product.findMany({});
     res.json({ products });

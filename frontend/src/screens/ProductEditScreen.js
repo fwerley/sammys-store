@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../slice/userSlice';
-import { fetchFailureProduct, fetchRequestProduct, fetchSuccessProduct, selectProduct } from '../slice/productSlice';
+import { fetchFailureProduct, fetchRequestProduct, fetchSuccessProduct, selectProduct, updateFailureProduct, updateRequestProduct, updateSuccessProduct } from '../slice/productSlice';
 import { getError } from '../utils';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -17,6 +17,7 @@ import MessageBox from '../components/MessageBox';
 
 export default function ProductEditScreen() {
     const params = useParams();
+    const navigate = useNavigate()
     const { id: productId } = params;
     const dispatch = useDispatch();
     const { userInfo } = useSelector(selectUser);
@@ -31,7 +32,31 @@ export default function ProductEditScreen() {
     const [brand, setBrand] = useState(product.brand || '');
     const [description, setDescription] = useState(product.description || '');
 
-
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        try {
+            dispatch(updateRequestProduct());
+            const { data } = await axios.put(`/api/products/${productId}`, {
+                id: productId,
+                name,
+                slug,
+                price: Number(price),
+                image,
+                category,
+                countInStock: Number(countInStock),
+                brand,
+                description
+            }, {
+                headers: { authorization: `Bearer ${userInfo.token}` }
+            })
+            dispatch(updateSuccessProduct(data));
+            toast.success('Dados atualizados com sucesso');
+            navigate('/admin/products');
+        } catch (err) {
+            toast.error(getError(err));
+            dispatch(updateFailureProduct(getError(err)))
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -70,7 +95,7 @@ export default function ProductEditScreen() {
             ) : error ? (
                 <MessageBox variant="danger">{error}</MessageBox>
             ) : (
-                <Form>
+                <Form onSubmit={submitHandler}>
                     <Form.Group className='mb-3' controlId='name'>
                         <Form.Label>Nome</Form.Label>
                         <Form.Control
@@ -136,7 +161,8 @@ export default function ProductEditScreen() {
                         />
                     </Form.Group>
                     <div className='mb-3'>
-                        <Button type='submit'>Atualizar</Button>
+                        <Button disabled={loading} type='submit'>Atualizar</Button>
+                        {loading && <LoadingBox />}
                     </div>
                 </Form>
             )}
