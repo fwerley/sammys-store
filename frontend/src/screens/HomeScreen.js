@@ -25,7 +25,8 @@ function HomeScreen() {
       dispatch(fetchRequest());
       try {
         const result = await axios.get('/api/products');
-        dispatch(fetchSuccess(shuffle(result.data)));
+        dispatch(fetchSuccess(result.data));
+        console.log(result.data)
       } catch (err) {
         dispatch(fetchFailure(err.message));
       }

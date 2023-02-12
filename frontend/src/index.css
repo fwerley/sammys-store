@@ -92,7 +92,8 @@ main {
   flex: 1;
 }
 
-.btn-primary, .btn-outline-primary {
+.btn-primary,
+.btn-outline-primary {
   background-color: rgba(var(--primary-color), 0.9);
   border: none;
   color: #ffffff;
@@ -196,6 +197,22 @@ main {
   left: 0;
 }
 
-ul > li {
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+ul>li {
   list-style: none;
+}
+
+@media (max-width: 992px) {
+  #basic-navbar-nav {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important
+  }
+  .nav-link > span {
+    display: block !important;
+  }
 }

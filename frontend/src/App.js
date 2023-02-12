@@ -33,6 +33,7 @@ import SearchScreen from './components/SearchScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardScreen from './components/DashboardScreen';
 import AdminRoute from './components/AdminRoute';
+import ProductListScreen from './screens/ProductListScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -85,7 +86,7 @@ function App() {
                 </div>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id='basic-navbar-nav' className='my-1'>
+              <Navbar.Collapse id='basic-navbar-nav' className=''>
                 <SearchBox />
                 <Nav className='justify-content-end'>
                   <Link to="/cart" className="nav-link">
@@ -101,6 +102,9 @@ function App() {
                         </Badge>
                       )}
                     </div>
+                    <span style={{display: 'none'}}>
+                        Meu Carrinho
+                    </span>
                   </Link>
                   {userInfo ? (
                     <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
@@ -129,13 +133,13 @@ function App() {
                       <LinkContainer to="/admin/dashboard">
                         <NavDropdown.Item>Dashboard</NavDropdown.Item>
                       </LinkContainer>
-                      <LinkContainer to="/admin/productlist">
+                      <LinkContainer to="/admin/products">
                         <NavDropdown.Item>Produtos</NavDropdown.Item>
                       </LinkContainer>
-                      <LinkContainer to="/admin/orderlist">
+                      <LinkContainer to="/admin/orders">
                         <NavDropdown.Item>Pedidos</NavDropdown.Item>
                       </LinkContainer>
-                      <LinkContainer to="/admin/userlist">
+                      <LinkContainer to="/admin/users">
                         <NavDropdown.Item>Usuários</NavDropdown.Item>
                       </LinkContainer>
                     </NavDropdown>
@@ -198,6 +202,10 @@ function App() {
               <Route path='/admin/dashboard' element={
                 <AdminRoute>
                   <DashboardScreen />
+                </AdminRoute>} />
+              <Route path='/admin/products' element={
+                <AdminRoute>
+                  <ProductListScreen />
                 </AdminRoute>} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>

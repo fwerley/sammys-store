@@ -16,6 +16,7 @@ routes.get('/api/seedU', UserController.insert);
 // Products section
 routes.get('/api/products', ProductController.store);
 routes.get('/api/products/search', ProductController.search);
+routes.get('/api/products/admin', isAuth, isAdmin, ProductController.admin);
 routes.get('/api/products/categories', ProductController.categories);
 routes.get(`/api/products/:id`, ProductController.index);
 routes.get('/api/products/slug/:slug', ProductController.slug);

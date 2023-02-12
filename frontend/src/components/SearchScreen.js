@@ -104,8 +104,8 @@ export default function SearchScreen() {
         const filterOrder = filter.order || order;
 
         const link = linkContainer
-        ? `page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
-        : `/search?page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
+            ? `page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
+            : `/search?page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
 
         return link
     }
@@ -169,8 +169,8 @@ export default function SearchScreen() {
                             {ratings.map((r) => (
                                 <li key={r.name}>
                                     <Link
-                                        className={r.rating === rating ? 'fw-bold' : ''}
                                         to={getFilterUrl({ rating: r.rating })}
+                                        className={r.rating === Number(rating) ? 'fw-bold' : ''}
                                     >
                                         <Rating caption={' ou mais'} rating={r.rating} />
                                     </Link>

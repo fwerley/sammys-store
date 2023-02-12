@@ -2,6 +2,32 @@ const data = {
   products: [
     {
       // _id: '1',
+      name: 'Tênis Puma Carina Bold BDP - feminino',
+      slug: 'tenis-puma-carina-bold-bdp',
+      category: 'Tênis',
+      image: 'https://imgcentauro-a.akamaihd.net/500x500/96409501A3/tenis-puma-carina-bold-bdp-feminino-img.jpg', // 679px × 829px
+      price: 349,
+      countInStock: 6,
+      brand: 'Puma',
+      rating: 4.5,
+      numReviews: 10,
+      description: 'Estampado Na Palmilha Estampado No Cabedal Estampado No Solado Estampado Na Lingueta',
+    },
+    {
+      // _id: '1',
+      name: 'Camisa Palmeiras II 23/24',
+      slug: 'camisa-palmeiras-ii-23-24',
+      category: 'Shirts',
+      image: 'https://a-static.mlcdn.com.br/800x560/camisa-palmeiras-ii-23-24-s-no-torcedor-puma-masculina/netshoes/2i3-7590-014-05/ae3f60e2136f1b1e858dc1fe5bf452dc.jpeg', // 679px × 829px
+      price: 313,
+      countInStock: 2,
+      brand: 'Puma',
+      rating: 4.5,
+      numReviews: 6,
+      description: 'Materiais altamente funcionais que tiram o suor da sua pele e ajudam a mantê-lo seco e confortável durante o exercício.',
+    },
+    {
+      // _id: '1',
       name: 'Nike Slim shirt',
       slug: 'nike-slim-shirt',
       category: 'Shirts',

@@ -1,7 +1,9 @@
-import { Request, Response } from 'express';
+import { query, Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { Prisma } from '@prisma/client'; '@prisma/client';
 import data from '../data';
+
+const PAGE_SIZE = 3;
 
 export default {
   async insert(req: Request, res: Response) {
@@ -14,7 +16,7 @@ export default {
 
   async store(req: Request, res: Response) {
     const products = await prismaClient.product.findMany({});
-    res.json(products);
+    res.json({ products });
   },
 
 
@@ -25,7 +27,6 @@ export default {
       mode?: Prisma.QueryMode
     }
 
-    const PAGE_SIZE = 3
     const { query } = req;
 
     const pageSize = Number(query.pageSize) || PAGE_SIZE;
@@ -97,6 +98,22 @@ export default {
       countProducts,
       pages: Math.ceil(countProducts / pageSize)
     });
+  },
+
+  async admin(req: Request, res: Response) {
+    const { query } = req
+    const page = Number(query.page) || 1;
+    const pageSize = Number(query.pageSize) || PAGE_SIZE;
+
+    const countProducts = await prismaClient.product.count();
+
+    const products = await prismaClient.product.findMany({
+      skip: pageSize * (page - 1),
+      take: pageSize
+    });
+
+    res.send({ products, countProducts, page, pages: Math.ceil(countProducts / pageSize) })
+
   },
 
   async categories(req: Request, res: Response) {

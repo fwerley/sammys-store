@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { shuffle } from '../utils';
 
 const productsStore = {
   products: [],
+  pages: 1,
   loading: false,
   error: '',
 };
@@ -14,12 +16,21 @@ const productsSlice = createSlice({
       return {
         ...state,
         loading: true,
+        error: ''
       };
     },
     fetchSuccess(state, { payload }) {
       return {
         ...state,
-        products: payload,
+        products: shuffle(payload.products),
+        loading: false,
+      };
+    },
+    fetchListProductsSuccess(state, { payload }) {
+      return {
+        ...state,
+        products: payload.products,  
+        pages: payload.pages,        
         loading: false,
       };
     },
@@ -33,7 +44,7 @@ const productsSlice = createSlice({
   },
 });
 
-export const { fetchRequest, fetchSuccess, fetchFailure } =
+export const { fetchRequest, fetchSuccess, fetchListProductsSuccess, fetchFailure } =
   productsSlice.actions;
 export const selectProducts = (state) => state.productsStore;
 export default productsSlice.reducer;
