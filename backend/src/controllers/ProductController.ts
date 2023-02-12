@@ -55,9 +55,23 @@ export default {
       });
       res.send({ message: 'Produto atualizado', product })
     } catch (error) {
-      res.status(404).send({ message: 'Produto não encontrado \n'+error })
+      res.status(404).send({ message: 'Produto não encontrado \n' + error })
     }
 
+  },
+
+  async delete(req: Request, res: Response) {
+    const { id: idProduct } = req.params;
+    try {
+      await prismaClient.product.delete({
+        where: {
+          id: idProduct
+        }
+      });
+      res.send({ message: 'Peoduto deletado' });
+    } catch (error) {
+      res.status(404).send({ message: 'Produto não encontrado', error })
+    }
   },
 
   async store(req: Request, res: Response) {
@@ -106,7 +120,7 @@ export default {
       { gt: Number(rating) }
       : {};
     const orderFilter: Prisma.ProductOrderByWithRelationInput = order === 'newest'
-      ? { createdAt: 'asc' }
+      ? { createdAt: 'desc' }
       : order === 'lowest'
         ? { price: 'asc' }
         : order === 'highest'
@@ -155,7 +169,10 @@ export default {
 
     const products = await prismaClient.product.findMany({
       skip: pageSize * (page - 1),
-      take: pageSize
+      take: pageSize,
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
 
     res.send({ products, countProducts, page, pages: Math.ceil(countProducts / pageSize) })

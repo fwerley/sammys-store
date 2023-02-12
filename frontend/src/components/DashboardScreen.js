@@ -41,7 +41,6 @@ export default function DashboardScreen() {
         const { data } = await axios.get('/api/orders/summary', {
           headers: { authorization: `Bearer ${userInfo.token}` },
         })
-        console.log(data)
         dispatch(fetchSuccess(data))
       } catch (err) {
         dispatch(fetchFail(getError(err)));

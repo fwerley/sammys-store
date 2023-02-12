@@ -4,6 +4,8 @@ const productStore = {
   product: {},
   loading: false,
   loadingUpload: false,
+  loadingDelete: false,
+  successDelete: false,
   error: '',
 };
 
@@ -17,42 +19,10 @@ const productSlice = createSlice({
         loading: true,
       };
     },
-    updateRequestProduct(state) {
-      return {
-        ...state,
-        loading: true,
-      };
-    },
-    uploadRequestProduct(state) {
-      return {
-        ...state,
-        loadingUpload: true,
-      };
-    },
     fetchSuccessProduct(state, { payload }) {
       return {
         ...state,
         product: payload,
-        loading: false,
-      };
-    },
-    updateSuccessProduct(state, { payload }) {
-      return {
-        ...state,
-        product: payload,
-        loading: false,
-      };
-    },
-    uploadSuccessProduct(state, { payload }) {
-      return {
-        ...state,
-        loadingUpload: false,
-      };
-    },
-    createSuccessProduct(state, { payload }) {
-      return {
-        ...state,
-        product: payload.product,
         loading: false,
       };
     },
@@ -63,6 +33,19 @@ const productSlice = createSlice({
         error: payload,
       };
     },
+    updateRequestProduct(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    updateSuccessProduct(state, { payload }) {
+      return {
+        ...state,
+        product: payload,
+        loading: false,
+      };
+    },
     updateFailureProduct(state, { payload }) {
       return {
         ...state,
@@ -70,11 +53,58 @@ const productSlice = createSlice({
         error: payload,
       };
     },
+    uploadRequestProduct(state) {
+      return {
+        ...state,
+        loadingUpload: true,
+      };
+    },
+    uploadSuccessProduct(state, { payload }) {
+      return {
+        ...state,
+        loadingUpload: false,
+      };
+    },
     uploadFailureProduct(state, { payload }) {
       return {
         ...state,
         loadingUpload: false,
         error: payload,
+      };
+    },
+    deleteRequestProduct(state) {
+      return {
+        ...state,
+        loadingDelete: true,
+      };
+    },
+    deleteSuccessProduct(state) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: true,
+      };
+    },
+    deleteFailureProduct(state, { payload }) {
+      return {
+        ...state,
+        loadingDelete: false,
+        error: payload
+      };
+    },
+    deleteResetProduct(state, { payload }) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: false,
+        error: ''
+      };
+    },
+    createSuccessProduct(state, { payload }) {
+      return {
+        ...state,
+        product: payload.product,
+        loading: false,
       };
     },
   },
@@ -90,7 +120,11 @@ export const {
   uploadSuccessProduct,
   fetchFailureProduct,
   updateFailureProduct,
-  uploadFailureProduct
+  uploadFailureProduct,
+  deleteRequestProduct,
+  deleteSuccessProduct,
+  deleteFailureProduct,
+  deleteResetProduct
 } = productSlice.actions;
 export const selectProduct = (state) => state.productStore;
 export default productSlice.reducer;

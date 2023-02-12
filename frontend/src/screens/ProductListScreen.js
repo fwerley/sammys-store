@@ -12,15 +12,15 @@ import MessageBox from '../components/MessageBox';
 import { fetchFailure, fetchListProductsSuccess, fetchRequest, selectProducts } from '../slice/productsSlice'
 import { selectUser } from '../slice/userSlice';
 import { getError } from '../utils';
-import { createSuccessProduct, fetchFailureProduct, fetchRequestProduct, selectProduct } from '../slice/productSlice';
+import { createSuccessProduct, deleteFailureProduct, deleteRequestProduct, deleteResetProduct, deleteSuccessProduct, fetchFailureProduct, fetchRequestProduct, selectProduct } from '../slice/productSlice';
 
 export default function ProductListScreen() {
-    const { search, pathname } = useLocation();
+    const { search } = useLocation();
     const navigate = useNavigate();
     const sp = new URLSearchParams(search);
     const page = sp.get('page') || 1;
     const { products, loading, error, pages } = useSelector(selectProducts);
-    const { product } = useSelector(selectProduct);
+    const { loadingDelete, successDelete } = useSelector(selectProduct);
     const { userInfo } = useSelector(selectUser)
     const dispatch = useDispatch();
 
@@ -37,8 +37,12 @@ export default function ProductListScreen() {
                 dispatch(fetchFailure(getError(error)))
             }
         }
-        fetchData();
-    }, [page, userInfo]);
+        if (successDelete) {
+            dispatch(deleteResetProduct());
+        } else {
+            fetchData();
+        }
+    }, [page, userInfo, successDelete]);
 
     const createHandler = async () => {
         if (window.confirm('Deseja criar um novo produto')) {
@@ -58,6 +62,22 @@ export default function ProductListScreen() {
         }
     }
 
+    const deleteHandler = async (idProduct) => {
+        if (window.confirm('Deseja deletar este produto?')) {
+            try {
+                dispatch(deleteRequestProduct())
+                await axios.delete(`/api/products/${idProduct}`, {
+                    headers: { authorization: `Bearer ${userInfo.token}` }
+                });
+                toast.success('Produto deletado com sucesso');
+                dispatch(deleteSuccessProduct());
+            } catch (error) {
+                toast.error(getError(error));
+                dispatch(deleteFailureProduct(getError(error)))
+            }
+        }
+    }
+
     return (
         <div>
             <Helmet>
@@ -71,6 +91,8 @@ export default function ProductListScreen() {
                     </Button>
                 </Col>
             </Row>
+
+            {loadingDelete && <LoadingBox />}
 
             {loading ? (
                 <LoadingBox />
@@ -104,6 +126,13 @@ export default function ProductListScreen() {
                                             onClick={() => navigate(`/admin/product/${produc.id}`)}
                                         >
                                             Editar
+                                        </Button>&nbsp;
+                                        <Button
+                                            type='button'
+                                            variant='light'
+                                            onClick={() => deleteHandler(produc.id)}
+                                        >
+                                            Deletar
                                         </Button>
                                     </td>
                                 </tr>

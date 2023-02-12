@@ -20,6 +20,7 @@ routes.get('/api/seedU', UserController.insert);
 routes.get('/api/products', ProductController.store);
 routes.post('/api/products', isAuth, isAdmin, ProductController.create);
 routes.put('/api/products/:id', isAuth, isAdmin, ProductController.update);
+routes.delete('/api/products/:id', isAuth, isAdmin, ProductController.delete);
 routes.get('/api/products/search', ProductController.search);
 routes.get('/api/products/admin', isAuth, isAdmin, ProductController.admin);
 routes.get('/api/products/categories', ProductController.categories);
