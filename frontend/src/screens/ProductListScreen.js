@@ -20,7 +20,7 @@ export default function ProductListScreen() {
     const sp = new URLSearchParams(search);
     const page = sp.get('page') || 1;
     const { products, loading, error, pages } = useSelector(selectProducts);
-    const { product} = useSelector(selectProduct);
+    const { product } = useSelector(selectProduct);
     const { userInfo } = useSelector(selectUser)
     const dispatch = useDispatch();
 
@@ -44,12 +44,11 @@ export default function ProductListScreen() {
         if (window.confirm('Deseja criar um novo produto')) {
             try {
                 dispatch(fetchRequestProduct());
-                const { data } = await axios.post(`/api/products`, 
-                {},{
+                const { data } = await axios.post(`/api/products`,
+                    {}, {
                     headers: { authorization: `Bearer ${userInfo.token}` }
                 })
                 toast.success('Produto criado com seucesso');
-                console.log(data)
                 dispatch(createSuccessProduct(data));
                 navigate(`/admin/product/${data.product.id}`);
             } catch (error) {
@@ -87,6 +86,7 @@ export default function ProductListScreen() {
                                 <th>PREÇO</th>
                                 <th>CATEGORIA</th>
                                 <th>MARCA</th>
+                                <th>AÇÕES</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,6 +97,15 @@ export default function ProductListScreen() {
                                     <td>R$ {produc.price}</td>
                                     <td>{produc.category}</td>
                                     <td>{produc.brand}</td>
+                                    <td>
+                                        <Button
+                                            type='button'
+                                            variant='light'
+                                            onClick={() => navigate(`/admin/product/${produc.id}`)}
+                                        >
+                                            Editar
+                                        </Button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
