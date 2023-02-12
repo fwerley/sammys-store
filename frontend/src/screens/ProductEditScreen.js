@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../slice/userSlice';
-import { fetchFailureProduct, fetchRequestProduct, fetchSuccessProduct, selectProduct, updateFailureProduct, updateRequestProduct, updateSuccessProduct } from '../slice/productSlice';
+import { fetchFailureProduct, fetchRequestProduct, fetchSuccessProduct, selectProduct, updateFailureProduct, updateRequestProduct, updateSuccessProduct, uploadFailureProduct, uploadRequestProduct, uploadSuccessProduct } from '../slice/productSlice';
 import { getError } from '../utils';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -21,7 +21,7 @@ export default function ProductEditScreen() {
     const { id: productId } = params;
     const dispatch = useDispatch();
     const { userInfo } = useSelector(selectUser);
-    const { loading, error, product } = useSelector(selectProduct);
+    const { loading, error, product, loadingUpload } = useSelector(selectProduct);
 
     const [name, setName] = useState(product.name || '');
     const [slug, setSlug] = useState(product.slug || '');
@@ -55,6 +55,27 @@ export default function ProductEditScreen() {
         } catch (err) {
             toast.error(getError(err));
             dispatch(updateFailureProduct(getError(err)))
+        }
+    }
+
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('file', file);
+        try {
+            dispatch(uploadRequestProduct());
+            const { data } = await axios.post(`/api/upload/image`, bodyFormData, {
+                headers: {
+                    'Content-Type': 'multipart-form-data',
+                    authorization: `Bearer ${userInfo.token}`
+                }
+            })
+            dispatch(uploadSuccessProduct());
+            toast.success('Upload realizado com sucesso');
+            setImage(data.secure_url);
+        } catch (err) {
+            toast.error(getError(err));
+            dispatch(uploadFailureProduct(getError(err)))
         }
     }
 
@@ -127,6 +148,14 @@ export default function ProductEditScreen() {
                             onChange={(e) => setImage(e.target.value)}
                             required
                         />
+                    </Form.Group>
+                    <Form.Group className='mb-3' controlId='imageFile'>
+                        <Form.Label>Upload Imagem</Form.Label>
+                        <Form.Control
+                            type='file'
+                            onChange={uploadFileHandler}
+                        />
+                        {loadingUpload && <LoadingBox />}
                     </Form.Group>
                     <Form.Group className='mb-3' controlId='category'>
                         <Form.Label>Categoria</Form.Label>

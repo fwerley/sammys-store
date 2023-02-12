@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import ProductController from './controllers/ProductController';
 import UserController from './controllers/UserController';
 import OrderController from './controllers/OrderController';
@@ -6,8 +7,10 @@ import PaymentController from './controllers/PaymentController';
 import CorreiosController from './controllers/CorreiosController';
 import { isAdmin, isAuth } from './utils';
 import PostBackController from './controllers/PostBackControler';
+import UploadController from './controllers/UploadController';
 
 const routes = express.Router();
+const upload = multer();
 
 //api seed
 routes.get('/api/seedP', ProductController.insert);
@@ -22,6 +25,9 @@ routes.get('/api/products/admin', isAuth, isAdmin, ProductController.admin);
 routes.get('/api/products/categories', ProductController.categories);
 routes.get(`/api/products/:id`, ProductController.index);
 routes.get('/api/products/slug/:slug', ProductController.slug);
+
+// Upload section
+routes.post('/api/upload/image', isAuth, isAdmin, upload.single('file'), UploadController.image)
 
 // Users section
 routes.post('/api/users/signin', UserController.signin);

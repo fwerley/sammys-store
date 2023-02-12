@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const productStore = {
   product: {},
   loading: false,
+  loadingUpload: false,
   error: '',
 };
 
@@ -22,6 +23,12 @@ const productSlice = createSlice({
         loading: true,
       };
     },
+    uploadRequestProduct(state) {
+      return {
+        ...state,
+        loadingUpload: true,
+      };
+    },
     fetchSuccessProduct(state, { payload }) {
       return {
         ...state,
@@ -34,6 +41,12 @@ const productSlice = createSlice({
         ...state,
         product: payload,
         loading: false,
+      };
+    },
+    uploadSuccessProduct(state, { payload }) {
+      return {
+        ...state,
+        loadingUpload: false,
       };
     },
     createSuccessProduct(state, { payload }) {
@@ -57,17 +70,27 @@ const productSlice = createSlice({
         error: payload,
       };
     },
+    uploadFailureProduct(state, { payload }) {
+      return {
+        ...state,
+        loadingUpload: false,
+        error: payload,
+      };
+    },
   },
 });
 
 export const {
   fetchRequestProduct,
   updateRequestProduct,
+  uploadRequestProduct,
   fetchSuccessProduct,
   updateSuccessProduct,
   createSuccessProduct,
+  uploadSuccessProduct,
   fetchFailureProduct,
-  updateFailureProduct
+  updateFailureProduct,
+  uploadFailureProduct
 } = productSlice.actions;
 export const selectProduct = (state) => state.productStore;
 export default productSlice.reducer;
