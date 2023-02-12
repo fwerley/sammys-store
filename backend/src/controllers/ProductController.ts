@@ -14,6 +14,25 @@ export default {
     res.json(createdProducts);
   },
 
+  async create(req: Request, res: Response) {
+
+    const createdProduct = await prismaClient.product.create({
+      data: {
+        name: 'Sample name ' + Date.now(),
+        slug: 'sample-name-' + Date.now(),
+        image: '/images/p1.jpg',
+        price: 0,
+        category: 'sample category',
+        brand: 'sample brand',
+        countInStock: 0,
+        rating: 0,
+        numReviews: 0,
+        description: 'sample description'
+      }
+    });
+    res.send({ message: 'Produto criado', product: createdProduct });
+  },
+
   async store(req: Request, res: Response) {
     const products = await prismaClient.product.findMany({});
     res.json({ products });

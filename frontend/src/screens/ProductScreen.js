@@ -13,9 +13,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import {
-  fetchFailure,
-  fetchRequest,
-  fetchSuccess,
+  fetchFailureProduct,
+  fetchRequestProduct,
+  fetchSuccessProduct,
   selectProduct,
 } from '../slice/productSlice';
 import Rating from '../components/Rating';
@@ -35,12 +35,12 @@ function ProductScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(fetchRequest());
+      dispatch(fetchRequestProduct());
       try {
         const result = await axios.get(`/api/products/slug/${slug}`);
-        dispatch(fetchSuccess(result.data));
+        dispatch(fetchSuccessProduct(result.data));
       } catch (err) {
-        dispatch(fetchFailure(getError(err)));
+        dispatch(fetchFailureProduct(getError(err)));
       }
     };
     fetchData();

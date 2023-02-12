@@ -1,19 +1,26 @@
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { fetchFailure, fetchListProductsSuccess, fetchRequest, selectProducts } from '../slice/productsSlice'
 import { selectUser } from '../slice/userSlice';
 import { getError } from '../utils';
+import { createSuccessProduct, fetchFailureProduct, fetchRequestProduct, selectProduct } from '../slice/productSlice';
 
 export default function ProductListScreen() {
     const { search, pathname } = useLocation();
+    const navigate = useNavigate();
     const sp = new URLSearchParams(search);
     const page = sp.get('page') || 1;
     const { products, loading, error, pages } = useSelector(selectProducts);
+    const { product} = useSelector(selectProduct);
     const { userInfo } = useSelector(selectUser)
     const dispatch = useDispatch();
 
@@ -32,9 +39,40 @@ export default function ProductListScreen() {
         }
         fetchData();
     }, [page, userInfo]);
+
+    const createHandler = async () => {
+        if (window.confirm('Deseja criar um novo produto')) {
+            try {
+                dispatch(fetchRequestProduct());
+                const { data } = await axios.post(`/api/products`, 
+                {},{
+                    headers: { authorization: `Bearer ${userInfo.token}` }
+                })
+                toast.success('Produto criado com seucesso');
+                console.log(data)
+                dispatch(createSuccessProduct(data));
+                navigate(`/admin/product/${data.product.id}`);
+            } catch (error) {
+                toast.error(getError(error))
+                dispatch(fetchFailureProduct(getError(error)));
+            }
+        }
+    }
+
     return (
         <div>
-            <h1>Produtos</h1>
+            <Helmet>
+                <title>Produtos</title>
+            </Helmet>
+            <Row>
+                <Col><h1>Produtos</h1></Col>
+                <Col className='col text-end'>
+                    <Button type="button" onClick={createHandler}>
+                        Criar Produto
+                    </Button>
+                </Col>
+            </Row>
+
             {loading ? (
                 <LoadingBox />
             ) : error ? (
