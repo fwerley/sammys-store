@@ -95,7 +95,7 @@ export default function SearchScreen() {
         fetchCategories();
     }, [dispatch]);
 
-    const getFilterUrl = (filter, linkContainer) => {
+    const getFilterUrl = (filter, skipPathname) => {
         const filterPage = filter.page || page;
         const filterCategory = filter.category || category;
         const filterQuery = filter.query || query;
@@ -103,11 +103,7 @@ export default function SearchScreen() {
         const filterPrice = filter.price || price;
         const filterOrder = filter.order || order;
 
-        const link = linkContainer
-            ? `page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
-            : `/search?page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
-
-        return link
+        return `${skipPathname ? '' : '/search?'}page=${filterPage}&query=${filterQuery}&category=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`
     }
 
     return (
@@ -244,6 +240,7 @@ export default function SearchScreen() {
                                         key={x + 1}
                                         className="mx-1"
                                         to={{
+                                            pathname: '/search',
                                             search: getFilterUrl({ page: x + 1 }, true)
                                         }}
                                     >
