@@ -23,6 +23,7 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { addCartItem, selectCart } from '../slice/cartSlice';
+import HelmetSEO from '../components/HelmetSEO';
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -81,6 +82,12 @@ function ProductScreen() {
               <Helmet>
                 <title>{product.name}</title>
               </Helmet>
+              <HelmetSEO
+                title={product.name}
+                description={product.description}
+                img={product.image}
+                type='product'
+              />
               <h1>{product.name}</h1>
             </ListGroup.Item>
             <ListGroup.Item>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 
 import Row from 'react-bootstrap/Row';
@@ -13,6 +12,7 @@ import Card from 'react-bootstrap/Card';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addCartItem, cartRemoveItem, selectCart } from '../slice/cartSlice';
+import HelmetSEO from '../components/HelmetSEO';
 
 export default function CartScreen() {
   const dispatch = useDispatch();
@@ -37,9 +37,11 @@ export default function CartScreen() {
 
   return (
     <div>
-      <Helmet>
-        <title>Carrinho de compras</title>
-      </Helmet>
+      <HelmetSEO
+        title='Carrinho de compras'
+        description='Carrinho de compras'
+        type='pay'
+      />
       <h1>Carrinho de compras</h1>
       <Row>
         <Col md={8}>

@@ -6,17 +6,14 @@ import { Helmet } from 'react-helmet-async';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Tab from 'react-bootstrap/Tab';
-import Nav from 'react-bootstrap/Nav';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Cards from 'react-credit-cards';
 
 import CheckoutSteps from '../components/CheckoutSteps';
 import { selectUser } from '../slice/userSlice';
 import { selectCart } from '../slice/cartSlice';
 import { cartPaymentMethod, cartPaymentData } from '../slice/cartSlice';
+import HelmetSEO from '../components/HelmetSEO';
 
 export default function PaymentMethodScreen() {
   const navigate = useNavigate();
@@ -27,7 +24,6 @@ export default function PaymentMethodScreen() {
   const [paymentMethodName, setPaymentMethod] = useState(paymentMethod);
   const [cvc, setCvc] = useState(paymentData?.cvc || '');
   const [expiry, setExpiry] = useState(paymentData?.expiry || '');
-  const [focus, setFocus] = useState('');
   const [name, setName] = useState(paymentData?.name || '');
   const [number, setNumber] = useState(paymentData?.number || '');
 
@@ -37,9 +33,6 @@ export default function PaymentMethodScreen() {
     }
   }, [navigate, shippingAddress]);
 
-  const handleInputFocus = (e) => {
-    setFocus(e.target.name);
-  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -57,9 +50,11 @@ export default function PaymentMethodScreen() {
 
   return (
     <div>
-      <Helmet>
-        <title>Forma de pagamento</title>
-      </Helmet>
+      <HelmetSEO
+        title='Forma de pagamento'
+        description="Escolha sua forma de pagamento"
+        type='store'
+      />
       <CheckoutSteps step1 step2 step3></CheckoutSteps>
       <div className="container small-container">
         <h1 className="my-3">Forma de pagamento</h1>

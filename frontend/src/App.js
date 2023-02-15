@@ -65,17 +65,17 @@ function App() {
     <BrowserRouter>
       <div
         className={
-          sidebarIsOpen ?
-            "d-flex flex-column site-container active-cont" :
-            "d-flex flex-column site-container"
+          // sidebarIsOpen ?
+          //   "d-flex flex-column site-container active-cont" :
+          "d-flex flex-column site-container"
         }
       >
         <ToastContainer position="bottom-center" limit={1} />
-        <header>
-          <Navbar bg="dark" variant="dark" expand="lg">
+        <header className='shadow-sm'>
+          <Navbar bg="light" variant="light" expand="lg">
             <Container>
               <Button
-                variant='dark'
+                variant='ligth'
                 onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
               >
                 <i className='fas fa-bars' />
@@ -87,7 +87,7 @@ function App() {
                 </div>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id='basic-navbar-nav' className=''>
+              <Navbar.Collapse id='basic-navbar-nav'>
                 <SearchBox />
                 <Nav className='justify-content-end'>
                   <Link to="/cart" className="nav-link">
@@ -103,8 +103,8 @@ function App() {
                         </Badge>
                       )}
                     </div>
-                    <span style={{display: 'none'}}>
-                        Meu Carrinho
+                    <span style={{ display: 'none' }}>
+                      Meu Carrinho
                     </span>
                   </Link>
                   {userInfo ? (
@@ -154,11 +154,18 @@ function App() {
           sidebarIsOpen ?
             'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column' :
             'side-navbar d-flex justify-content-between flex-wrap flex-column'
-        }
-        >
-          <Nav className='flex-column text-white w-100 p-2'>
+        }>
+          <Nav className='flex-column w-100 p-2'>
             <Nav.Item>
-              <strong>Departamentos</strong>
+              <div className='d-flex justify-content-between align-items-center'>
+                <strong>Departamentos</strong>
+                <Button
+                  onClick={() => setSidebarIsOpen(false)}
+                  variant='light'
+                >
+                  <i className="fas fa-times-circle" />
+                </Button>
+              </div>
             </Nav.Item>
             {categories.map((category) => (
               <Nav.Item key={category.category}>

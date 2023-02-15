@@ -1,9 +1,9 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
-import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import HelmetSEO from '../components/HelmetSEO'
 import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
 import { createRequest, fetchFail, fetchOrdersSuccess, selectOrder } from '../slice/orderSlice'
@@ -25,7 +25,7 @@ export default function OrderHistoryScreen() {
                     `/api/orders/mine`,
                     { headers: { authorization: `Bearer ${userInfo.token}` } }
                 );
-                dispatch(fetchOrdersSuccess(data));             
+                dispatch(fetchOrdersSuccess(data));
             } catch (error) {
                 dispatch(fetchFail(getError(error)))
                 console.log('erroe')
@@ -35,9 +35,11 @@ export default function OrderHistoryScreen() {
     }, [])
     return (
         <div>
-            <Helmet>
-                <title>Meus pedidos</title>
-            </Helmet>
+            <HelmetSEO
+                title="Meus pedidos"
+                description='Todos os meus pedidos de compra'
+                type='store'
+            />
             <h1>Meus pedidos</h1>
             {loading ? (
                 <LoadingBox></LoadingBox>

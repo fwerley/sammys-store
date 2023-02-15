@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Helmet } from 'react-helmet-async';
 import {
   fetchFailure,
   fetchRequest,
@@ -14,7 +13,7 @@ import {
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { shuffle } from '../utils';
+import HelmetSEO from '../components/HelmetSEO';
 
 function HomeScreen() {
   const { products, loading, error } = useSelector(selectProducts);
@@ -35,9 +34,11 @@ function HomeScreen() {
 
   return (
     <div>
-      <Helmet>
-        <title>Sammy's Store</title>
-      </Helmet>
+      <HelmetSEO
+        title="Sammy's Store"  
+        description='Produtos em destaque'
+        type='store'
+      />
       <h1>Produtos em destaque</h1>
       <div className="products">
         {loading ? (

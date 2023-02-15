@@ -36,6 +36,10 @@ body {
   src: url(./_assets/fonts/Modulus/Modulus.ttf);
 }
 
+a {
+  text-decoration: none;
+}
+
 .logo-desc {
   font-family: Modulus;
   font-weight: bolder;
@@ -43,7 +47,7 @@ body {
   display: flex;
   line-height: normal;
   flex-direction: column;
-  color: #ffffff;
+  color: #100901;
   cursor: pointer;
 }
 
@@ -181,8 +185,9 @@ main {
   height: 100%;
   position: fixed;
   left: -300px;
-  background-color: #100901;
+  background-color: rgb(209 213 219);
   transition: .5s;
+  z-index: 999;
 }
 
 .site-container {
@@ -215,4 +220,13 @@ ul>li {
   .nav-link > span {
     display: block !important;
   }
+  /* .navbar .navbar-nav {
+        display: inline-block;
+        float: none;
+        vertical-align: center;
+    }
+
+    .navbar .navbar-collapse {
+        text-align: center;
+    } */
 }

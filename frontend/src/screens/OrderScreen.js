@@ -23,6 +23,7 @@ import { selectUser } from '../slice/userSlice';
 import { formatedDate, getError } from '../utils';
 import { paymentReset, selectPayment } from '../slice/paymentSlice';
 import ModalBox from '../components/ModalBox';
+import HelmetSEO from '../components/HelmetSEO';
 
 export default function OrderScreen() {
   const { error, order } = useSelector(selectOrder);
@@ -176,9 +177,11 @@ export default function OrderScreen() {
         type={order.paymentMethod}
         onHide={() => setModalShow(false)}
       />
-      <Helmet>
-        <title>Pedido - {orderId}</title>
-      </Helmet>
+      <HelmetSEO
+        title={'Pedido - ' + orderId}
+        description="Pedido de compra"
+        type='store'
+      />
       <h1 className="my-3">Pedido - {orderId}</h1>
       <Row>
         <Col md={8}>
