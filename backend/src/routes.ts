@@ -45,10 +45,11 @@ routes.get('/api/orders/summary', isAuth, isAdmin, OrderController.summary)
 routes.get('/api/orders/mine', isAuth, OrderController.mine)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)
 routes.put(`/api/orders/:id`, isAuth, OrderController.updatePrice)
+routes.delete(`/api/orders/:id`, isAuth, isAdmin, OrderController.delete)
 
 // Payment section
 routes.get('/api/orders/:id/transaction', isAuth, PaymentController.transaction)
-routes.put('/api/orders/:id/deliver', isAuth, PaymentController.deliver)
+routes.put('/api/orders/:id/deliver', isAuth, isAdmin, PaymentController.deliver)
 routes.post('/api/orders/:id/pay', isAuth, PaymentController.create)
 routes.post('/api/webhook/pagarme', PostBackController.pagarme)
 

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -38,11 +37,9 @@ export default function OrderScreen() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const [findOrder, setFindOrder] = useState(true);
   const [transaction, setTransaction] = useState({});
 
   const [modalShow, setModalShow] = useState(false);
-
 
   const { id: orderId } = params;
 
@@ -54,10 +51,8 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       });
       dispatch(fetchSuccess(data));
-      setFindOrder(false)
     } catch (error) {
       dispatch(createFail(getError(error)));
-      setFindOrder(false)
     }
   };
 
@@ -79,7 +74,7 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` }
       })
       dispatch(deliverSuccess());
-      toast.success(data);
+      toast.success('Pedido enviado');
     } catch (error) {
       dispatch(deliverFail(getError(error)));
       toast.error(getError(error));
@@ -179,7 +174,7 @@ export default function OrderScreen() {
     }
   }
 
-  return findOrder ? (
+  return orderLoading ? (
     <div className="container small-container">
       <LoadingBox></LoadingBox>
     </div>

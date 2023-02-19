@@ -86,7 +86,7 @@ export default function DashboardScreen() {
                   <Card>
                     <Card.Body>
                       <Card.Title>
-                        R$ {summary.users && summary.orders._sum
+                        R$ {summary.users && summary.orders._sum.totalPrice
                           ? summary.orders._sum.totalPrice.toFixed(2)
                           : 0}
                       </Card.Title>

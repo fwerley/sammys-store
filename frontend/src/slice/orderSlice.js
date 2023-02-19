@@ -7,8 +7,11 @@ const orderStore = {
   orderLoading: true,
   loadingDeliver: false,
   successDeliver: false,
+  loadingDelete: false,
+  successDelete: false,
   error: '',
-  errorDeliver: ''
+  errorDeliver: '',
+  errorDelete: ''
 };
 
 const orderSlice = createSlice({
@@ -26,6 +29,7 @@ const orderSlice = createSlice({
       return {
         ...state,
         loading: false,
+        orderLoading: false,
         error: '',
         order: payload,
       }
@@ -34,6 +38,7 @@ const orderSlice = createSlice({
       return {
         ...state,
         loading: false,
+        orderLoading: false,
         error: payload,
       }
     },
@@ -86,6 +91,34 @@ const orderSlice = createSlice({
         successDeliver: false,
         errorDeliver: ''
       }
+    },
+    deleteRequest(state) {
+      return {
+        ...state,
+        loadingDelete: true,
+      }
+    },
+    deleteSuccess(state) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: true
+      }
+    },
+    deleteFail(state, { payload }) {
+      return {
+        ...state,
+        loadingDelete: false,
+        errorDelete: payload
+      }
+    },
+    deleteReset(state) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: false,
+        errorDelete: ''
+      }
     }
   },
 });
@@ -100,7 +133,11 @@ export const {
   deliverRequest,
   deliverSuccess,
   deliverFail,
-  deliverReset
+  deliverReset,
+  deleteRequest,
+  deleteSuccess,
+  deleteFail,
+  deleteReset
 } = orderSlice.actions;
 export const selectOrder = (state) => state.orderStore;
 export default orderSlice.reducer;

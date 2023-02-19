@@ -170,5 +170,33 @@ export default {
     } catch (error) {
       res.status(401).send({ message: 'Requisição não autorizada' });
     }
+  },
+
+  async delete(req: Request, res: Response) {
+    const { id: orderId } = req.params;
+    try {
+      const order = await prismaClient.order.delete({
+        where: {
+          id: orderId
+        },
+        include: {
+          orderItems: true,
+          orderPrice: true,
+          shippingAddress: true,
+          transaction: true
+        }
+      });
+
+      await prismaClient.priceOrder.delete({
+        where: {
+          id: order.orderPrice.id
+        }
+      })
+
+      res.send({ message: 'Pedido deletado' })
+    } catch (error) {
+      console.log(error)
+      res.status(404).send({ message: 'Pedido não encontrado', error });
+    }
   }
 };

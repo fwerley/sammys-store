@@ -55,7 +55,7 @@ model OrderItem {
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  Order   Order  @relation(fields: [orderId], references: [id])
+  Order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId String
 
   @@map("order_items")
@@ -74,7 +74,7 @@ model ShippingAddress {
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
 
   order  Order?
-  user   User?   @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction)
   userId String?
 
   @@map("shipping_address")
@@ -87,7 +87,7 @@ model Transaction {
   paidAt            DateTime?
   installments      Int
   processorResponse String?
-  order             Order     @relation(fields: [orderId], references: [id])
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId           String    @unique
   transactionId     String?   @unique
 
@@ -113,9 +113,9 @@ model Order {
   id String @id @default(uuid())
 
   orderItems      OrderItem[]
-  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
   paymentMethod   PaymentType     @default(BILLET)
-  orderPrice      PriceOrder      @relation(fields: [priceOrderId], references: [id])
+  orderPrice      PriceOrder      @relation(fields: [priceOrderId], references: [id], onDelete: Cascade)
   user            User            @relation(fields: [userId], references: [id])
   isPaid          Boolean         @default(false) @map("is_paid")
   isDelivered     Boolean         @default(false) @map("is_delivered")

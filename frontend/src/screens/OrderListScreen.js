@@ -5,12 +5,13 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 
-import { createRequest, fetchFail, fetchOrdersSuccess, selectOrder } from '../slice/orderSlice';
+import { createRequest, deleteFail, deleteRequest, deleteReset, deleteSuccess, fetchFail, fetchOrdersSuccess, selectOrder } from '../slice/orderSlice';
 import { selectUser } from '../slice/userSlice';
 import { formatedDate, getError } from '../utils';
 import HelmetSEO from '../components/HelmetSEO';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+
 
 export default function OrderListScreen() {
 
@@ -18,7 +19,23 @@ export default function OrderListScreen() {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector(selectUser);
-    const { orders, loading, error } = useSelector(selectOrder);
+    const { orders, loading, error, loadingDelete, successDelete, errorDelete } = useSelector(selectOrder);
+
+    const deleteHandler = async (orderId) => {
+        if (window.confirm('Deseja realemtne deletar este pedido?')) {
+            try {
+                dispatch(deleteRequest())
+                await axios.delete(`/api/orders/${orderId}`, {
+                    headers: { authorization: `Bearer ${userInfo.token}` }
+                })
+                toast.success('Pedido deletado com sucesso')
+                dispatch(deleteSuccess());
+            } catch (error) {
+                dispatch(deleteFail(getError(error)))
+                toast.error(getError(error));
+            }
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,8 +49,12 @@ export default function OrderListScreen() {
                 toast.error(getError(error));
             }
         }
-        fetchData();
-    }, [userInfo]);
+        if (successDelete) {
+            dispatch(deleteReset())
+        } {
+            fetchData();
+        }
+    }, [userInfo, successDelete]);
 
     return (
         <div>
@@ -43,6 +64,7 @@ export default function OrderListScreen() {
                 type='summary'
             />
             <h1>Pedidos</h1>
+            {loadingDelete && <LoadingBox />}
             {loading ? (
                 <LoadingBox />
             ) : error ? (
@@ -82,6 +104,13 @@ export default function OrderListScreen() {
                                         }}
                                     >
                                         Detalhes
+                                    </Button>&nbsp;
+                                    <Button
+                                        type='button'
+                                        variant='light'
+                                        onClick={() => deleteHandler(order.id)}
+                                    >
+                                        Deletar
                                     </Button>
                                 </td>
                             </tr>
