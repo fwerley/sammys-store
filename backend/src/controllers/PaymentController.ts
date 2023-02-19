@@ -138,7 +138,25 @@ export default {
       res.status(400).send({ message: 'Erro ao criar a transação: ' + error })
     }
   },
-  
+
+  async deliver(req: Request, res: Response) {
+    const { id: idOrder } = req.params
+    try {
+      await prismaClient.order.update({
+        where: {
+          id: idOrder
+        },
+        data: {
+          isDelivered: true,
+          deliveredAt: new Date().toJSON()
+        }
+      });
+      res.send({ message: 'Pedido envaido' })
+    } catch (error) {
+      res.status(404).send({ message: 'Pedido não encontrado' })
+    }
+  },
+
   async transaction(req: Request, res: Response) {
     const { id: orderId } = req.params
 

@@ -48,6 +48,7 @@ routes.put(`/api/orders/:id`, isAuth, OrderController.updatePrice)
 
 // Payment section
 routes.get('/api/orders/:id/transaction', isAuth, PaymentController.transaction)
+routes.put('/api/orders/:id/deliver', isAuth, PaymentController.deliver)
 routes.post('/api/orders/:id/pay', isAuth, PaymentController.create)
 routes.post('/api/webhook/pagarme', PostBackController.pagarme)
 

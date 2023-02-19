@@ -16,6 +16,10 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import {
   createFail,
+  deliverFail,
+  deliverRequest,
+  deliverReset,
+  deliverSuccess,
   fetchSuccess,
   selectOrder,
 } from '../slice/orderSlice';
@@ -24,9 +28,10 @@ import { formatedDate, getError } from '../utils';
 import { paymentReset, selectPayment } from '../slice/paymentSlice';
 import ModalBox from '../components/ModalBox';
 import HelmetSEO from '../components/HelmetSEO';
+import { toast } from 'react-toastify';
 
 export default function OrderScreen() {
-  const { error, order } = useSelector(selectOrder);
+  const { error, order, orderLoading, loadingDeliver, successDeliver, errorDeliver } = useSelector(selectOrder);
   const { userInfo } = useSelector(selectUser);
   const { successPay } = useSelector(selectPayment)
   const navigate = useNavigate();
@@ -66,17 +71,32 @@ export default function OrderScreen() {
       console.info("Pedido ainda não foi pago")
     }
   };
-  useEffect(() => {
 
+  const deliverOrderHandler = async () => {
+    try {
+      dispatch(deliverRequest())
+      const { data } = await axios.put(`/api/orders/${order.id}/deliver`, {}, {
+        headers: { authorization: `Bearer ${userInfo.token}` }
+      })
+      dispatch(deliverSuccess());
+      toast.success(data);
+    } catch (error) {
+      dispatch(deliverFail(getError(error)));
+      toast.error(getError(error));
+    }
+  }
+
+  useEffect(() => {
     if (!userInfo) {
       return navigate('/signin');
     }
-    if (!order.id || (order.id && order.id !== orderId)) {
+    if (!order.id || (order.id && order.id !== orderId) || successDeliver) {
       fetchOrder();
       fetchTransactionData();
+      dispatch(deliverReset())
     }
 
-  }, [order, userInfo, orderId, navigate, dispatch]);
+  }, [order, userInfo, orderId, successDeliver, navigate, dispatch]);
 
 
   useEffect(() => {
@@ -200,8 +220,8 @@ export default function OrderScreen() {
                 {order.shippingAddress.postalCode}
               </Card.Text>
               {order.isDelivered ? (
-                <MessageBox variant="succes">
-                  Enviado no dia {order.deliveredAt}
+                <MessageBox variant="success">
+                  Enviado no dia {formatedDate(order.deliveredAt)}
                 </MessageBox>
               ) : (
                 <MessageBox variant="danger">Não enviado</MessageBox>
@@ -285,23 +305,49 @@ export default function OrderScreen() {
                   </Row>
                 </ListGroup.Item>
                 {
-                  !order.isPaid ?
-                    <ListGroup.Item>
-                      <div className="d-grid">
-                        <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>
-                          <div className='me-2'>
-                            <Wallet2
-                              className=""
-                              color='white'
-                              size={20}
-                            />
-                          </div>
-                          Vamos ao pagamento
-                        </Button>
-                      </div>
-                    </ListGroup.Item>
-                    : ''
-                }
+                  Object.keys(transaction).length !== 0 && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' ?
+                    (
+                      <ListGroup.Item>
+                        <div className="d-grid">
+                          <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>
+                            <div className='me-2'>
+                              <Wallet2
+                                className=""
+                                color='white'
+                                size={20}
+                              />
+                            </div>
+                            Vamos ao pagamento
+                          </Button>
+                        </div>
+                      </ListGroup.Item>
+                    ) : !order.isPaid ? (
+                      <ListGroup.Item>
+                        <div className="d-grid">
+                          <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>
+                            <div className='me-2'>
+                              <Wallet2
+                                className=""
+                                color='white'
+                                size={20}
+                              />
+                            </div>
+                            Vamos ao pagamento
+                          </Button>
+                        </div>
+                      </ListGroup.Item>
+                    ) : ('')}
+                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                  <ListGroup.Item>
+                    {loadingDeliver && <LoadingBox />}
+                    <div className='d-grid'>
+                      <Button type='button' onClick={deliverOrderHandler}>
+                        <i className="fas fa-shipping-fast" />&nbsp;
+                        Enviar pedido
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                )}
               </ListGroup>
             </Card.Body>
           </Card>

@@ -5,7 +5,10 @@ const orderStore = {
   orders: [],
   loading: false,
   orderLoading: true,
+  loadingDeliver: false,
+  successDeliver: false,
   error: '',
+  errorDeliver: ''
 };
 
 const orderSlice = createSlice({
@@ -19,13 +22,6 @@ const orderSlice = createSlice({
         error: ''
       };
     },
-    createOrderSuccess(state) {
-      return {
-        ...state,
-        loading: false,
-        error: ''
-      };
-    },
     fetchSuccess(state, { payload }) {
       return {
         ...state,
@@ -33,6 +29,20 @@ const orderSlice = createSlice({
         error: '',
         order: payload,
       }
+    },
+    fetchFail(state, { payload }) {
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      }
+    },
+    createOrderSuccess(state) {
+      return {
+        ...state,
+        loading: false,
+        error: ''
+      };
     },
     fetchOrdersSuccess(state, { payload }) {
       return {
@@ -42,13 +52,6 @@ const orderSlice = createSlice({
         orders: payload,
       }
     },
-    fetchFail(state, { payload }){
-      return {
-        ...state,
-        loading: false,
-        error: payload,
-      }
-    },
     createFail(state, { payload }) {
       return {
         ...state,
@@ -56,9 +59,48 @@ const orderSlice = createSlice({
         error: payload,
       };
     },
+    deliverRequest(state) {
+      return {
+        ...state,
+        loadingDeliver: true
+      }
+    },
+    deliverSuccess(state) {
+      return {
+        ...state,
+        loadingDeliver: false,
+        successDeliver: true
+      }
+    },
+    deliverFail(state, { payload }) {
+      return {
+        ...state,
+        loadingDeliver: false,
+        errorDeliver: payload
+      }
+    },
+    deliverReset(state) {
+      return {
+        ...state,
+        loadingDeliver: false,
+        successDeliver: false,
+        errorDeliver: ''
+      }
+    }
   },
 });
 
-export const { createRequest, createOrderSuccess, fetchSuccess, fetchOrdersSuccess, fetchFail, createFail } = orderSlice.actions;
+export const {
+  createRequest,
+  createOrderSuccess,
+  fetchSuccess,
+  fetchOrdersSuccess,
+  fetchFail,
+  createFail,
+  deliverRequest,
+  deliverSuccess,
+  deliverFail,
+  deliverReset
+} = orderSlice.actions;
 export const selectOrder = (state) => state.orderStore;
 export default orderSlice.reducer;
