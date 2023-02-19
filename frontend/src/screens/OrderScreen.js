@@ -63,7 +63,7 @@ export default function OrderScreen() {
       });
       setTransaction(data)
     } catch (error) {
-      console.info("Order without transaction: ", error)
+      console.info("Pedido ainda não foi pago")
     }
   };
   useEffect(() => {
@@ -110,7 +110,7 @@ export default function OrderScreen() {
       case 'PROCESSING':
         return (
           <MessageBox>
-            <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+            Seu pagamento está sendo processado ⌛
           </MessageBox>
         )
         break;
@@ -218,7 +218,7 @@ export default function OrderScreen() {
               {
                 successPay ? (
                   <MessageBox>
-                    <LoadingBox />&ensp;Aguardando a confirmação do banco ⌛
+                    Seu pagamento está sendo processado ⌛
                   </MessageBox>
                 ) : Object.keys(transaction).length !== 0 ?
                   switchOrderMessage(transaction.status)

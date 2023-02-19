@@ -35,6 +35,7 @@ import DashboardScreen from './components/DashboardScreen';
 import AdminRoute from './components/AdminRoute';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
+import OrderListScreen from './screens/OrderListScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -209,6 +210,10 @@ function App() {
               <Route path='/admin/dashboard' element={
                 <AdminRoute>
                   <DashboardScreen />
+                </AdminRoute>} />
+              <Route path='/admin/orders' element={
+                <AdminRoute>
+                  <OrderListScreen />
                 </AdminRoute>} />
               <Route path='/admin/products' element={
                 <AdminRoute>

@@ -40,6 +40,7 @@ routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
+routes.get('/api/orders', isAuth, isAdmin, OrderController.store)
 routes.get('/api/orders/summary', isAuth, isAdmin, OrderController.summary)
 routes.get('/api/orders/mine', isAuth, OrderController.mine)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)

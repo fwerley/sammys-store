@@ -55,6 +55,25 @@ export default {
     res.status(201).json({ order: createOrder });
   },
 
+  async store(req: Request, res: Response) {
+    const orders = await prismaClient.order.findMany({
+      include: {
+        user: {
+          select: {
+            name: true
+          }
+        },
+        orderPrice: {
+          select: {
+            totalPrice: true,
+            updatedAt: true
+          }
+        }
+      }
+    })
+    res.send(orders);
+  },
+
   async summary(req: Request, res: Response) {
     const orders = await prismaClient.priceOrder.aggregate({
       _sum: {
@@ -80,7 +99,7 @@ export default {
     const productCategories = await prismaClient.product.groupBy({
       by: ['category'],
       _count: true
-     
+
     });
 
     res.send({ orders, users, dailyOrders, productCategories })
