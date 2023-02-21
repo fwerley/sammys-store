@@ -16,7 +16,7 @@ interface ServerData {
 }
 
 const port = Number(process.env.PORT) || 5000;
-const host = process.env.HOST || process.env.HOSTNAME || 'http://localhost:'
+const host = process.env.HOST || process.env.HOSTNAME || 'http://localhost'
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.get("*", (req: Request, res: Response) => {
     }
     const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
     try {
-      const { data } = await axios.get<ServerData>(`${host}${port}/api/products/slug/${slug}`);
+      const { data } = await axios.get<ServerData>(`${host}:${port}/api/products/slug/${slug}`);
       // inject meta tags
       htmlData = htmlData.replace(
         "<title>Sammy's Store</title>",
