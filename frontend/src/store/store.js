@@ -8,6 +8,7 @@ import orderReducer from '../slice/orderSlice';
 import paymentReducer from '../slice/paymentSlice';
 import searchReducer from '../slice/searchSlice';
 import dashboardReducer from '../slice/dashboardSlice';
+import transactionReducer from '../slice/transactionSlice';
 
 const reducers = {
   productsStore: productsReducer,
@@ -17,7 +18,8 @@ const reducers = {
   orderStore: orderReducer,
   paymentStore: paymentReducer,
   searchStore: searchReducer,
-  dashboardStore: dashboardReducer
+  dashboardStore: dashboardReducer,
+  transactionStore: transactionReducer
 };
 
 const store = configureStore({ reducer: reducers });

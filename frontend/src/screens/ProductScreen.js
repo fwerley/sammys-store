@@ -78,10 +78,7 @@ function ProductScreen() {
         </Col>
         <Col md={3}>
           <ListGroup variante="flush">
-            <ListGroup.Item>
-              <Helmet>
-                <title>{product.name}</title>
-              </Helmet>
+            <ListGroup.Item>              
               <HelmetSEO
                 title={product.name}
                 description={product.description}

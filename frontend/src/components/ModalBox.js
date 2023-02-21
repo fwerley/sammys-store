@@ -137,8 +137,8 @@ function CardItem() {
             )
             dispatch(paymentSuccess());
         } catch (error) {
-            dispatch(paymentFail(error.message));
-            toast.error(getError(error.message));
+            dispatch(paymentFail(getError(error)));
+            toast.error(getError(error));
             setTimeout(() => {
                 dispatch(paymentReset())
             }, 3000)

@@ -36,11 +36,13 @@ import AdminRoute from './components/AdminRoute';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
+import { fetchCategories, selectProducts } from './slice/productsSlice';
 
 function App() {
   const dispatch = useDispatch();
   const { cart } = useSelector(selectCart);
   const { userInfo } = useSelector(selectUser);
+  const { categories } = useSelector(selectProducts);
 
   const signoutHandler = () => {
     dispatch(userSignout());
@@ -48,19 +50,21 @@ function App() {
     window.location.href = '/signin';
   };
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
         const { data } = await axios.get(`/api/products/categories`);
-        setCategories(data);
+        dispatch(fetchCategories(data))
       } catch (error) {
         toast.error(getError(error))
       }
     }
-    fetchCategories();
-  }, [])
+    if (categories.length === 0) {
+      fetchData();
+    }
+  }, [categories, dispatch])
 
   return (
     <BrowserRouter>

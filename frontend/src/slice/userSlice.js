@@ -4,6 +4,7 @@ const user = localStorage.getItem('userInfo');
 const shpAddress = localStorage.getItem('shippingAddress');
 
 const userStore = {
+  users: [],
   userInfo: user ? JSON.parse(user) : null,
   shippingAddress: shpAddress ? JSON.parse(shpAddress) : {},
   loading: false,

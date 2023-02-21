@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -17,6 +17,7 @@ import LoadingBox from './LoadingBox';
 import MessageBox from './MessageBox';
 import Product from './Product';
 import { LinkContainer } from 'react-router-bootstrap';
+import { fetchCategories, selectProducts } from '../slice/productsSlice';
 
 const prices = [
     {
@@ -57,6 +58,7 @@ export default function SearchScreen() {
     const { search } = useLocation();
     const dispatch = useDispatch();
     const { error, loading, products, pages, countProducts } = useSelector(selectSearch)
+    const { categories } = useSelector(selectProducts)
 
     const sp = new URLSearchParams(search);
     const category = sp.get('category') || 'all';
@@ -80,20 +82,23 @@ export default function SearchScreen() {
             }
         }
         fetchData();
-    }, [page, query, category, price, rating, order, error]);
+    }, [page, query, category, price, rating, order, error, dispatch]);
 
-    const [categories, setCategories] = useState([]);
+    // const [categories, setCategories] = useState([]);
+
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchData = async () => {
             try {
                 const { data } = await axios.get(`/api/products/categories`);
-                setCategories(data);
+                dispatch(fetchCategories(data))
             } catch (err) {
                 toast.error(getError(err));
             }
         }
-        fetchCategories();
-    }, [dispatch]);
+        if (categories.length === 0) {
+            fetchData();
+        }
+    }, [categories, dispatch]);
 
     const getFilterUrl = (filter, skipPathname) => {
         const filterPage = filter.page || page;

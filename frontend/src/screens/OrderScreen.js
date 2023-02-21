@@ -28,16 +28,16 @@ import { paymentReset, selectPayment } from '../slice/paymentSlice';
 import ModalBox from '../components/ModalBox';
 import HelmetSEO from '../components/HelmetSEO';
 import { toast } from 'react-toastify';
+import { fetchTransaction, fetchTransactionFail, selectTransaction, successTransaction } from '../slice/transactionSlice';
 
 export default function OrderScreen() {
   const { error, order, orderLoading, loadingDeliver, successDeliver, errorDeliver } = useSelector(selectOrder);
   const { userInfo } = useSelector(selectUser);
-  const { successPay } = useSelector(selectPayment)
+  const { successPay } = useSelector(selectPayment);
+  const { transaction, loading: loadingTransaction } = useSelector(selectTransaction);
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
-
-  const [transaction, setTransaction] = useState({});
 
   const [modalShow, setModalShow] = useState(false);
 
@@ -58,19 +58,20 @@ export default function OrderScreen() {
 
   const fetchTransactionData = async () => {
     try {
+      dispatch(fetchTransaction());
       const { data } = await axios.get(`/api/orders/${orderId}/transaction`, {
         headers: { authorization: `Bearer ${userInfo.token}` },
       });
-      setTransaction(data)
+      dispatch(successTransaction(data));
     } catch (error) {
-      console.info("Pedido ainda não foi pago")
+      dispatch(fetchTransactionFail(getError(error)));
     }
   };
 
   const deliverOrderHandler = async () => {
     try {
       dispatch(deliverRequest())
-      const { data } = await axios.put(`/api/orders/${order.id}/deliver`, {}, {
+      await axios.put(`/api/orders/${order.id}/deliver`, {}, {
         headers: { authorization: `Bearer ${userInfo.token}` }
       })
       dispatch(deliverSuccess());
@@ -103,7 +104,7 @@ export default function OrderScreen() {
         }
       }, 4000)
       interval = setInterval(() => {
-        if (Object.keys(transaction).length !== 0 && (transaction.status === 'APPROVED' || transaction.status === 'ERROR')) {
+        if (transaction && (transaction.status === 'APPROVED' || transaction.status === 'ERROR')) {
           dispatch(paymentReset())
           fetchOrder()
         }
@@ -214,7 +215,9 @@ export default function OrderScreen() {
                 {order.shippingAddress.federativeUnity}{', '}
                 {order.shippingAddress.postalCode}
               </Card.Text>
-              {order.isDelivered ? (
+              {loadingTransaction ? (
+                <LoadingBox />
+              ) : order.isDelivered ? (
                 <MessageBox variant="success">
                   Enviado no dia {formatedDate(order.deliveredAt)}
                 </MessageBox>
@@ -230,15 +233,16 @@ export default function OrderScreen() {
                 <strong>Método: </strong> {paymentTranslate[order.paymentMethod]}
                 <br />
               </Card.Text>
-              {
-                successPay ? (
-                  <MessageBox>
-                    Seu pagamento está sendo processado ⌛
-                  </MessageBox>
-                ) : Object.keys(transaction).length !== 0 ?
-                  switchOrderMessage(transaction.status)
-                  :
-                  <MessageBox variant="danger">Pagamento pendente</MessageBox>
+              {loadingTransaction ? (
+                <LoadingBox />
+              ) : successPay ? (
+                <MessageBox>
+                  Seu pagamento está sendo processado ⌛
+                </MessageBox>
+              ) : transaction.status ?
+                switchOrderMessage(transaction.status)
+                :
+                <MessageBox variant="danger">Pagamento pendente</MessageBox>
               }
             </Card.Body>
           </Card>
@@ -300,7 +304,7 @@ export default function OrderScreen() {
                   </Row>
                 </ListGroup.Item>
                 {
-                  Object.keys(transaction).length !== 0 && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' ?
+                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' ?
                     (
                       <ListGroup.Item>
                         <div className="d-grid">

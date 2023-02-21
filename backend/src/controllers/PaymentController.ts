@@ -72,7 +72,7 @@ export default {
 
       if (!(await schema.isValid(req.body))) {
         return res.status(400).send({
-          error: "Por favor, verifique os dados enviados e tente novamente"
+          message: "Por favor, verifique os dados enviados ou seus dados de cadastro e tente novamente."
         })
       }
       const order = await prismaClient.order.findUnique({

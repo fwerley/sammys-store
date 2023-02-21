@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import HelmetSEO from '../components/HelmetSEO'
 import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
@@ -28,7 +29,7 @@ export default function OrderHistoryScreen() {
                 dispatch(fetchOrdersSuccess(data));
             } catch (error) {
                 dispatch(fetchFail(getError(error)))
-                console.log('erroe')
+                toast.error(getError(error));
             }
         };
         fetchData();

@@ -17,6 +17,7 @@ const productSlice = createSlice({
       return {
         ...state,
         loading: true,
+        error: ''
       };
     },
     fetchSuccessProduct(state, { payload }) {
@@ -106,7 +107,7 @@ const productSlice = createSlice({
         product: payload.product,
         loading: false,
       };
-    },
+    }
   },
 });
 

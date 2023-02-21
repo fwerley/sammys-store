@@ -3,6 +3,7 @@ import { shuffle } from '../utils';
 
 const productsStore = {
   products: [],
+  categories: [],
   pages: 1,
   loading: false,
   error: '',
@@ -41,10 +42,16 @@ const productsSlice = createSlice({
         error: payload,
       };
     },
+    fetchCategories(state, { payload }) {
+      return {
+        ...state,
+        categories: payload
+      }
+    }
   },
 });
 
-export const { fetchRequest, fetchSuccess, fetchListProductsSuccess, fetchFailure } =
+export const { fetchRequest, fetchSuccess, fetchListProductsSuccess, fetchFailure, fetchCategories } =
   productsSlice.actions;
 export const selectProducts = (state) => state.productsStore;
 export default productsSlice.reducer;
