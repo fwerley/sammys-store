@@ -172,6 +172,7 @@ function App() {
                 </Button>
               </div>
             </Nav.Item>
+            {/* TreeView */}
             {categories.map((category) => (
               <Nav.Item key={category.category}>
                 <LinkContainer

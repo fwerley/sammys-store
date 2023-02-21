@@ -212,21 +212,65 @@ ul>li {
   list-style: none;
 }
 
+/* TreeViewMenu */
+.directory {
+  background: #242322;
+  font-family: monospace;
+  font-size: 16px;
+  color: white;
+  user-select: none;
+  padding: 20px;
+  border-radius: 0.4em;
+}
+
+.directory .tree,
+.directory .tree-node,
+.directory .tree-node-group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.directory .tree-branch-wrapper,
+.directory .tree-node__leaf {
+  outline: none;
+  outline: none;
+}
+
+.directory .tree-node {
+  cursor: pointer;
+}
+
+.directory .tree-node:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.directory .tree .tree-node--focused {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.directory .tree .tree-node--selected {
+  background: rgba(48, 107, 176);
+}
+
+.directory .tree-node__branch {
+  display: block;
+}
+
+.directory .icon {
+  vertical-align: middle;
+  padding-right: 5px;
+}
+
+/* Fim TreeViewMenu */
+
 @media (max-width: 992px) {
   #basic-navbar-nav {
     margin-top: 0.25rem !important;
     margin-bottom: 0.25rem !important
   }
-  .nav-link > span {
+
+  .nav-link>span {
     display: block !important;
   }
-  /* .navbar .navbar-nav {
-        display: inline-block;
-        float: none;
-        vertical-align: center;
-    }
-
-    .navbar .navbar-collapse {
-        text-align: center;
-    } */
 }

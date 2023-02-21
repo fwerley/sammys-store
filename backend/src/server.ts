@@ -16,7 +16,7 @@ interface ServerData {
 }
 
 const port = Number(process.env.PORT) || 5000;
-const host = process.env.HOST || process.env.HOSTNAME || 'http://localhost'
+const host = process.env.HOSTNAME || 'http://localhost'
 
 const app = express();
 
@@ -68,5 +68,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server at ${host}${port}`);
+  console.log(`Server at ${host}:${port}`);
 });
