@@ -39,10 +39,9 @@ app.get("*", (req: Request, res: Response) => {
     }
     const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
     try {
-      let url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
-       
+      let url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host 
       const { data } = await axios.get<ServerData>(`${url}/api/products/slug/${slug}`);
-      // inject meta tags
+
       htmlData = htmlData.replace(
         "<title>Sammy's Store</title>",
         `<title>${data.name}</title>`
@@ -51,15 +50,18 @@ app.get("*", (req: Request, res: Response) => {
         .replace('__META_OG_DESCRIPTION__', data.description)
         .replace('__META_DESCRIPTION__', data.description)
         .replace('__META_OG_IMAGE__', data.image)
+        
+        return res.send(htmlData);
     } catch (error) {
       htmlData = htmlData.
-        replace('__META_OG_TITLE__', 'Sammy´s Store')
+        replace('__META_OG_TITLE__', "Sammy's Store")
         .replace('__META_OG_DESCRIPTION__', 'Sua loja de artigos de beleza, roupas, calçados e relógios')
         .replace('__META_DESCRIPTION__', 'Sua loja de artigos de beleza, roupas, calçados e relógios')
         .replace('__META_OG_IMAGE__', '/logo192.png')
+        
+        return res.send(htmlData);
     }
 
-    return res.send(htmlData);
   })
   // res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
 }
