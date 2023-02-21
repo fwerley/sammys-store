@@ -68,20 +68,20 @@ const FolderIcon = ({ isOpen }) =>
         <i className="fas fa-folder-open" />
     ) : (
         // <FaRegFolder color="e8a87c" className="icon" />
-        <i className="fas fa-folder-open" />
+        <i className="fas fa-folder-closed" />
     );
 
 const FileIcon = ({ filename }) => {
     const extension = filename.slice(filename.lastIndexOf(".") + 1);
     switch (extension) {
         case "js":
-            return <DiJavascript color="yellow" className="icon" />;
+            return <i class="fab fa-js"></i>//<DiJavascript color="yellow" className="icon" />;
         case "css":
-            return <DiCss3 color="turquoise" className="icon" />;
+            return <i class="fab fa-css3"></i>//<DiCss3 color="turquoise" className="icon" />;
         case "json":
-            return <FaList color="yellow" className="icon" />;
+            return <i class="fab fa-npm"></i>//<FaList color="yellow" className="icon" />;
         case "npmignore":
-            return <DiNpm color="red" className="icon" />;
+            return <i class="fab fa-npm"></i>//<DiNpm color="red" className="icon" />;
         default:
             return null;
     }
