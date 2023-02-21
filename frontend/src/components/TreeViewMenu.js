@@ -1,10 +1,7 @@
 import React from 'react';
 import TreeView, { flattenTree } from "react-accessible-treeview";
 
-const data = flattenTree(folder);
-
-export default function TreeViewMenu() {
-    const folder = {
+ const folder = {
         name: "",
         children: [
             {
@@ -32,10 +29,13 @@ export default function TreeViewMenu() {
             },
         ],
     };
+const data = flattenTree(folder);
 
+export default function TreeViewMenu() {
+   
     return (
         <div>
-            <div className="directory">
+            <div className="directory my-2">
                 <TreeView
                     data={data}
                     aria-label="directory tree"
@@ -65,23 +65,23 @@ export default function TreeViewMenu() {
 const FolderIcon = ({ isOpen }) =>
     isOpen ? (
         // <FaRegFolderOpen color="e8a87c" className="icon" />
-        <i className="fas fa-folder-open" />
+        <i className="fas fa-chevron-down text-primary" >&ensp;</i>
     ) : (
         // <FaRegFolder color="e8a87c" className="icon" />
-        <i className="fas fa-folder-closed" />
+        <i className="fas fa-chevron-right text-primary" >&ensp;</i>
     );
 
 const FileIcon = ({ filename }) => {
     const extension = filename.slice(filename.lastIndexOf(".") + 1);
     switch (extension) {
         case "js":
-            return <i class="fab fa-js"></i>//<DiJavascript color="yellow" className="icon" />;
+            return <i class="fab fa-js text-primary">&ensp;</i>//<DiJavascript color="yellow" className="icon" />;
         case "css":
-            return <i class="fab fa-css3"></i>//<DiCss3 color="turquoise" className="icon" />;
+            return <i class="fab fa-css3 text-primary">&ensp;</i>//<DiCss3 color="turquoise" className="icon" />;
         case "json":
-            return <i class="fab fa-npm"></i>//<FaList color="yellow" className="icon" />;
+            return <i class="fab fa-npm text-primary">&ensp;</i>//<FaList color="yellow" className="icon" />;
         case "npmignore":
-            return <i class="fab fa-npm"></i>//<DiNpm color="red" className="icon" />;
+            return <i class="fab fa-npm text-primary">&ensp;</i>//<DiNpm color="red" className="icon" />;
         default:
             return null;
     }

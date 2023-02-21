@@ -16,7 +16,7 @@ interface ServerData {
 }
 
 const port = Number(process.env.PORT) || 5000;
-const host = process.env.HOSTNAME || 'http://localhost'
+const host = `https://${process.env.HOSTNAME}` || 'http://localhost'
 
 const app = express();
 

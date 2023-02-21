@@ -214,14 +214,16 @@ ul>li {
 
 /* TreeViewMenu */
 .directory {
-  background: #242322;
-  font-family: monospace;
+  background: #f8f9fa;
+  /* font-family: monospace; */
   font-size: 16px;
-  color: white;
+  color: #212529;
   user-select: none;
   padding: 20px;
   border-radius: 0.4em;
 }
+
+.tree-branch-wrapper {}
 
 .directory .tree,
 .directory .tree-node,
@@ -250,7 +252,8 @@ ul>li {
 }
 
 .directory .tree .tree-node--selected {
-  background: rgba(48, 107, 176);
+  background: rgba(var(--primary-color));
+  border-radius: 0.2em;
 }
 
 .directory .tree-node__branch {

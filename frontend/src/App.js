@@ -37,6 +37,7 @@ import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import { fetchCategories, selectProducts } from './slice/productsSlice';
+import TreeViewMenu from './components/TreeViewMenu';
 
 function App() {
   const dispatch = useDispatch();
@@ -173,6 +174,7 @@ function App() {
               </div>
             </Nav.Item>
             {/* TreeView */}
+            <TreeViewMenu />
             {categories.map((category) => (
               <Nav.Item key={category.category}>
                 <LinkContainer
