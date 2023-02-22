@@ -139,7 +139,7 @@ export default {
       },
     });
     if (order) {
-      if (order.user.id === req.user?.id) {
+      if (order.user.id === req.user?.id || req.user?.isAdmin) {
         res.send(order);
       } else {
         res.status(401).send({ message: 'Requisição não autorizada' });

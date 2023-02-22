@@ -37,31 +37,27 @@ app.get("*", (req: Request, res: Response) => {
       console.error('Error during file reading', err);
       return res.status(404).end()
     }
-    const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
-    try {
-      let url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host 
-      const { data } = await axios.get<ServerData>(`${url}/api/products/slug/${slug}`);
 
-      htmlData = htmlData.replace(
-        "<title>Sammy's Store</title>",
-        `<title>${data.name}</title>`
-      )
-        .replace('__META_OG_TITLE__', data.name)
-        .replace('__META_OG_DESCRIPTION__', data.description)
-        .replace('__META_DESCRIPTION__', data.description)
-        .replace('__META_OG_IMAGE__', data.image)
-        
-        return res.send(htmlData);
+    let data;
+    try {
+      const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
+      let url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
+      data = await axios.get<ServerData>(`${url}/api/products/slug/${slug}`);
     } catch (error) {
-      htmlData = htmlData.
-        replace('__META_OG_TITLE__', "Sammy's Store")
-        .replace('__META_OG_DESCRIPTION__', 'Sua loja de artigos de beleza, roupas, calçados e relógios')
-        .replace('__META_DESCRIPTION__', 'Sua loja de artigos de beleza, roupas, calçados e relógios')
-        .replace('__META_OG_IMAGE__', '/logo192.png')
-        
-        return res.send(htmlData);
+      return res.send(htmlData);
     }
 
+    if (data) {
+      htmlData = htmlData.replace(
+        "<title>Sammy´s Store</title>",
+        `<title>${data?.data.name}</title>`
+      )
+        .replace('Sammy´s Store', data.data.name)
+        .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
+        .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
+        .replace(`/logo512.png`, data.data.image)
+      return res.send(htmlData);
+    }
   })
   // res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
 }
@@ -72,5 +68,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server at ${host}:${port}`);
+  console.log(`Server at ${host}`);
 });

@@ -14,11 +14,11 @@ import { Link } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import {
-  createFail,
   deliverFail,
   deliverRequest,
   deliverReset,
   deliverSuccess,
+  fetchFail,
   fetchSuccess,
   selectOrder,
 } from '../slice/orderSlice';
@@ -50,9 +50,9 @@ export default function OrderScreen() {
       const { data } = await axios.get(`/api/orders/${orderId}`, {
         headers: { authorization: `Bearer ${userInfo.token}` },
       });
-      dispatch(fetchSuccess(data));
+      dispatch(fetchSuccess(data));    
     } catch (error) {
-      dispatch(createFail(getError(error)));
+      dispatch(fetchFail(getError(error)));
     }
   };
 
