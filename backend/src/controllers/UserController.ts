@@ -14,6 +14,11 @@ export default {
     res.json(createdUsers);
   },
 
+  async store(req: Request, res: Response) {
+    const users = await prismaClient.user.findMany({});
+    res.send(users)
+  },
+
   async signin(req: Request, res: Response) {
     const user = await prismaClient.user.findFirst({
       where: {
@@ -64,12 +69,12 @@ export default {
       name: name || req.user?.name,
       email: email || req.user?.email,
     }
-    if (password){
-      Object.assign(dataUser, {password: bcrypt.hashSync(password, 10)})
+    if (password) {
+      Object.assign(dataUser, { password: bcrypt.hashSync(password, 10) })
     }
 
     try {
-      const updatedUser = await prismaClient.user.update({        
+      const updatedUser = await prismaClient.user.update({
         where: {
           id: req.user?.id
         },
@@ -82,8 +87,8 @@ export default {
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
       });
-    }catch (err) {
-      res.status(404).send({message: 'Usuário não encontrado'});
+    } catch (err) {
+      res.status(404).send({ message: 'Usuário não encontrado' });
       console.log(err)
     }
   },

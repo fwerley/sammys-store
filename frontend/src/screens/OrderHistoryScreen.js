@@ -9,7 +9,7 @@ import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
 import { createRequest, fetchFail, fetchOrdersSuccess, selectOrder } from '../slice/orderSlice'
 import { selectUser } from '../slice/userSlice'
-import { formatedDate, getError } from '../utils'
+import { formatCoin, formatedDate, getError } from '../utils'
 
 export default function OrderHistoryScreen() {
 
@@ -63,7 +63,7 @@ export default function OrderHistoryScreen() {
                             <tr key={order.id}>
                                 <td>{order.id}</td>
                                 <td>{formatedDate(order.createdAt)}</td>
-                                <td>R$ {order.orderPrice.totalPrice.toFixed(2)}</td>
+                                <td>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</td>
                                 <td>{order.isPaid ? formatedDate(order.orderPrice.updatedAt) : 'Não'}</td>
                                 <td>
                                     {order.isDelivered

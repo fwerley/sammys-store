@@ -18,6 +18,10 @@ export const shuffle = (array) => {
   return array;
 }
 
+export const formatCoin = (value) => {
+  return new Intl.NumberFormat("pt-BR", { style: 'currency', currency: "BRL" }).format(value);
+}
+
 export const formatedDate = (date) => {
   try {
     let paidAt = date.split(':')[0];

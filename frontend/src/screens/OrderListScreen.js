@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 
 import { createRequest, deleteFail, deleteRequest, deleteReset, deleteSuccess, fetchFail, fetchOrdersSuccess, selectOrder } from '../slice/orderSlice';
 import { selectUser } from '../slice/userSlice';
-import { formatedDate, getError } from '../utils';
+import { formatCoin, formatedDate, getError } from '../utils';
 import HelmetSEO from '../components/HelmetSEO';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
@@ -88,7 +88,7 @@ export default function OrderListScreen() {
                                 <td>{order.id}</td>
                                 <td>{order.user ? order.user.name : 'Usuário deletado'}</td>
                                 <td>{formatedDate(order.createdAt)}</td>
-                                <td>R$ {order.orderPrice.totalPrice.toFixed(2)}</td>
+                                <td>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</td>
                                 <td>{order.isPaid ? formatedDate(order.orderPrice.updatedAt) : 'Não'}</td>
                                 <td>
                                     {order.isDelivered

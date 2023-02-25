@@ -2,7 +2,16 @@ import { OrderItem } from '@prisma/client';
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 
+interface IDailyOrders {
+  _sum: {
+    totalPrice: number | null,
+    totalPriceApproved: number | null
+  }
+  createdAt: Date
+}
+
 export default {
+
   async insert(req: Request, res: Response) {
     const { orderPrice, paymentMethod, shippingAddress, orderItems } = req.body;
 
@@ -69,6 +78,9 @@ export default {
             updatedAt: true
           }
         }
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     })
     res.send(orders);
@@ -80,6 +92,18 @@ export default {
         totalPrice: true
       },
       _count: true
+    });
+
+    const ordersApproved = await prismaClient.priceOrder.aggregate({
+      _sum: {
+        totalPrice: true
+      },
+      _count: true,
+      where: {
+        Order: {
+          isPaid: true
+        }
+      }
     });
 
     const users = await prismaClient.user.aggregate({
@@ -96,13 +120,42 @@ export default {
       }
     });
 
+    const dailyOrdersOpproved = await prismaClient.priceOrder.groupBy({
+      by: ['createdAt'],
+      _sum: {
+        totalPrice: true
+      },
+      orderBy: {
+        createdAt: 'asc'
+      },
+      where: {
+        Order: {
+          isPaid: true
+        }
+      }
+    });
+
     const productCategories = await prismaClient.product.groupBy({
       by: ['category'],
       _count: true
 
     });
 
-    res.send({ orders, users, dailyOrders, productCategories })
+    let myNewOrdersSum = dailyOrders.map(order => {
+      let item = dailyOrdersOpproved.reduce((sum, record) => {
+        return (Number(record.createdAt) === Number(order.createdAt)) ? sum + record._sum.totalPrice! : sum
+      }, 0)
+      const newItem: IDailyOrders = {
+        _sum: {
+          totalPrice: order._sum.totalPrice,
+          totalPriceApproved: item
+        },
+        createdAt: order.createdAt
+      }
+      return newItem;
+    })
+
+    res.send({ orders, ordersApproved, users, dailyOrders: myNewOrdersSum, productCategories })
   },
 
   async mine(req: Request, res: Response) {
@@ -112,6 +165,9 @@ export default {
       },
       include: {
         orderPrice: true
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     });
     res.send(orders);

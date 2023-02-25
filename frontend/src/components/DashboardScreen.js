@@ -11,7 +11,7 @@ import Card from 'react-bootstrap/Card';
 
 import { fetchFail, fetchRequest, fetchSuccess, selectDashboard } from '../slice/dashboardSlice';
 import { selectUser } from '../slice/userSlice';
-import { formatedDate, getError } from '../utils';
+import { formatCoin, formatedDate, getError } from '../utils';
 import LoadingBox from './LoadingBox';
 import MessageBox from './MessageBox';
 
@@ -86,8 +86,8 @@ export default function DashboardScreen() {
                   <Card>
                     <Card.Body>
                       <Card.Title>
-                        R$ {summary.users && summary.orders._sum.totalPrice
-                          ? summary.orders._sum.totalPrice.toFixed(2)
+                        {summary.users && summary.orders._sum.totalPrice
+                          ? formatCoin(summary.orders._sum.totalPrice.toFixed(2))
                           : 0}
                       </Card.Title>
                       <Card.Text>Pedidos</Card.Text>
@@ -106,8 +106,8 @@ export default function DashboardScreen() {
                     chartType='AreaChart'
                     loader={<div>Carregando gráfico...</div>}
                     data={[
-                      ['Data', 'Vendas'],
-                      ...summary.dailyOrders.map((x) => [formatedDate(x.createdAt), x._sum.totalPrice]),
+                      ['Data', 'Faturado', 'Vendas'],
+                      ...summary.dailyOrders.map((x) => [formatedDate(x.createdAt), x._sum.totalPriceApproved, x._sum.totalPrice]),
                     ]}
                     options={options}
                   ></Chart>

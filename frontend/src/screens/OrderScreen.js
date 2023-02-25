@@ -23,7 +23,7 @@ import {
   selectOrder,
 } from '../slice/orderSlice';
 import { selectUser } from '../slice/userSlice';
-import { formatedDate, getError } from '../utils';
+import { formatCoin, formatedDate, getError } from '../utils';
 import { paymentReset, selectPayment } from '../slice/paymentSlice';
 import ModalBox from '../components/ModalBox';
 import HelmetSEO from '../components/HelmetSEO';
@@ -40,6 +40,7 @@ export default function OrderScreen() {
   const dispatch = useDispatch();
 
   const [modalShow, setModalShow] = useState(false);
+  const [loadData, setLoadData] = useState(true);
 
   const { id: orderId } = params;
 
@@ -50,7 +51,7 @@ export default function OrderScreen() {
       const { data } = await axios.get(`/api/orders/${orderId}`, {
         headers: { authorization: `Bearer ${userInfo.token}` },
       });
-      dispatch(fetchSuccess(data));    
+      dispatch(fetchSuccess(data));
     } catch (error) {
       dispatch(fetchFail(getError(error)));
     }
@@ -83,6 +84,7 @@ export default function OrderScreen() {
   }
 
   useEffect(() => {
+    setLoadData(true);
     if (!userInfo) {
       return navigate('/signin');
     }
@@ -91,7 +93,7 @@ export default function OrderScreen() {
       fetchTransactionData();
       dispatch(deliverReset())
     }
-
+    setLoadData(false);
   }, [order, userInfo, orderId, successDeliver, navigate, dispatch]);
 
 
@@ -215,7 +217,7 @@ export default function OrderScreen() {
                 {order.shippingAddress.federativeUnity}{', '}
                 {order.shippingAddress.postalCode}
               </Card.Text>
-              {loadingTransaction ? (
+              {loadingDeliver ? (
                 <LoadingBox />
               ) : order.isDelivered ? (
                 <MessageBox variant="success">
@@ -264,7 +266,7 @@ export default function OrderScreen() {
                       <Col md={3}>
                         <span>{item.quantity}</span>
                       </Col>
-                      <Col md={3}>R$ {item.product.price}</Col>
+                      <Col md={3}>{formatCoin(item.product.price)}</Col>
                     </Row>
                   </ListGroup.Item>
                 ))}
@@ -280,19 +282,19 @@ export default function OrderScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Itens</Col>
-                    <Col>R$ {order.orderPrice.itemsPrice.toFixed(2)}</Col>
+                    <Col>{formatCoin(order.orderPrice.itemsPrice.toFixed(2))}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Envio</Col>
-                    <Col>R$ {order.orderPrice.shippingPrice.toFixed(2)}</Col>
+                    <Col>{formatCoin(order.orderPrice.shippingPrice.toFixed(2))}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Taxa</Col>
-                    <Col>R$ {order.orderPrice.taxPrice.toFixed(2)}</Col>
+                    <Col>{formatCoin(order.orderPrice.taxPrice.toFixed(2))}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -300,10 +302,10 @@ export default function OrderScreen() {
                     <Col>
                       <strong>Total</strong>
                     </Col>
-                    <Col><strong>R$ {order.orderPrice.totalPrice.toFixed(2)}</strong></Col>
+                    <Col><strong>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</strong></Col>
                   </Row>
                 </ListGroup.Item>
-                {
+                {loadingTransaction ? ('') :
                   transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' ?
                     (
                       <ListGroup.Item>

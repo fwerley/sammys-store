@@ -1,43 +1,42 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import Navbar from 'react-bootstrap/Navbar';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Nav from 'react-bootstrap/Nav';
-import Badge from 'react-bootstrap/Badge';
+import { useDispatch, useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
-import { LinkContainer } from 'react-router-bootstrap';
+import 'react-toastify/dist/ReactToastify.css';
+import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
+import Nav from 'react-bootstrap/Nav';
 
-import HomeScreen from './screens/HomeScreen';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import ProductScreen from './screens/ProductScreen';
-import CartScreen from './screens/CartScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import SigninScreen from './screens/SigninScreen';
 import SignupScreen from './screens/SignupScreen';
-import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import OrderScreen from './screens/OrderScreen';
+import HomeScreen from './screens/HomeScreen';
+import CartScreen from './screens/CartScreen';
 
+import { fetchCategories, selectProducts } from './slice/productsSlice';
 import { selectUser, userSignout } from './slice/userSlice';
 import { selectCart, cartDelete } from './slice/cartSlice';
-import PaymentMethodScreen from './screens/PaymentMethodScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
-import OrderScreen from './screens/OrderScreen';
-import OrderHistoryScreen from './screens/OrderHistoryScreen';
-import ProfileScreen from './screens/ProfileScreen';
 import { useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import { getError } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
 import SearchScreen from './components/SearchScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardScreen from './components/DashboardScreen';
-import AdminRoute from './components/AdminRoute';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
-import { fetchCategories, selectProducts } from './slice/productsSlice';
-import TreeViewMenu from './components/TreeViewMenu';
+import AdminRoute from './components/AdminRoute';
+import UserListScreen from './screens/UserListScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -173,8 +172,6 @@ function App() {
                 </Button>
               </div>
             </Nav.Item>
-            {/* TreeView */}
-            <TreeViewMenu />
             {categories.map((category) => (
               <Nav.Item key={category.category}>
                 <LinkContainer
@@ -221,6 +218,10 @@ function App() {
               <Route path='/admin/orders' element={
                 <AdminRoute>
                   <OrderListScreen />
+                </AdminRoute>} />
+              <Route path='/admin/users' element={
+                <AdminRoute>
+                  <UserListScreen />
                 </AdminRoute>} />
               <Route path='/admin/products' element={
                 <AdminRoute>

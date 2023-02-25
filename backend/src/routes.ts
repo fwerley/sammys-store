@@ -31,6 +31,7 @@ routes.get('/api/products/slug/:slug', ProductController.slug);
 routes.post('/api/upload/image', isAuth, isAdmin, upload.single('file'), UploadController.image)
 
 // Users section
+routes.get('/api/users', isAuth, isAdmin, UserController.store);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
 routes.put('/api/users/profile', isAuth, UserController.profile);

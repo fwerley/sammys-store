@@ -20,6 +20,7 @@ const userSlice = createSlice({
       return {
         ...state,
         loading: true,
+        error: ''
       };
     },
     userUpdateResquest(state) {
@@ -39,6 +40,27 @@ const userSlice = createSlice({
         ...state,
         loadingUpdate: false,
       };
+    },
+    fetchUsers(state) {
+      return {
+        ...state,
+        loading: true,
+        error: ''
+      }
+    },
+    fetchUsersSuccess(state, { payload }) {
+      return {
+        ...state,
+        loading: false,
+        users: payload
+      }
+    },
+    fetchUsersFail(state, { payload }) {
+      return {
+        ...state,
+        loading: false,
+        error: payload
+      }
     },
     userSignin(state, { payload }) {
       return {
@@ -82,6 +104,9 @@ export const {
   userUpdateSuccess,
   userUpdateResquest,
   saveShippingAddress,
+  fetchUsers,
+  fetchUsersSuccess,
+  fetchUsersFail
 } = userSlice.actions;
 export const selectUser = (state) => state.userStore;
 export default userSlice.reducer;
