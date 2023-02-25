@@ -19,6 +19,70 @@ export default {
     res.send(users)
   },
 
+  async find(req: Request, res: Response) {
+    const { id: userId } = req.params;
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId
+      }
+    });
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send({ message: 'Usuário não encontrado' });
+    }
+
+  },
+
+  async update(req: Request, res: Response) {
+    const { id: userId } = req.params;
+    const { name, email, isAdmin } = req.body;
+    try {
+      await prismaClient.user.update({
+        where: {
+          id: userId
+        },
+        data: {
+          name,
+          email,
+          isAdmin
+        }
+      });
+      res.status(202).send({ message: 'Usuario atualizado' });
+    } catch (err) {
+      res.status(404).send({ message: 'Usuário não encontrado' });
+    }
+
+  },
+
+  async delete(req: Request, res: Response) {
+    const { id: userId } = req.params;
+
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId
+      }
+    })
+
+    if (user?.email === 'admin@example.com') {
+      res.status(400).send({ message: 'Você não pode deletar o Administrador' });
+      return;
+    }
+
+    try {
+      await prismaClient.user.delete({
+        where: {
+          id: userId
+        }
+      });
+      res.send({ message: 'Usuário deletado' });
+      console.log(true)
+    } catch (err) {
+      res.status(404).send({ message: 'Erro ao deletar o usuário' });
+    }
+
+  },
+
   async signin(req: Request, res: Response) {
     const user = await prismaClient.user.findFirst({
       where: {

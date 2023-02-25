@@ -32,6 +32,9 @@ routes.post('/api/upload/image', isAuth, isAdmin, upload.single('file'), UploadC
 
 // Users section
 routes.get('/api/users', isAuth, isAdmin, UserController.store);
+routes.get('/api/users/:id', isAuth, isAdmin, UserController.find);
+routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
+routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
 routes.put('/api/users/profile', isAuth, UserController.profile);

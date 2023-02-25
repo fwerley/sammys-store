@@ -208,6 +208,11 @@ main {
   align-items: stretch;
 }
 
+.table tbody tr:hover {
+  background: #ddd;
+  transition: .4s
+}
+
 ul>li {
   list-style: none;
 }

@@ -37,6 +37,7 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import AdminRoute from './components/AdminRoute';
 import UserListScreen from './screens/UserListScreen';
+import UserEditScreen from './screens/UserEditScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -230,6 +231,10 @@ function App() {
               <Route path='/admin/product/:id' element={
                 <AdminRoute>
                   <ProductEditScreen />
+                </AdminRoute>} />
+              <Route path='/admin/user/:id' element={
+                <AdminRoute>
+                  <UserEditScreen />
                 </AdminRoute>} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>

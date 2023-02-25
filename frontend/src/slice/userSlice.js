@@ -9,6 +9,8 @@ const userStore = {
   shippingAddress: shpAddress ? JSON.parse(shpAddress) : {},
   loading: false,
   loadingUpdate: false,
+  loadingDelete: false,
+  successDelete: false,
   error: '',
 };
 
@@ -21,6 +23,35 @@ const userSlice = createSlice({
         ...state,
         loading: true,
         error: ''
+      };
+    },
+    userResquestSuccess(state) {
+      return {
+        ...state,
+        loading: false
+      }
+    },
+    userSignin(state, { payload }) {
+      return {
+        ...state,
+        userInfo: payload,
+        loading: false,
+      };
+    },
+    userSignout(state, { payload }) {
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('shippingAddress');
+      return {
+        ...state,
+        userInfo: null,
+        shippingAddress: {},
+      };
+    },
+    userFailure(state, { payload }) {
+      return {
+        ...state,
+        error: payload,
+        loading: false,
       };
     },
     userUpdateResquest(state) {
@@ -40,6 +71,33 @@ const userSlice = createSlice({
         ...state,
         loadingUpdate: false,
       };
+    },
+    deleteUserRequest(state) {
+      return {
+        ...state,
+        loadingDelete: true,
+        successDelete: false
+      }
+    },
+    deleteUserSuccess(state, { payload }) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: true
+      }
+    },
+    deleteUserFail(state, { payload }) {
+      return {
+        ...state,
+        loadingDelete: false,
+      }
+    },
+    deleteUserReset(state) {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: false
+      }
     },
     fetchUsers(state) {
       return {
@@ -62,29 +120,6 @@ const userSlice = createSlice({
         error: payload
       }
     },
-    userSignin(state, { payload }) {
-      return {
-        ...state,
-        userInfo: payload,
-        loading: false,
-      };
-    },
-    userFailure(state, { payload }) {
-      return {
-        ...state,
-        error: payload,
-        loading: false,
-      };
-    },
-    userSignout(state, { payload }) {
-      localStorage.removeItem('userInfo');
-      localStorage.removeItem('shippingAddress');
-      return {
-        ...state,
-        userInfo: null,
-        shippingAddress: {},
-      };
-    },
     saveShippingAddress(state, { payload }) {
       localStorage.setItem('shippingAddress', JSON.stringify(payload));
       return {
@@ -97,9 +132,14 @@ const userSlice = createSlice({
 
 export const {
   userResquest,
+  userResquestSuccess,
   userSignin,
   userFailure,
   userSignout,
+  deleteUserRequest,
+  deleteUserSuccess,
+  deleteUserFail,
+  deleteUserReset,
   userUpdateFail,
   userUpdateSuccess,
   userUpdateResquest,
