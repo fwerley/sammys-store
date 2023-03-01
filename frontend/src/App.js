@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Cart3 } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/Container';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -38,11 +39,12 @@ import OrderListScreen from './screens/OrderListScreen';
 import AdminRoute from './components/AdminRoute';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import MapScreen from './screens/MapScreen';
 
 function App() {
   const dispatch = useDispatch();
   const { cart } = useSelector(selectCart);
-  const { userInfo } = useSelector(selectUser);
+  const { userInfo, fullBox } = useSelector(selectUser);
   const { categories } = useSelector(selectProducts);
 
   const signoutHandler = () => {
@@ -71,9 +73,13 @@ function App() {
     <BrowserRouter>
       <div
         className={
-          // sidebarIsOpen ?
-          //   "d-flex flex-column site-container active-cont" :
-          "d-flex flex-column site-container"
+          // sidebarIsOpen
+          // ? fullBox
+          //  ? "d-flex flex-column site-container active-cont full-box" 
+          //  : "d-flex flex-column site-container active-cont" :
+          fullBox ?
+            "d-flex flex-column site-container full-box"
+            : "d-flex flex-column site-container"
         }
       >
         <ToastContainer position="bottom-center" limit={1} />
@@ -99,8 +105,9 @@ function App() {
                   <Link to="/cart" className="nav-link">
                     <div className="cart-container">
                       <div className="circle">
-                        <span className="cart-item">
-                          <i className="fas fa-shopping-cart" />
+                        <span className="cart-item text-center">
+                          {/* <i className="fas fa-shopping-cart" /> */}
+                          <Cart3 />
                         </span>
                       </div>
                       {cart.length > 0 && (
@@ -210,6 +217,10 @@ function App() {
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <ProfileScreen />
+                </ProtectedRoute>} />
+              <Route path="/map" element={
+                <ProtectedRoute>
+                  <MapScreen />
                 </ProtectedRoute>} />
               {/* Admin Routes */}
               <Route path='/admin/dashboard' element={

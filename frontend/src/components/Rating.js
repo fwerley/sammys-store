@@ -1,61 +1,53 @@
+import { StarFill, StarHalf, Star } from 'react-bootstrap-icons';
+
 function Rating(props) {
   const { rating, numReviews, caption } = props;
   return (
     <div className="rating">
       <span>
-        <i
-          className={
-            rating >= 1
-              ? 'fas fa-star'
-              : rating >= 0.5
-                ? 'fas fa-star-half-alt'
-                : 'far fa-star'
-          }
-        />
+        {
+          rating >= 1
+            ? <StarFill />//'fas fa-star'
+            : rating >= 0.5
+              ? <StarHalf />//'fas fa-star-half-alt'
+              : <Star />//'far fa-star'
+        }
       </span>
       <span>
-        <i
-          className={
-            rating >= 2
-              ? 'fas fa-star'
-              : rating >= 1.5
-                ? 'fas fa-star-half-alt'
-                : 'far fa-star'
-          }
-        />
+        {
+          rating >= 2
+            ? <StarFill />
+            : rating >= 1.5
+              ? <StarHalf />
+              : <Star />
+        }
       </span>
       <span>
-        <i
-          className={
-            rating >= 3
-              ? 'fas fa-star'
-              : rating >= 2.5
-                ? 'fas fa-star-half-alt'
-                : 'far fa-star'
-          }
-        />
+        {
+          rating >= 3
+            ? <StarFill />
+            : rating >= 2.5
+              ? <StarHalf />
+              : <Star />
+        }
       </span>
       <span>
-        <i
-          className={
-            rating >= 4
-              ? 'fas fa-star'
-              : rating >= 3.5
-                ? 'fas fa-star-half-alt'
-                : 'far fa-star'
-          }
-        />
+        {
+          rating >= 4
+            ? <StarFill />
+            : rating >= 3.5
+              ? <StarHalf />
+              : <Star />
+        }
       </span>
       <span>
-        <i
-          className={
-            rating >= 5
-              ? 'fas fa-star'
-              : rating >= 4.5
-                ? 'fas fa-star-half-alt'
-                : 'far fa-star'
-          }
-        />
+        {
+          rating >= 5
+            ? <StarFill />
+            : rating >= 4.5
+              ? <StarHalf />
+              : <Star />
+        }
       </span>
       {caption ? (
         <span>{caption}</span>

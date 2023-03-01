@@ -4,6 +4,7 @@ const user = localStorage.getItem('userInfo');
 const shpAddress = localStorage.getItem('shippingAddress');
 
 const userStore = {
+  fullBox: false,
   users: [],
   userInfo: user ? JSON.parse(user) : null,
   shippingAddress: shpAddress ? JSON.parse(shpAddress) : {},
@@ -127,6 +128,18 @@ const userSlice = createSlice({
         shippingAddress: payload,
       };
     },
+    setFullBoxOn(state) {
+      return {
+        ...state,
+        fullBox: true
+      }
+    },
+    setFullBoxOff(state) {
+      return {
+        ...state,
+        fullBox: false
+      }
+    },
   },
 });
 
@@ -146,7 +159,9 @@ export const {
   saveShippingAddress,
   fetchUsers,
   fetchUsersSuccess,
-  fetchUsersFail
+  fetchUsersFail,
+  setFullBoxOn,
+  setFullBoxOff
 } = userSlice.actions;
 export const selectUser = (state) => state.userStore;
 export default userSlice.reducer;

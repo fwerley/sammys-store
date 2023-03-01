@@ -24,6 +24,7 @@ import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { addCartItem, selectCart } from '../slice/cartSlice';
 import HelmetSEO from '../components/HelmetSEO';
+import { Cart3 } from 'react-bootstrap-icons';
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -126,6 +127,7 @@ function ProductScreen() {
                   <ListGroup.Item>
                     <div className="d-grid">
                       <Button onClick={addToCartHandler} variant="primary">
+                      <Cart3 />&nbsp;
                         Add ao carrinho
                       </Button>
                     </div>

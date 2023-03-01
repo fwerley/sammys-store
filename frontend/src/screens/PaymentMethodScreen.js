@@ -14,6 +14,7 @@ import { selectUser } from '../slice/userSlice';
 import { selectCart } from '../slice/cartSlice';
 import { cartPaymentMethod, cartPaymentData } from '../slice/cartSlice';
 import HelmetSEO from '../components/HelmetSEO';
+import { ArrowRight } from 'react-bootstrap-icons';
 
 export default function PaymentMethodScreen() {
   const navigate = useNavigate();
@@ -59,157 +60,48 @@ export default function PaymentMethodScreen() {
       <div className="container small-container">
         <h1 className="my-3">Forma de pagamento</h1>
         <Form onSubmit={submitHandler}>
-          <Tab.Container id="left-tabs-example" defaultActiveKey={paymentMethodName === 'Cartao'? 'first': 'second'}>
+          <Tab.Container id="left-tabs-example" defaultActiveKey={paymentMethodName === 'Cartao' ? 'first' : 'second'}>
             <Row>
               <Col sm={3}>
                 {/* <Nav variant="pills" className="flex-column">
                   <Nav.Item>
                     <Nav.Link eventKey="first"> */}
-                      <Form.Check
-                        type="radio"
-                        id="Cartao"
-                        label="Cartão"
-                        value="CREDIT_CARD"
-                        checked={paymentMethodName === 'CREDIT_CARD'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                    {/* </Nav.Link>
+                <Form.Check
+                  type="radio"
+                  id="Cartao"
+                  label="Cartão"
+                  value="CREDIT_CARD"
+                  checked={paymentMethodName === 'CREDIT_CARD'}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                {/* </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
                     <Nav.Link eventKey="second"> */}
-                      <Form.Check
-                        type="radio"
-                        id="Boleto"
-                        label="Boleto"
-                        value="BILLET"
-                        checked={paymentMethodName === 'BILLET'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                      <Form.Check
-                        type="radio"
-                        id="PIX"
-                        label="PIX"
-                        value="PIX"
-                        checked={paymentMethodName === 'PIX'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                    {/* </Nav.Link>
-                  </Nav.Item>
-                </Nav> */}
+                <Form.Check
+                  type="radio"
+                  id="Boleto"
+                  label="Boleto"
+                  value="BILLET"
+                  checked={paymentMethodName === 'BILLET'}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  id="PIX"
+                  label="PIX"
+                  value="PIX"
+                  checked={paymentMethodName === 'PIX'}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
               </Col>
-              {/* <Col sm={9}>
-                <Tab.Content className="ms-3">
-                  <Tab.Pane eventKey="first">
-                    <div className="mb-3">
-                      <Card>
-                        <Card.Body>
-                          <Card.Title>Dados do cartão de crédito</Card.Title>
-                          <ListGroup variant="flush">
-                            <ListGroup.Item>
-                              <div id="PaymentForm">
-                                <Cards
-                                  cvc={cvc}
-                                  expiry={expiry}
-                                  focused={focus}
-                                  name={name}
-                                  number={number}
-                                />
-                              </div>
-                            </ListGroup.Item>
-                            {paymentMethodName === 'CREDIT_CARD' ? (
-                              <ListGroup.Item>
-                                <Row>
-                                  <Form.Group
-                                    className="mb-3"
-                                    controlId="cardNumber"
-                                  >
-                                    <Form.Label>Número do cartão</Form.Label>
-                                    <Form.Control
-                                      type="number"
-                                      name="number"
-                                      value={number}
-                                      onFocus={handleInputFocus}
-                                      required
-                                      onChange={(e) =>
-                                        setNumber(e.target.value)
-                                      }
-                                    />
-                                  </Form.Group>
-                                </Row>
-                                <Row>
-                                  <Form.Group
-                                    className="mb-3"
-                                    controlId="cardNameUser"
-                                  >
-                                    <Form.Label>Nome impresso</Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      name="name"
-                                      value={name}
-                                      placeholder="Ex. F NASCIMENTO"
-                                      onFocus={handleInputFocus}
-                                      required
-                                      onChange={(e) => setName(e.target.value)}
-                                    />
-                                  </Form.Group>
-                                </Row>
-                                <Row>
-                                  <Col sm={7}>
-                                    <Form.Group
-                                      className="mb-3"
-                                      controlId="cardExpiry"
-                                    >
-                                      <Form.Label>Validade</Form.Label>
-                                      <Form.Control
-                                        type="text"
-                                        name="expiry"
-                                        value={expiry}
-                                        placeholder="MM/AA"
-                                        onFocus={handleInputFocus}
-                                        required
-                                        onChange={(e) =>
-                                          setExpiry(e.target.value)
-                                        }
-                                      />
-                                    </Form.Group>
-                                  </Col>
-                                  <Col sm={5}>
-                                    <Form.Group
-                                      className="mb-3"
-                                      controlId="cardCvc"
-                                    >
-                                      <Form.Label>CVC</Form.Label>
-                                      <Form.Control
-                                        type="text"
-                                        name="cvc"
-                                        value={cvc}
-                                        placeholder="CVV/CVC"
-                                        onFocus={handleInputFocus}
-                                        required
-                                        onChange={(e) => setCvc(e.target.value)}
-                                      />
-                                    </Form.Group>
-                                  </Col>
-                                </Row>
-                              </ListGroup.Item>
-                            ) : (
-                              //FIXME: Tira a renderização do cartão para evitar as chamadas aos campos de texto
-                              ''
-                            )}
-                          </ListGroup>
-                        </Card.Body>
-                      </Card>
-                    </div>
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="second">
-                    <div className="mb-3">World</div>
-                  </Tab.Pane>
-                </Tab.Content>
-              </Col> */}
             </Row>
           </Tab.Container>
           <div className="my-3">
-            <Button type="submit">Continuar</Button>
+            <Button type="submit">
+              <ArrowRight />&nbsp;
+              Continuar
+            </Button>
           </div>
         </Form>
       </div>

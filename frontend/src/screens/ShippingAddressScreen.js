@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputMask from 'react-input-mask';
+import { PinMapFill, ArrowRight, GlobeAmericas } from 'react-bootstrap-icons';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
@@ -11,18 +12,18 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { selectUser, saveShippingAddress } from '../slice/userSlice';
+import { selectUser, saveShippingAddress, setFullBoxOff } from '../slice/userSlice';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { estados } from '../utils';
+import { selectCart } from '../slice/cartSlice';
 
 export default function ShippingAddressScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { userInfo } = useSelector(selectUser);
-
-  const { shippingAddress } = useSelector(selectUser);
+  const { fullBox } = useSelector(selectCart);
+  const { userInfo, shippingAddress } = useSelector(selectUser);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [number, setNumber] = useState(shippingAddress.number || '');
@@ -40,6 +41,15 @@ export default function ShippingAddressScreen() {
     }
   }, [userInfo, navigate]);
 
+  useEffect(() => {
+    setNumber(shippingAddress.number)
+    setAddress(shippingAddress.address)
+    setNeighborhood(shippingAddress.neighborhood)
+    setCity(shippingAddress.city)
+    setPostalCode(shippingAddress.postalCode)
+    setCountry(shippingAddress.federativeUnity) 
+  },[shippingAddress])
+
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
@@ -51,10 +61,15 @@ export default function ShippingAddressScreen() {
         city,
         postalCode,
         federativeUnity,
+        location: shippingAddress.location
       })
     );
     navigate('/payment');
   };
+
+  useEffect(() => {
+    dispatch(setFullBoxOff())
+  }, [fullBox, dispatch])
 
   return (
     <div>
@@ -138,16 +153,28 @@ export default function ShippingAddressScreen() {
                   placeholder="Selecione o estado"
                   selected={federativeUnity}
                 />
-                {/* <Form.Control
-              value={federativeUnity}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-            /> */}
               </Form.Group>
             </Col>
           </Row>
-          <div className="mb-3">
+          <div className="mb-3 d-flex justify-content-between">
+            <Button
+              variant="light"
+              id="chooseOnMap"
+              type="button"
+              onClick={() => navigate('/map')}
+            >
+              <PinMapFill />&nbsp;
+              Ver no mapa
+            </Button>
+            {shippingAddress.location && shippingAddress.location.lat ? (
+              <div className='d-flex align-items-center justify-content-center btn-primary px-2 rounded'>
+                <GlobeAmericas />&nbsp;
+                {Number(shippingAddress.location.lat).toFixed(2)}&nbsp;
+                {Number(shippingAddress.location.lng).toFixed(2)}
+              </div>
+            ) : (<div>Sem localização</div>)}
             <Button variant="primary" type="submit">
+              <ArrowRight />&nbsp;
               Continuar
             </Button>
           </div>

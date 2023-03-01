@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import Rating from './Rating';
 import { addCartItem, selectCart } from '../slice/cartSlice';
+import { Cart3 } from 'react-bootstrap-icons';
 
 function Product(props) {
   const dispatch = useDispatch();
@@ -41,7 +42,8 @@ function Product(props) {
         <div className="d-flex justify-content-center position-absolute cart-button shadow rounded">
           {product.countInStock > 0 ? (
             <Button onClick={addToCartHandler}>
-              + <i className="fas fa-shopping-cart" />
+              + <Cart3 />
+              {/* <i className="fas fa-shopping-cart" /> */}
               {/* Add ao carrinho */}
             </Button>
           ) : (
@@ -56,7 +58,8 @@ function Product(props) {
                   variant="light"
                   style={{ pointerEvents: 'none' }}
                 >
-                  + <i className="fas fa-shopping-cart" />
+                  + <Cart3 />
+                  {/* <i className="fas fa-shopping-cart" /> */}
                   {/* Add ao carrinho */}
                 </Button>
               </span>

@@ -14,6 +14,7 @@ import { selectUser } from '../slice/userSlice';
 import { formatCoin, formatedDate, getError } from '../utils';
 import LoadingBox from './LoadingBox';
 import MessageBox from './MessageBox';
+import { Helmet } from 'react-helmet-async';
 
 export default function DashboardScreen() {
 
@@ -23,6 +24,7 @@ export default function DashboardScreen() {
 
   const options = {
     title: "Vendas diárias",
+    colors: ['#0D6EFD', 'green'],
     hAxis: { title: "Dia", titleTextStyle: { color: "#333" } },
     vAxis: { title: 'R$', minValue: 0 },
     // chartArea: { width: "50%", height: "70%" },
@@ -52,6 +54,9 @@ export default function DashboardScreen() {
 
   return (
     <div>
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <h1>Dashboard</h1>
       {loading ? (<LoadingBox />)
         : error ? (<MessageBox variant='danger'>{error}</MessageBox>)
@@ -87,7 +92,15 @@ export default function DashboardScreen() {
                     <Card.Body>
                       <Card.Title>
                         {summary.users && summary.orders._sum.totalPrice
-                          ? formatCoin(summary.orders._sum.totalPrice.toFixed(2))
+                          ? (
+                            <div className='d-flex justify-content-between'>
+                              <div className='text-primary'>{formatCoin(summary.orders._sum.totalPrice)}</div>
+                              <div className='text-success'>
+                                {formatCoin(summary.ordersApproved._sum.totalPrice) + ' (' +
+                                  (100 * summary.ordersApproved._sum.totalPrice / summary.orders._sum.totalPrice).toFixed(2) + '%)'}
+                              </div>
+                            </div>
+                          )
                           : 0}
                       </Card.Title>
                       <Card.Text>Pedidos</Card.Text>
@@ -106,8 +119,8 @@ export default function DashboardScreen() {
                     chartType='AreaChart'
                     loader={<div>Carregando gráfico...</div>}
                     data={[
-                      ['Data', 'Faturado', 'Vendas'],
-                      ...summary.dailyOrders.map((x) => [formatedDate(x.createdAt), x._sum.totalPriceApproved, x._sum.totalPrice]),
+                      ['Data', 'Vendas', 'Faturado'],
+                      ...summary.dailyOrders.map((x) => [formatedDate(x.createdAt), x._sum.totalPrice, x._sum.totalPriceApproved]),
                     ]}
                     options={options}
                   ></Chart>

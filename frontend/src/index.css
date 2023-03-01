@@ -73,6 +73,7 @@ a {
   width: 30px;
   border: 1px solid #ccc;
   border-radius: 50%;
+  text-align: center;
 }
 
 .cart-item i {
@@ -212,6 +213,88 @@ main {
   background: #ddd;
   transition: .4s
 }
+
+/* Map */
+.marker {
+  background-image: url("https://cdn2.iconfinder.com/data/icons/social-media-and-payment/64/-47-32.png");
+  top: 52.2%;
+  left: 47.7%;
+  width: 32px;
+  height: 32px;
+  transform: translate(50%, -50%);
+  /* margin-top: -32px;
+  margin-left: -32px;
+  padding-top: 16px;
+  padding-left: 16px; */
+  z-index: 1000;
+  position: absolute;
+}
+
+.full-box {
+  height: 100vh;
+  max-width: initial;
+}
+
+.full-box header,
+.full-box footer {
+  display: none;
+}
+
+.full-box .container {
+  height: 100vh;
+  max-width: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.full-box .mt-3 {
+  margin-top: 0 !important;
+}
+
+.map-input-box {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0.5rem auto;
+  /* width: 100%; */
+  height: 3rem;
+  display: flex;
+  z-index: 1000;
+}
+
+.map-input-box input {
+  border-radius: 1rem 0 0 1rem;
+  border-right: 0;
+  border: none;
+  padding-left: 8px
+}
+
+.map-input-box button {
+  border-radius: 0 1rem 1rem 0;
+  border-left: 0;
+}
+
+.ol-map {
+  min-width: 600px;
+  min-height: 500px;
+  height: 100%;
+  width: 100%;
+}
+
+.ol-control {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.ol-full-screen {
+  top: .5em;
+  right: .5em;
+}
+
+/* End Map */
 
 ul>li {
   list-style: none;

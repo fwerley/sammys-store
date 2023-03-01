@@ -44,7 +44,7 @@ const cartSlice = createSlice({
         paymentMethod: payload,
       };
     },
-    cartPaymentData(state, { payload }) {    
+    cartPaymentData(state, { payload }) {
       return {
         ...state,
         paymentData: payload,
@@ -58,7 +58,7 @@ const cartSlice = createSlice({
         cart: [],
         paymentMethod: '',
       };
-    },
+    }
   },
 });
 
