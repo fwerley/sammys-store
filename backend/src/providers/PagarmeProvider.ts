@@ -3,7 +3,8 @@ import { cpf } from "cpf-cnpj-validator";
 import moment from 'moment';
 import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
 import { prismaClient } from "../database/prismaClient";
-import { IPaymentProvider, ProcessParams, StatusTransaction, StatusType, UpdateParams } from "../services/IPaymentProvider";
+import { IPaymentProvider, ProcessParams, StatusTransaction, UpdateParams } from "../services/IPaymentProvider";
+import { translateStatus } from "../utils";
 import { basePagarme } from "./PagarmeClient";
 
 export default class PagarmeProvider implements IPaymentProvider {
@@ -149,7 +150,7 @@ export default class PagarmeProvider implements IPaymentProvider {
 
       const returnStatus: StatusTransaction = {
         transactionId: response.data.id,
-        status: this.translateStatus(response.data.status),
+        status: translateStatus(response.data.status),
         card: params.paymentType == "CREDIT_CARD" ? {
           id: response.data.charges[0].last_transaction.card.id
         } : undefined,
@@ -179,7 +180,7 @@ export default class PagarmeProvider implements IPaymentProvider {
       throw `Transaction ${params.code} not found.`
     }
 
-    const status = this.translateStatus(params.providerStatus)
+    const status = translateStatus(params.providerStatus)
 
     if (!status) {
       throw `Status is empty.`
@@ -195,34 +196,6 @@ export default class PagarmeProvider implements IPaymentProvider {
     })
 
     return transactionUpdated;
-  }
-
-  translateStatus(status: string): any {
-    const statusMap: StatusType<string> = {
-      processing: "PROCESSING",
-      waiting_payment: "PENDING",
-      authorized: "PENDING",
-      paid: "APPROVED",
-      refused: "REFUSED",
-      pending_refund: "REFUNDED",
-      refunded: "REFUNDED",
-      canceled: "REFUNDED",
-      chargedback: "CHARGBACK",
-      failed: "ERROR",
-      with_error: "ERROR",
-      partial_void: "ERROR",
-      error_on_refunding: "ERROR",
-      authorized_pending_capture: "PROCESSING",
-      not_authorized: "REFUSED",
-      captured: "APPROVED",
-      partial_capture: "PROCESSING",
-      waiting_capture: "PROCESSING",
-      voided: "REFUSED",
-      generated: "PROCESSING",
-      viewed: "PENDING",
-    }
-
-    return statusMap[status]
   }
 
 }

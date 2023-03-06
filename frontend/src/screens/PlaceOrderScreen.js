@@ -47,7 +47,7 @@ export default function PlaceOrderScreen() {
   const { paymentMethod, cart } = cartStore;
 
 
-  const paymentTranslate = {CREDIT_CARD : "Cartão", BILLET : "Boleto"}
+  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto" }
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
@@ -68,12 +68,12 @@ export default function PlaceOrderScreen() {
     try {
       dispatch(createRequest());
       // TODO: Verificar seção p/ enviar dados internamente pelo node
-
+      const { location, ...newShippingAddress } = shippingAddress
       const { data } = await Axios.post(
         '/api/orders',
         {
           orderItems: cart,
-          shippingAddress: {...shippingAddress, federativeUnity: shippingAddress.federativeUnity[0].sigla},
+          shippingAddress: { ...newShippingAddress, federativeUnity: newShippingAddress.federativeUnity[0].sigla },
           paymentMethod,
           orderPrice: {
             itemsPrice,
@@ -127,7 +127,7 @@ export default function PlaceOrderScreen() {
             pac: result.data[1].PrazoEntrega,
           },
           data: result.data,
-        });        
+        });
       } catch (err) {
         console.log(err);
       }
