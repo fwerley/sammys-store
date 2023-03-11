@@ -79,7 +79,6 @@ export default {
     res.json({ products });
   },
 
-
   async search(req: Request, res: Response) {
 
     interface IQueryFilter {
@@ -192,8 +191,14 @@ export default {
       where: {
         slug: slugParam,
       },
+      include: {
+        reviews: {
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }
+      }
     });
-
     if (result) {
       res.send(result);
     } else {
@@ -208,6 +213,65 @@ export default {
     });
     if (product) {
       res.send(product);
+    } else {
+      res.status(404).send({ message: 'Produto não encontrado' });
+    }
+  },
+
+  async review(req: Request, res: Response) {
+
+    interface IReview {
+      comment: string
+      rating: number
+    }
+    const { id: idProduct } = req.params;
+    const dataReview: IReview = req.body;
+
+    const product = await prismaClient.product.findUnique({
+      where: { id: idProduct },
+      include: {
+        reviews: true
+      }
+    });
+    if (product) {
+      if (product.reviews.find((x) => x.name === req.user?.name)) {
+        return res.status(400).send({ message: 'Você já avaliou este produto' })
+      }
+      const review = await prismaClient.reviewProduct.create({
+        data: {
+          comment: dataReview.comment,
+          rating: Number(dataReview.rating),
+          name: req.user?.name,
+          Product: {
+            connect: {
+              id: idProduct
+            }
+          }
+        }
+      })
+      product.reviews.push(review);
+      let numReviews = product.reviews.length;
+      let rating = product.reviews.reduce((a, c) => c.rating + a, 0) / product.reviews.length;
+      const producUpdate = await prismaClient.product.update({
+        where: {
+          id: idProduct
+        },
+        data: {
+          numReviews,
+          rating
+        },
+        include: {
+          reviews: {
+            orderBy: {
+              createdAt: 'desc'
+            }
+          }
+        }
+      })
+      res.status(201).send({
+        message: 'Avaliação criada',
+        product: producUpdate,      
+      });
     } else {
       res.status(404).send({ message: 'Produto não encontrado' });
     }

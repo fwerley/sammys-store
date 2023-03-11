@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const productStore = {
   product: {},
   loading: false,
+  loadingCreateReview: false,
   loadingUpload: false,
   loadingDelete: false,
   successDelete: false,
@@ -33,6 +34,24 @@ const productSlice = createSlice({
         loading: false,
         error: payload,
       };
+    },
+    reviewRequest(state) {
+      return {
+        ...state,
+        loadingCreateReview: true
+      }
+    },
+    reviewSuccess(state) {
+      return {
+        ...state,
+        loadingCreateReview: false
+      }
+    },
+    reviewFail(state) {
+      return {
+        ...state,
+        loadingCreateReview: false
+      }
     },
     updateRequestProduct(state) {
       return {
@@ -120,6 +139,9 @@ export const {
   createSuccessProduct,
   uploadSuccessProduct,
   fetchFailureProduct,
+  reviewRequest,
+  reviewSuccess,
+  reviewFail,
   updateFailureProduct,
   uploadFailureProduct,
   deleteRequestProduct,

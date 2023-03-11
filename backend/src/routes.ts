@@ -25,6 +25,7 @@ routes.get('/api/products/search', ProductController.search);
 routes.get('/api/products/admin', isAuth, isAdmin, ProductController.admin);
 routes.get('/api/products/categories', ProductController.categories);
 routes.get(`/api/products/:id`, ProductController.index);
+routes.post(`/api/products/:id/reviews`, isAuth, ProductController.review);
 routes.get('/api/products/slug/:slug', ProductController.slug);
 
 // Upload section

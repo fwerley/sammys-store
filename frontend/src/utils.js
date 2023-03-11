@@ -24,13 +24,10 @@ export const formatCoin = (value) => {
 
 export const formatedDate = (date) => {
   try {
-    let paidAt = date.split(':')[0];
-    let paidAtArray = paidAt.split("-")
-    let paidAtFormated = `${paidAtArray[2].slice(0, 2)}/${paidAtArray[1]}/${paidAtArray[0]}`
-  
-    return paidAtFormated;    
+    let newDate = new Date(date)
+    return newDate.toLocaleDateString('pt-BR')
   } catch (error) {
-        
+      console.log(error)
   }
 }
 
