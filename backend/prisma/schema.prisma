@@ -25,6 +25,7 @@ model Product {
   name         String          @unique
   slug         String          @unique
   image        String
+  images       String[]
   brand        String
   category     String
   description  String

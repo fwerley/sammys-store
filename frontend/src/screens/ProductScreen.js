@@ -38,6 +38,7 @@ function ProductScreen() {
   let reviewRef = useRef();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
 
   const navigate = useNavigate();
   const params = useParams();
@@ -86,7 +87,7 @@ function ProductScreen() {
         { headers: { authorization: `Bearer ${userInfo.token}` } }
       )
       toast.success('Comentário enviado com sucesso');
-      dispatch(reviewSuccess());      
+      dispatch(reviewSuccess());
       dispatch(fetchSuccessProduct(data.product));
       setComment('');
       setRating(0)
@@ -115,8 +116,29 @@ function ProductScreen() {
   ) : (
     <div>
       <Row>
-        <Col md={6}>
-          <img src={product.image} className="img-large" alt={product.name} />
+        <Col md={1} sm={2} xs={2} className="d-flex flex-column justify-content-center card-images">
+          {product.images ?
+            [product.image, ...product.images].map((x) => (
+              <Row key={x} className="mb-1">
+                <Card>
+                  <Button
+                    className='thumbnail'
+                    type='button'
+                    variant='light'
+                    onClick={() => setSelectedImage(x)}
+                  >
+                    <Card.Img
+                      variant='top'
+                      src={x}
+                      alt='product' />
+                  </Button>
+                </Card>
+              </Row>
+            )) : ''
+          }
+        </Col>
+        <Col md={5}>
+          <img src={selectedImage || product.image} className="img-large" alt={product.name} />
         </Col>
         <Col md={3}>
           <ListGroup variante="flush">

@@ -355,10 +355,24 @@ ul>li {
 
 /* Fim TreeViewMenu */
 
+button.thumbnail {
+  padding: 0;
+}
+
 @media (max-width: 992px) {
   #basic-navbar-nav {
     margin-top: 0.25rem !important;
     margin-bottom: 0.25rem !important
+  }
+
+  .card-images {
+    position: absolute;
+    left: 4%;
+    opacity: 0.6;
+  }
+  .card-images:hover {
+    opacity: 1;
+    transition: .4s;
   }
 
   .nav-link>span {
