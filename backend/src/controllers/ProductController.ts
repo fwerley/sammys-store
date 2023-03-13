@@ -19,6 +19,7 @@ export default {
     const createdProduct = await prismaClient.product.create({
       data: {
         name: 'Sample name ' + Date.now(),
+        seller: req.user?.id,
         slug: 'sample-name-' + Date.now(),
         image: '/images/p1.jpg',
         price: 0,
@@ -161,13 +162,22 @@ export default {
   },
 
   async admin(req: Request, res: Response) {
+
     const { query } = req
     const page = Number(query.page) || 1;
+    const seller = <string>query.seller || {};
     const pageSize = Number(query.pageSize) || PAGE_SIZE;
 
-    const countProducts = await prismaClient.product.count();
+    const countProducts = await prismaClient.product.count({
+      where: {
+        sellerId: seller
+      }
+    });
 
     const products = await prismaClient.product.findMany({
+      where: {
+        sellerId: seller
+      },
       skip: pageSize * (page - 1),
       take: pageSize,
       orderBy: {
@@ -271,7 +281,7 @@ export default {
       })
       res.status(201).send({
         message: 'Avaliação criada',
-        product: producUpdate,      
+        product: producUpdate,
       });
     } else {
       res.status(404).send({ message: 'Produto não encontrado' });

@@ -28,7 +28,7 @@ import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { formatedDate, getError } from '../utils';
-import { addCartItem, selectCart } from '../slice/cartSlice';
+import { addCartItem, addSeller, selectCart } from '../slice/cartSlice';
 import HelmetSEO from '../components/HelmetSEO';
 import { Cart3 } from 'react-bootstrap-icons';
 import { selectUser } from '../slice/userSlice';
@@ -71,6 +71,7 @@ function ProductScreen() {
       return;
     }
     dispatch(addCartItem({ ...product, quantity }));
+    dispatch(addSeller(product.sellerId))
     navigate('/cart');
   };
 

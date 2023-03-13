@@ -32,13 +32,30 @@ model Product {
   price        Float
   reviews      ReviewProduct[]
   rating       Float
+  seller       Seller          @relation(fields: [sellerId], references: [id])
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
   countInStock Int             @map("count_in_stock")
   numReviews   Int             @map("num_reviews")
   OrderItem    OrderItem[]
+  sellerId     String
 
   @@map("products")
+}
+
+model Seller {
+  id          String    @id @default(uuid())
+  name        String
+  logo        String
+  description String
+  user        User      @relation(fields: [userId], references: [id])
+  rating      Float     @default(0)
+  numReviews  Int       @default(0)
+  userId      String    @unique
+  Order       Order[]
+  Product     Product[]
+
+  @@map("seller")
 }
 
 model User {
@@ -49,6 +66,8 @@ model User {
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   isAdmin         Boolean           @default(false) @map("is_admin")
+  isSeller        Boolean           @default(false)
+  seller          Seller?
   document        String?
   mobile          String?
   Order           Order[]
@@ -124,13 +143,15 @@ model Order {
   updatedAt         DateTime        @updatedAt @map("updated_at")
   shippingAddressId String          @unique
   priceOrderId      String          @unique
-  userId            String
+  userId            String          @unique
   paymentMethod     PaymentType     @default(BILLET)
   orderItems        OrderItem[]
+  seller            Seller          @relation(fields: [sellerId], references: [id])
   orderPrice        PriceOrder      @relation(fields: [priceOrderId], references: [id], onDelete: Cascade)
   shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
   user              User            @relation(fields: [userId], references: [id])
   transaction       Transaction?
+  sellerId          String          @unique
 
   @@map("orders")
 }

@@ -5,6 +5,7 @@ const pymtMethod = localStorage.getItem('paymentMethod');
 
 const cartStore = {
   cart: itsCarts ? JSON.parse(itsCarts) : [],
+  seller: {},
   itemsPrice: null,
   shippingPrice: null,
   totalPrice: null,
@@ -37,6 +38,13 @@ const cartSlice = createSlice({
         cart: cartItems,
       };
     },
+    addSeller(state, { payload }) {
+      localStorage.setItem('seller', JSON.stringify(payload));
+      return {
+        ...state,
+        seller: payload
+      }
+    },
     cartPaymentMethod(state, { payload }) {
       localStorage.setItem('paymentMethod', JSON.stringify(payload));
       return {
@@ -52,17 +60,19 @@ const cartSlice = createSlice({
     },
     cartDelete(state) {
       localStorage.removeItem('cart');
+      localStorage.removeItem('seller');
       localStorage.removeItem('paymentMethod');
       return {
         ...state,
         cart: [],
         paymentMethod: '',
+        seller: {}
       };
     }
   },
 });
 
-export const { addCartItem, cartRemoveItem, cartPaymentMethod, cartPaymentData, cartDelete } =
+export const { addCartItem, cartRemoveItem, addSeller, cartPaymentMethod, cartPaymentData, cartDelete } =
   cartSlice.actions;
 export const selectCart = (state) => state.cartStore;
 export default cartSlice.reducer;

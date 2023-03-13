@@ -15,7 +15,7 @@ import { getError } from '../utils';
 import { createSuccessProduct, deleteFailureProduct, deleteRequestProduct, deleteResetProduct, deleteSuccessProduct, fetchFailureProduct, fetchRequestProduct, selectProduct } from '../slice/productSlice';
 
 export default function ProductListScreen() {
-    const { search } = useLocation();
+    const { search, pathname } = useLocation();
     const navigate = useNavigate();
     const sp = new URLSearchParams(search);
     const page = sp.get('page') || 1;
@@ -23,12 +23,13 @@ export default function ProductListScreen() {
     const { loadingDelete, successDelete } = useSelector(selectProduct);
     const { userInfo } = useSelector(selectUser)
     const dispatch = useDispatch();
-
+    const sellerMode = pathname.indexOf('/seller') === 0;
     useEffect(() => {
+        const queryFilter = sellerMode ? `&seller=${userInfo.seller.id}` : ''
         const fetchData = async () => {
             dispatch(fetchRequest())
             try {
-                const { data } = await axios.get(`/api/products/admin?page=${page}`, {
+                const { data } = await axios.get(`/api/products/admin?page=${page}${queryFilter}`, {
                     headers: { authorization: `Bearer ${userInfo.token}` }
                 })
                 dispatch(fetchListProductsSuccess(data))

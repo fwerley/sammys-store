@@ -19,6 +19,25 @@ const userSlice = createSlice({
   name: 'user',
   initialState: userStore,
   reducers: {
+    uploadRequestLogo(state) {
+      return {
+        ...state,
+        loadingUpdate: true
+      }
+    },
+    uploadSuccessLogo(state) {
+      return {
+        ...state,
+        loadingUpdate: false
+      }
+    },
+    uploadFailLogo(state, {payload}) {
+      return {
+        ...state,
+        loadingUpdate: false,
+        error: payload
+      }
+    },
     userResquest(state) {
       return {
         ...state,
@@ -55,7 +74,7 @@ const userSlice = createSlice({
         loading: false,
       };
     },
-    userUpdateResquest(state) {
+    userUpdateRequest(state) {
       return {
         ...state,
         loadingUpdate: true,
@@ -144,6 +163,9 @@ const userSlice = createSlice({
 });
 
 export const {
+  uploadRequestLogo,
+  uploadSuccessLogo,
+  uploadFailLogo,
   userResquest,
   userResquestSuccess,
   userSignin,
@@ -155,7 +177,7 @@ export const {
   deleteUserReset,
   userUpdateFail,
   userUpdateSuccess,
-  userUpdateResquest,
+  userUpdateRequest,
   saveShippingAddress,
   fetchUsers,
   fetchUsersSuccess,

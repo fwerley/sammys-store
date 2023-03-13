@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
@@ -17,12 +17,13 @@ export default function OrderListScreen() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const { pathname } = useLocation();
+    const sellerMode = pathname.indexOf('/seller') === 0;
     const { userInfo } = useSelector(selectUser);
     const { orders, loading, error, loadingDelete, successDelete, errorDelete } = useSelector(selectOrder);
 
     const deleteHandler = async (orderId) => {
-        if (window.confirm('Deseja realemtne deletar este pedido?')) {
+        if (window.confirm('Deseja realmente deletar este pedido?')) {
             try {
                 dispatch(deleteRequest())
                 await axios.delete(`/api/orders/${orderId}`, {
@@ -38,10 +39,11 @@ export default function OrderListScreen() {
     }
 
     useEffect(() => {
+        const queryFilter = sellerMode ? `?seller=${userInfo.seller.id}` : ''
         const fetchData = async () => {
             try {
                 dispatch(createRequest());
-                const { data } = await axios.get(`/api/orders`,
+                const { data } = await axios.get(`/api/orders${queryFilter}`,
                     { headers: { authorization: `Bearer ${userInfo.token}` } })
                 dispatch(fetchOrdersSuccess(data));
             } catch (error) {

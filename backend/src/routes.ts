@@ -5,7 +5,7 @@ import UserController from './controllers/UserController';
 import OrderController from './controllers/OrderController';
 import PaymentController from './controllers/PaymentController';
 import CorreiosController from './controllers/CorreiosController';
-import { isAdmin, isAuth } from './utils';
+import { isAdmin, isAuth, isSellerOrAdmin } from './utils';
 import PostBackController from './controllers/PostBackControler';
 import UploadController from './controllers/UploadController';
 
@@ -18,11 +18,11 @@ routes.get('/api/seedU', UserController.insert);
 
 // Products section
 routes.get('/api/products', ProductController.store);
-routes.post('/api/products', isAuth, isAdmin, ProductController.create);
-routes.put('/api/products/:id', isAuth, isAdmin, ProductController.update);
+routes.post('/api/products', isAuth, isSellerOrAdmin, ProductController.create);
+routes.put('/api/products/:id', isAuth, isSellerOrAdmin, ProductController.update);
 routes.delete('/api/products/:id', isAuth, isAdmin, ProductController.delete);
 routes.get('/api/products/search', ProductController.search);
-routes.get('/api/products/admin', isAuth, isAdmin, ProductController.admin);
+routes.get('/api/products/admin', isAuth, isSellerOrAdmin, ProductController.admin);
 routes.get('/api/products/categories', ProductController.categories);
 routes.get(`/api/products/:id`, ProductController.index);
 routes.post(`/api/products/:id/reviews`, isAuth, ProductController.review);
@@ -34,18 +34,18 @@ routes.post('/api/upload/image', isAuth, isAdmin, upload.single('file'), UploadC
 // Users section
 routes.get('/api/users', isAuth, isAdmin, UserController.store);
 routes.get('/api/users/:id', isAuth, isAdmin, UserController.find);
+routes.put('/api/users/profile', isAuth, UserController.profile);
 routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
 routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
-routes.put('/api/users/profile', isAuth, UserController.profile);
 
 // Correios section
 routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
-routes.get('/api/orders', isAuth, isAdmin, OrderController.store)
+routes.get('/api/orders', isAuth, isSellerOrAdmin, OrderController.store)
 routes.get('/api/orders/summary', isAuth, isAdmin, OrderController.summary)
 routes.get('/api/orders/mine', isAuth, OrderController.mine)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)

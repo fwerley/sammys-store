@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import Rating from './Rating';
-import { addCartItem, selectCart } from '../slice/cartSlice';
+import { addCartItem, addSeller, selectCart } from '../slice/cartSlice';
 import { Cart3 } from 'react-bootstrap-icons';
 
 function Product(props) {
@@ -22,8 +22,9 @@ function Product(props) {
     if (data.countInStock < quantity) {
       window.alert('Desculpe. Quantidade insuficiente no estoque');
       return;
-    }
+    }    
     dispatch(addCartItem({ ...product, quantity }));
+    dispatch(addSeller(product.sellerId))
   };
 
   return (

@@ -40,6 +40,7 @@ import AdminRoute from './components/AdminRoute';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
+import SellerRoute from './components/SellerRoute';
 
 function App() {
   const dispatch = useDispatch();
@@ -141,6 +142,16 @@ function App() {
                     <Link to="/signin" className="nav-link">
                       Login
                     </Link>
+                  )}
+                  {userInfo && userInfo.isSeller && (
+                    <NavDropdown title="Vendedor" id="admin-nav-dropdown">
+                      <LinkContainer to="/seller/products">
+                        <NavDropdown.Item>Produtos</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/seller/orders">
+                        <NavDropdown.Item>Pedidos</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
                   )}
                   {userInfo && userInfo.isAdmin && (
                     <NavDropdown title="Admin" id="admin-nav-dropdown">
@@ -247,6 +258,15 @@ function App() {
                 <AdminRoute>
                   <UserEditScreen />
                 </AdminRoute>} />
+              {/* Seller Routes */}
+              <Route path='/seller/products' element={
+                <SellerRoute>
+                  <ProductListScreen />
+                </SellerRoute>} />
+              <Route path='/seller/orders' element={
+                <SellerRoute>
+                  <OrderListScreen />
+                </SellerRoute>} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>

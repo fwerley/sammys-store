@@ -24,6 +24,8 @@ export default {
     const user = await prismaClient.user.findUnique({
       where: {
         id: userId
+      }, include: {
+        seller: true
       }
     });
     if (user) {
@@ -36,7 +38,7 @@ export default {
 
   async update(req: Request, res: Response) {
     const { id: userId } = req.params;
-    const { name, email, isAdmin } = req.body;
+    const { name, email, isAdmin, isSeller } = req.body;
     try {
       await prismaClient.user.update({
         where: {
@@ -45,7 +47,8 @@ export default {
         data: {
           name,
           email,
-          isAdmin
+          isAdmin,
+          isSeller
         }
       });
       res.status(202).send({ message: 'Usuario atualizado' });
@@ -87,7 +90,9 @@ export default {
     const user = await prismaClient.user.findFirst({
       where: {
         email: req.body.email,
-      },
+      }, include: {
+        seller: true
+      }
     });
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -97,6 +102,8 @@ export default {
           email: user.email,
           mobile: user.mobile,
           isAdmin: user.isAdmin,
+          isSeller: user.isSeller,
+          seller: user.isSeller ? user.seller : {},
           document: user.document,
           token: generateToken(user),
         });
@@ -122,12 +129,20 @@ export default {
       name: creatUser.name,
       email: creatUser.email,
       isAdmin: creatUser.isAdmin,
+      isSeller: creatUser.isSeller,
       token: generateToken(creatUser),
     });
   },
 
   async profile(req: Request, res: Response) {
-    const { name, email, password } = req.body;
+
+    interface ISeller {
+      name: string
+      logo: string
+      description: string
+    }
+
+    const { name, email, password, sellerName, sellerLogo, sellerDescription } = req.body;
 
     var dataUser = {
       name: name || req.user?.name,
@@ -137,18 +152,41 @@ export default {
       Object.assign(dataUser, { password: bcrypt.hashSync(password, 10) })
     }
 
+    var dataSeller: ISeller
+
     try {
+      if (req.user?.isSeller) {
+        const idSeller: string = req.user.seller.id
+        dataSeller = {
+          name: sellerName || req.user.seller.name,
+          logo: sellerLogo || req.user.seller.logo,
+          description: sellerDescription || req.user.seller.description
+        }
+        await prismaClient.seller.update({
+          where: {
+            id: idSeller
+          },
+          data: dataSeller
+        })
+      }
       const updatedUser = await prismaClient.user.update({
         where: {
           id: req.user?.id
         },
         data: dataUser,
+        include: {
+          seller: true
+        }
       });
       res.send({
         id: updatedUser.id,
         name: updatedUser.name,
         email: updatedUser.email,
+        mobile: updatedUser.mobile,
         isAdmin: updatedUser.isAdmin,
+        isSeller: updatedUser.isSeller,
+        seller: updatedUser.isSeller ? updatedUser.seller : {},
+        document: updatedUser.document,
         token: generateToken(updatedUser),
       });
     } catch (err) {

@@ -44,7 +44,7 @@ export default function PlaceOrderScreen() {
   const { loading } = useSelector(selectOrder);
   const { shippingAddress, userInfo } = useSelector(selectUser);
   const [shippingMethod, setShippingMethod] = useState(shippingData);
-  const { paymentMethod, cart } = cartStore;
+  const { paymentMethod, cart, seller } = cartStore;
 
 
   const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto" }
@@ -75,6 +75,7 @@ export default function PlaceOrderScreen() {
           orderItems: cart,
           shippingAddress: { ...newShippingAddress, federativeUnity: newShippingAddress.federativeUnity[0].sigla },
           paymentMethod,
+          seller,
           orderPrice: {
             itemsPrice,
             shippingPrice: valueSelected,

@@ -40,6 +40,22 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
+export const isSeller = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user && req.user.isSeller) {
+    next();
+  } else {
+    res.status(401).send({ message: 'Token Vendedor inválido' });
+  }
+}
+
+export const isSellerOrAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user && (req.user.isSeller || req.user.isAdmin)) {
+    next();
+  } else {
+    res.status(401).send({ message: 'Token Admin/Seller inválido' });
+  }
+}
+
 export const mailgun = () => mg({
   apiKey: '' + process.env.MAILGUN_API_KEY,
   domain: '' + process.env.MAILGUN_DOMAIN

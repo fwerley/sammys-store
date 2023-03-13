@@ -6,13 +6,17 @@ import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { selectUser, userSignin, userUpdateFail, userUpdateResquest, userUpdateSuccess } from '../slice/userSlice'
+import { selectUser, uploadFailLogo, uploadRequestLogo, uploadSuccessLogo, userSignin, userUpdateFail, userUpdateRequest, userUpdateSuccess } from '../slice/userSlice'
 import { getError } from '../utils'
 import { useNavigate } from 'react-router-dom'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
+import LoadingBox from '../components/LoadingBox'
 
 export default function ProfileScreen() {
 
-    const { userInfo } = useSelector(selectUser);
+    const { userInfo, loadingUpdate } = useSelector(selectUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -21,10 +25,33 @@ export default function ProfileScreen() {
     const [password, setPassword] = useState('')
     const [combinePassword, setCombinePassword] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [sellerName, setSellerName] = useState(userInfo.seller.name ||'')
+    const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo ||'')
+    const [sellerDescription, setSellerDescription] = useState(userInfo.seller.description || '')
 
     const inputElement = document.getElementById("confirmPassword");
     const inputElement2 = document.getElementById("password");
 
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('file', file);
+        try {
+            dispatch(uploadRequestLogo());
+            const { data } = await axios.post(`/api/upload/image`, bodyFormData, {
+                headers: {
+                    'Content-Type': 'multipart-form-data',
+                    authorization: `Bearer ${userInfo.token}`
+                }
+            })
+            dispatch(uploadSuccessLogo());
+            setSellerLogo(data.secure_url);
+            toast.success('Upload realizado com sucesso. Clique em Atualizar para aplicar as modificações');
+        } catch (err) {
+            toast.error(getError(err));
+            dispatch(uploadFailLogo(getError(err)))
+        }
+    }
 
     const resetInputpassword = () => {
         inputElement.style.borderColor = ''
@@ -55,14 +82,19 @@ export default function ProfileScreen() {
             toast.warning("Revise a confirmação de senha e tente novamente.")
             return
         }
-        dispatch(userUpdateResquest());
+        dispatch(userUpdateRequest());
         try {
+            
+            console.log('aquiiii')
             const { data } = await axios.put(
                 '/api/users/profile',
                 {
                     name,
                     email,
-                    password
+                    password,
+                    sellerName,
+                    sellerLogo,
+                    sellerDescription
                 }, { headers: { authorization: `Bearer ${userInfo.token}` } }
             )
             dispatch(userSignin(data));
@@ -70,11 +102,11 @@ export default function ProfileScreen() {
             dispatch(userUpdateSuccess());
             toast.success('Seus dados foram atualizados')
         } catch (error) {
+
             dispatch(userUpdateFail());
             toast.error(getError(error));
         }
     }
-
 
     return (
         <div className='container small-container'>
@@ -100,6 +132,7 @@ export default function ProfileScreen() {
                         required
                     />
                 </Form.Group>
+
                 <Form.Group className="mb-3" controlId="password">
                     <Form.Label>Senha</Form.Label>
                     <Form.Control
@@ -121,6 +154,56 @@ export default function ProfileScreen() {
                         required
                     />
                 </Form.Group>
+                {userInfo.isSeller && (
+                    <>
+                        <h2>Loja</h2>
+                        <Form.Group className="mb-3" controlId="sellerName">
+                            <Form.Label>Nome da loja</Form.Label>
+                            <Form.Control
+                                type='text'
+                                value={sellerName}
+                                onChange={(e) => setSellerName(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="sellerLogo">
+                            <Form.Label>Logo da loja</Form.Label>
+                            <Row>
+                                <Col sm={4}>
+                                    <Card>
+                                        <Card.Img
+                                            variant='top'
+                                            className='img-fluid'
+                                            src={sellerLogo}
+                                            alt='product' />
+                                    </Card>
+                                </Col>
+                            </Row>
+                            <Form.Label>Upload Logo</Form.Label>
+                            <Form.Control
+                                type='file'
+                                onChange={uploadFileHandler}
+                            />
+                            {loadingUpdate && <LoadingBox />}
+                            {/* <Form.Control
+                                type='text'
+                                value={sellerLogo}
+                                onChange={(e) => setSellerLogo(e.target.value)}
+                                required
+                            /> */}
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="sellerDescription">
+                            <Form.Label>Descrição da loja</Form.Label>
+                            <Form.Control
+                                type='text'
+                                value={sellerDescription}
+                                onChange={(e) => setSellerDescription(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                    </>
+
+                )}
                 <Form.Group>
                     <div className='mb-3'>
                         <Button type="submit">Atualizar</Button>

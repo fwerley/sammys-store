@@ -13,7 +13,7 @@ interface IDailyOrders {
 export default {
 
   async insert(req: Request, res: Response) {
-    const { orderPrice, paymentMethod, shippingAddress, orderItems } = req.body;
+    const { orderPrice, paymentMethod, seller: sellerId, shippingAddress, orderItems } = req.body;
 
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
@@ -58,6 +58,9 @@ export default {
         paymentMethod: paymentMethod,
         user: {
           connect: { id: req.user?.id },
+        },
+        seller: {
+          connect: { id: sellerId }
         }
       },
     });
@@ -65,7 +68,12 @@ export default {
   },
 
   async store(req: Request, res: Response) {
+    const { query } = req
+    const seller = <string>query.seller || {};
     const orders = await prismaClient.order.findMany({
+      where: {
+        sellerId: seller
+      },
       include: {
         user: {
           select: {
