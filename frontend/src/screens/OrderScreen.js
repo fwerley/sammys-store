@@ -258,10 +258,10 @@ export default function OrderScreen() {
                       <Col md={6}>
                         <img
                           src={item.product.image}
-                          alt={item.name}
+                          alt={item.product.name}
                           className="img-fluid rounded img-thumbnail"
                         />{' '}
-                        <Link to={`/product/${item.product.slug}`}>{item.name}</Link>
+                        <Link to={`/product/${item.product.slug}`}>{item.product.name}</Link>
                       </Col>
                       <Col md={3}>
                         <span>{item.quantity}</span>
@@ -306,7 +306,7 @@ export default function OrderScreen() {
                   </Row>
                 </ListGroup.Item>
                 {loadingTransaction ? ('') :
-                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' ?
+                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' && order.user.id === userInfo.id ?
                     (
                       <ListGroup.Item>
                         <div className="d-grid">
@@ -322,7 +322,7 @@ export default function OrderScreen() {
                           </Button>
                         </div>
                       </ListGroup.Item>
-                    ) : !order.isPaid ? (
+                    ) : !order.isPaid && order.user.id === userInfo.id ? (
                       <ListGroup.Item>
                         <div className="d-grid">
                           <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>

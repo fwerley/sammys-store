@@ -15,7 +15,7 @@ const upload = multer();
 //api seed
 routes.get('/api/seedP', ProductController.insert);
 routes.get('/api/seedU', UserController.insert);
-
+ 
 // Products section
 routes.get('/api/products', ProductController.store);
 routes.post('/api/products', isAuth, isSellerOrAdmin, ProductController.create);

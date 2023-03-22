@@ -263,6 +263,10 @@ function App() {
                 <SellerRoute>
                   <ProductListScreen />
                 </SellerRoute>} />
+              <Route path='/seller/order/:id' element={
+                <SellerRoute>
+                  <OrderScreen />
+                </SellerRoute>} />
               <Route path='/seller/orders' element={
                 <SellerRoute>
                   <OrderListScreen />

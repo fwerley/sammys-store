@@ -193,6 +193,11 @@ export default {
             product: true,
           },
         },
+        seller: {
+          select: {
+            userId: true
+          }
+        },
         orderPrice: true,
         shippingAddress: true,
         user: {
@@ -203,7 +208,7 @@ export default {
       },
     });
     if (order) {
-      if (order.user.id === req.user?.id || req.user?.isAdmin) {
+      if (order.user.id === req.user?.id || req.user?.isAdmin || (req.user?.isSeller && req.user?.id === order.seller.userId)) {
         res.send(order);
       } else {
         res.status(401).send({ message: 'Requisição não autorizada' });

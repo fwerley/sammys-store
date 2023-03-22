@@ -102,7 +102,7 @@ export default function OrderListScreen() {
                                         type='button'
                                         variant='light'
                                         onClick={() => {
-                                            navigate(`/order/${order.id}`)
+                                            navigate((sellerMode ? '/seller' : '')+`/order/${order.id}`)
                                         }}
                                     >
                                         Detalhes

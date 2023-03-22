@@ -143,7 +143,7 @@ model Order {
   updatedAt         DateTime        @updatedAt @map("updated_at")
   shippingAddressId String          @unique
   priceOrderId      String          @unique
-  userId            String          @unique
+  userId            String
   paymentMethod     PaymentType     @default(BILLET)
   orderItems        OrderItem[]
   seller            Seller          @relation(fields: [sellerId], references: [id])
@@ -151,7 +151,7 @@ model Order {
   shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
   user              User            @relation(fields: [userId], references: [id])
   transaction       Transaction?
-  sellerId          String          @unique
+  sellerId          String
 
   @@map("orders")
 }
