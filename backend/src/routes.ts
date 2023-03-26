@@ -8,6 +8,7 @@ import CorreiosController from './controllers/CorreiosController';
 import { isAdmin, isAuth, isSellerOrAdmin } from './utils';
 import PostBackController from './controllers/PostBackControler';
 import UploadController from './controllers/UploadController';
+import SellerController from './controllers/SellerController';
 
 const routes = express.Router();
 const upload = multer();
@@ -15,7 +16,7 @@ const upload = multer();
 //api seed
 routes.get('/api/seedP', ProductController.insert);
 routes.get('/api/seedU', UserController.insert);
- 
+
 // Products section
 routes.get('/api/products', ProductController.store);
 routes.post('/api/products', isAuth, isSellerOrAdmin, ProductController.create);
@@ -57,5 +58,8 @@ routes.get('/api/orders/:id/transaction', isAuth, PaymentController.transaction)
 routes.put('/api/orders/:id/deliver', isAuth, isAdmin, PaymentController.deliver)
 routes.post('/api/orders/:id/pay', isAuth, PaymentController.create)
 routes.post('/api/webhook/pagarme', PostBackController.pagarme)
+
+// Seller section
+routes.get('/api/sellers/:id', SellerController.find)
 
 export { routes };

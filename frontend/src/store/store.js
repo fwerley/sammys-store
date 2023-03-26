@@ -5,6 +5,7 @@ import productReducer from '../slice/productSlice';
 import cartReducer from '../slice/cartSlice';
 import userReducer from '../slice/userSlice';
 import orderReducer from '../slice/orderSlice';
+import sellerReducer from '../slice/sellerSlice'
 import paymentReducer from '../slice/paymentSlice';
 import searchReducer from '../slice/searchSlice';
 import dashboardReducer from '../slice/dashboardSlice';
@@ -16,10 +17,11 @@ const reducers = {
   cartStore: cartReducer,
   userStore: userReducer,
   orderStore: orderReducer,
-  paymentStore: paymentReducer,
   searchStore: searchReducer,
+  sellerStore: sellerReducer,
+  paymentStore: paymentReducer,
   dashboardStore: dashboardReducer,
-  transactionStore: transactionReducer
+  transactionStore: transactionReducer,
 };
 
 const store = configureStore({ reducer: reducers });

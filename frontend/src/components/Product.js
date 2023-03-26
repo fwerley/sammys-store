@@ -38,7 +38,10 @@ function Product(props) {
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Card.Text>
+          <div className='d-flex justify-content-around'>
           <strong>R$ {product.price},00</strong>
+          <Link to={`/seller/${product.sellerId}`}>Sammy's Store</Link>
+          </div>
         </Card.Text>
         <div className="d-flex justify-content-center position-absolute cart-button shadow rounded">
           {product.countInStock > 0 ? (

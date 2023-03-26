@@ -52,7 +52,7 @@ function Rating(props) {
       {caption ? (
         <span>{caption}</span>
       ) : (
-        <span>{' ' + numReviews} avaliações</span>
+        <span>{' ' + numReviews} avaliaç{numReviews !== 1 ? 'ões' : 'ão'}</span>
       )}
     </div>
   );

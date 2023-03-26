@@ -359,6 +359,50 @@ button.thumbnail {
   padding: 0;
 }
 
+.gradient-custom-2 {
+  /* fallback for old browsers */
+  background: #fbc2eb;
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1))
+}
+
+.theme-store {
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.theme-store img {
+  width: 100%;
+}
+
+.logo-seller {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-seller img {
+  height: 100px;
+}
+
+.body-info-seller {
+  display: flex;
+}
+
+.tab-seller .nav-link {
+  color: #b9b9b9;
+}
+
+.tab-seller .nav-link.active {
+  font-weight: bold;
+}
+
 @media (max-width: 992px) {
   #basic-navbar-nav {
     margin-top: 0.25rem !important;
@@ -370,6 +414,7 @@ button.thumbnail {
     left: 4%;
     opacity: 0.6;
   }
+
   .card-images:hover {
     opacity: 1;
     transition: .4s;
