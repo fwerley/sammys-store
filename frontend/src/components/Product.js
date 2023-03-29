@@ -9,22 +9,28 @@ import axios from 'axios';
 import Rating from './Rating';
 import { addCartItem, addSeller, selectCart } from '../slice/cartSlice';
 import { Cart3 } from 'react-bootstrap-icons';
+import { useState } from 'react';
+import LoadingBox from './LoadingBox';
 
 function Product(props) {
   const dispatch = useDispatch();
-  const { product } = props;
-  const { cart } = useSelector(selectCart);
+  const [addItem, setAddItem] = useState(false);
+  const { product, seller } = props;
+  const { cart, seller: sellerIdCart } = useSelector(selectCart);
 
   const addToCartHandler = async () => {
+    setAddItem(true);
     const existItem = cart.find((x) => x.id === product.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product.id}`);
     if (data.countInStock < quantity) {
       window.alert('Desculpe. Quantidade insuficiente no estoque');
+      setAddItem(false)
       return;
-    }    
+    }
     dispatch(addCartItem({ ...product, quantity }));
-    dispatch(addSeller(product.sellerId))
+    sellerIdCart === '' && dispatch(addSeller(product.sellerId))
+    setAddItem(false)
   };
 
   return (
@@ -39,15 +45,14 @@ function Product(props) {
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Card.Text>
           <div className='d-flex justify-content-around'>
-          <strong>R$ {product.price},00</strong>
-          <Link to={`/seller/${product.sellerId}`}>Sammy's Store</Link>
+            <strong>R$ {product.price},00</strong>
+            {seller && (<Link to={`/seller/${product.sellerId}`}>{product.seller.name}</Link>)}
           </div>
         </Card.Text>
         <div className="d-flex justify-content-center position-absolute cart-button shadow rounded">
           {product.countInStock > 0 ? (
             <Button onClick={addToCartHandler}>
-              + <Cart3 />
-              {/* <i className="fas fa-shopping-cart" /> */}
+              {addItem ? <LoadingBox variant='light' /> : (<>+<Cart3 /></>)}
               {/* Add ao carrinho */}
             </Button>
           ) : (
@@ -63,7 +68,6 @@ function Product(props) {
                   style={{ pointerEvents: 'none' }}
                 >
                   + <Cart3 />
-                  {/* <i className="fas fa-shopping-cart" /> */}
                   {/* Add ao carrinho */}
                 </Button>
               </span>

@@ -55,7 +55,7 @@ app.get("*", (req: Request, res: Response) => {
         .replace('Sammy´s Store', data.data.name)
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
-        .replace(`/logo512.png`, data.data.image)
+        .replace(`/android-chrome-512x512.png`, data.data.image)
       return res.send(htmlData);
     }
   })

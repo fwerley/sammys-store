@@ -25,8 +25,8 @@ export default function ProfileScreen() {
     const [password, setPassword] = useState('')
     const [combinePassword, setCombinePassword] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [sellerName, setSellerName] = useState(userInfo.seller.name ||'')
-    const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo ||'')
+    const [sellerName, setSellerName] = useState(userInfo.seller.name || '')
+    const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo || '')
     const [sellerDescription, setSellerDescription] = useState(userInfo.seller.description || '')
 
     const inputElement = document.getElementById("confirmPassword");
@@ -84,8 +84,6 @@ export default function ProfileScreen() {
         }
         dispatch(userUpdateRequest());
         try {
-            
-            console.log('aquiiii')
             const { data } = await axios.put(
                 '/api/users/profile',
                 {
@@ -109,101 +107,108 @@ export default function ProfileScreen() {
     }
 
     return (
-        <div className='container small-container'>
+        <div className={userInfo.isSeller ? 'container' : 'container small-container'}>
             <Helmet>
-                <title>Meus dados</title>
+                <title>Minha conta</title>
             </Helmet>
-            <h1>Meus dados</h1>
+            <h1>Minha conta</h1>
+            <hr />
             <form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="name">
-                    <Form.Label>Nome</Form.Label>
-                    <Form.Control
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                        type='email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="password">
-                    <Form.Label>Senha</Form.Label>
-                    <Form.Control
-                        type='password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="confirmPassword">
-                    <Form.Label>Confirmar senha</Form.Label>
-                    <Form.Control
-                        // id='my-password'
-                        type='password'
-                        value={confirmPassword}
-                        onChange={checkPassword}
-                        onFocus={checkPassword}
-                        onBlur={resetInputpassword}
-                        required
-                    />
-                </Form.Group>
-                {userInfo.isSeller && (
-                    <>
-                        <h2>Loja</h2>
-                        <Form.Group className="mb-3" controlId="sellerName">
-                            <Form.Label>Nome da loja</Form.Label>
+                <Row>
+                    <Col>
+                        <h2>Meus dados</h2>
+                        <Form.Group className="mb-3" controlId="name">
+                            <Form.Label>Nome</Form.Label>
                             <Form.Control
-                                type='text'
-                                value={sellerName}
-                                onChange={(e) => setSellerName(e.target.value)}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="sellerLogo">
-                            <Form.Label>Logo da loja</Form.Label>
-                            <Row>
-                                <Col sm={4}>
-                                    <Card>
-                                        <Card.Img
-                                            variant='top'
-                                            className='img-fluid'
-                                            src={sellerLogo}
-                                            alt='product' />
-                                    </Card>
-                                </Col>
-                            </Row>
-                            <Form.Label>Upload Logo</Form.Label>
+                        <Form.Group className="mb-3" controlId="email">
+                            <Form.Label>Email</Form.Label>
                             <Form.Control
-                                type='file'
-                                onChange={uploadFileHandler}
+                                type='email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
-                            {loadingUpdate && <LoadingBox />}
-                            {/* <Form.Control
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="password">
+                            <Form.Label>Senha</Form.Label>
+                            <Form.Control
+                                type='password'
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="confirmPassword">
+                            <Form.Label>Confirmar senha</Form.Label>
+                            <Form.Control
+                                // id='my-password'
+                                type='password'
+                                value={confirmPassword}
+                                onChange={checkPassword}
+                                onFocus={checkPassword}
+                                onBlur={resetInputpassword}
+                                required
+                            />
+                        </Form.Group>
+                    </Col>
+                    {userInfo.isSeller && (
+                        <>
+                            <Col md={1}></Col>
+                            <Col className='border-start'>
+                                <h2>Minha Loja</h2>
+                                <Form.Group className="mb-3" controlId="sellerName">
+                                    <Form.Label>Nome da loja</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        value={sellerName}
+                                        onChange={(e) => setSellerName(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="sellerLogo">
+                                    <Form.Label>Logo da loja</Form.Label>
+                                    <Row>
+                                        <Col sm={4}>
+                                            <Card>
+                                                <Card.Img
+                                                    variant='top'
+                                                    className='img-fluid'
+                                                    src={sellerLogo}
+                                                    alt='product' />
+                                            </Card>
+                                        </Col>
+                                    </Row>
+                                    <Form.Label>Upload Logo</Form.Label>
+                                    <Form.Control
+                                        type='file'
+                                        onChange={uploadFileHandler}
+                                    />
+                                    {loadingUpdate && <LoadingBox />}
+                                    {/* <Form.Control
                                 type='text'
                                 value={sellerLogo}
                                 onChange={(e) => setSellerLogo(e.target.value)}
                                 required
                             /> */}
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="sellerDescription">
-                            <Form.Label>Descrição da loja</Form.Label>
-                            <Form.Control
-                                type='text'
-                                value={sellerDescription}
-                                onChange={(e) => setSellerDescription(e.target.value)}
-                                required
-                            />
-                        </Form.Group>
-                    </>
-
-                )}
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="sellerDescription">
+                                    <Form.Label>Descrição da loja</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        value={sellerDescription}
+                                        onChange={(e) => setSellerDescription(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </>
+                    )}
+                </Row>
                 <Form.Group>
                     <div className='mb-3'>
                         <Button type="submit">Atualizar</Button>

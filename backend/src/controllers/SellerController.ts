@@ -14,5 +14,20 @@ export default {
         } else {
             res.status(404).send({ message: 'Loja não encontrada' })
         }
-    }
+    },
+    async products(req: Request, res: Response) {
+        const { id: idSeller } = req.params;
+        const products = await prismaClient.product.findMany({
+            where: {
+                sellerId: idSeller
+            }
+        })
+
+        if (products) {
+            res.send(products)
+        } else {
+            res.status(404).send({ message: 'Ainda não há produtos cadastrados' })
+        }
+    },
+
 }

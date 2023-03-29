@@ -14,17 +14,15 @@ import { getError } from '../utils'
 import { selectSeller, sellerFetch, sellerFetchFail, sellerFetchSuccess } from '../slice/sellerSlice'
 import Rating from '../components/Rating'
 import MessageBox from '../components/MessageBox'
-import { Link } from 'react-router-dom'
-import HomeScreen from './HomeScreen';
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
+import SellerProducts from '../components/SellerProducts'
 
 export default function SellerScreen() {
     const dispatch = useDispatch();
     const { loading, seller, error } = useSelector(selectSeller)
-    const { loading: loadingProducs, error: errorProducts, products } = useSelector(selectProducts);
     const params = useParams();
     const { id: sellerId } = params;
 
@@ -33,7 +31,6 @@ export default function SellerScreen() {
             try {
                 dispatch(sellerFetch())
                 const { data } = await axios.get(`/api/sellers/${sellerId}`)
-                console.log(data)
                 dispatch(sellerFetchSuccess(data))
             } catch (error) {
                 toast.error(getError(error));
@@ -55,7 +52,7 @@ export default function SellerScreen() {
             <MessageBox variant="danger">{error}</MessageBox>
         </>
     ) : (
-        <Container className=''>
+        <Container>
             <HelmetSEO
             />
             <Row>
@@ -101,7 +98,7 @@ export default function SellerScreen() {
                         className="mb-3"
                     >
                         <Tab eventKey="products" title="Produtos">
-                            <HomeScreen />
+                            <SellerProducts />
                         </Tab>
                         <Tab eventKey="best-sellers" title="Mais vendidos">
                             Top vendas

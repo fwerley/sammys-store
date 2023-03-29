@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 const itsCarts = localStorage.getItem('cart');
 const pymtMethod = localStorage.getItem('paymentMethod');
+const sellerSetting = localStorage.getItem('seller');
 
 const cartStore = {
   cart: itsCarts ? JSON.parse(itsCarts) : [],
-  seller: {},
+  seller: sellerSetting ? JSON.parse(sellerSetting) : '',
   itemsPrice: null,
   shippingPrice: null,
   totalPrice: null,
@@ -20,11 +22,21 @@ const cartSlice = createSlice({
     addCartItem(state, { payload }) {
       //add to cart
       const newItem = payload;
+      const verifySeller = state.cart.length > 0 && state.seller === newItem.sellerId;
+      // Veirfica se a loja é a mesma para os itens que já estão no carrinho
+      if (!verifySeller && state.cart.length > 0) {
+        toast.info('Este item é de outra loja. Conclua seu carrinho e faça uma nova compra 😀')
+        return {
+          ...state
+        }
+      }
+
       const existItem = state.cart.find((item) => item.id === newItem.id);
       const cartItems = existItem
         ? state.cart.map((item) => (item.id === existItem.id ? newItem : item))
         : [...state.cart, newItem];
       localStorage.setItem('cart', JSON.stringify(cartItems));
+      toast.success('Item adicionado ao carrinho')
       return {
         ...state,
         cart: cartItems,
@@ -33,6 +45,16 @@ const cartSlice = createSlice({
     cartRemoveItem(state, { payload }) {
       const cartItems = state.cart.filter((item) => item.id !== payload.id);
       localStorage.setItem('cart', JSON.stringify(cartItems));
+      console.log(cartItems.length)
+      if (cartItems.length === 0) {
+        localStorage.removeItem('seller');
+        return {
+          ...state,
+          cart: [],
+          paymentMethod: '',
+          seller: ''
+        };
+      }
       return {
         ...state,
         cart: cartItems,
@@ -66,7 +88,7 @@ const cartSlice = createSlice({
         ...state,
         cart: [],
         paymentMethod: '',
-        seller: {}
+        seller: ''
       };
     }
   },

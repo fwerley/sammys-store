@@ -77,7 +77,15 @@ export default {
   },
 
   async store(req: Request, res: Response) {
-    const products = await prismaClient.product.findMany({});
+    const products = await prismaClient.product.findMany({
+      include: {
+        seller: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
     res.json({ products });
   },
 
@@ -206,6 +214,15 @@ export default {
         reviews: {
           orderBy: {
             createdAt: 'desc'
+          }
+        },
+        seller: {
+          select: {
+            description: true,
+            logo: true,
+            name: true,
+            numReviews: true,
+            rating: true
           }
         }
       }

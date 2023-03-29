@@ -61,5 +61,6 @@ routes.post('/api/webhook/pagarme', PostBackController.pagarme)
 
 // Seller section
 routes.get('/api/sellers/:id', SellerController.find)
+routes.get('/api/sellers/:id/products', SellerController.products)
 
 export { routes };
