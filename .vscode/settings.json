@@ -8,5 +8,7 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  },
+  "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true
 }

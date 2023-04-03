@@ -31,7 +31,7 @@ export default function SellerProducts() {
       }
     };
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, idSeller]);
 
   let productsPages = products.filter((product, index) => index >= ((page - 1) * PAGE_SIZE) && index < ((page - 1) * PAGE_SIZE) + PAGE_SIZE)
 

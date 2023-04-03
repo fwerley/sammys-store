@@ -3,7 +3,9 @@ import bcrypt from 'bcrypt';
 // import asyncHandler  from 'express-async-handler';
 import { prismaClient } from '../database/prismaClient';
 import dataUsers from '../dataUsers';
-import { generateToken } from '../utils';
+import { baseUrl, generateToken, mailtrap } from '../utils';
+import jwt from 'jsonwebtoken';
+import { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
 
 export default {
   async insert(req: Request, res: Response) {
@@ -95,6 +97,12 @@ export default {
       }
     });
     if (user) {
+      if (!user.active) {
+        res.status(404).send({
+          message: 'Sua conta está desativada. Entre em contato com o suporte'
+        });
+        return;
+      }
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           id: user.id,
@@ -117,21 +125,75 @@ export default {
     const { name, email } = req.body;
     const password = bcrypt.hashSync(req.body.password, 10);
 
-    const creatUser = await prismaClient.user.create({
-      data: {
-        name,
-        email,
-        password,
-      },
-    });
-    res.send({
-      id: creatUser.id,
-      name: creatUser.name,
-      email: creatUser.email,
-      isAdmin: creatUser.isAdmin,
-      isSeller: creatUser.isSeller,
-      token: generateToken(creatUser),
-    });
+    try {
+      const creatUser = await prismaClient.user.create({
+        data: {
+          name,
+          email,
+          password,
+        },
+      });
+
+      if (creatUser) {
+        const token = jwt.sign({ id: creatUser.id }, '' + process.env.JWT_SECRET, {
+          expiresIn: '1d',
+        });
+        await prismaClient.user.update({
+          where: {
+            email
+          },
+          data: {
+            resetToken: token
+          }
+        });
+
+        mailtrap.sendMail({
+          from: "Sammy's Store <noreplay@sammystore.com>",
+          to: `${creatUser.name} <${creatUser.email}>`,
+          subject: `Confirmar email`,
+          html: `
+          <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Maven+Pro:wght@600&display=swap" rel="stylesheet">
+          <style>
+            html * {
+              font-family: 'Inter', sans-serif;
+              font-family: 'Maven Pro', sans-serif;
+            }
+          </style>
+          </head>
+          <body>
+            <p>Clique no link para confirmar sua conta:</p>
+            <a href="${baseUrl()}/confirm-account/${token}">Confirmar email</a>
+            <br/>
+            <p>Caso não consiga ir pelo link acima, copie e cole esta url no seu navegadir:<br/><br/>
+            ${baseUrl()}/confirm-account/${token}</p>
+  
+          </body>
+          `
+        }, (err, body) => {
+          if (err) {
+            console.log(err)
+          } else {
+            // console.log(body)
+          }
+        })
+        res.send({ message: 'Um link de confirmação foi enviado para seu email' })
+      } else {
+        res.status(404).send({ message: 'Ocorreu um erro no seu cadastro. Aguarde algums minutos e tente novamente' })
+      }
+      // res.send({
+      //   id: creatUser.id,
+      //   name: creatUser.name,
+      //   email: creatUser.email,
+      //   isAdmin: creatUser.isAdmin,
+      //   isSeller: creatUser.isSeller,
+      //   token: generateToken(creatUser),
+      // });
+    } catch (err) {
+      res.status(404).send({ message: 'Não foi possivel cadastrar essas informações' })
+    }
   },
 
   async profile(req: Request, res: Response) {
@@ -194,4 +256,128 @@ export default {
       console.log(err)
     }
   },
+
+  async confirmAccount(req: Request, res: Response) {
+    const { token } = req.body
+    jwt.verify(
+      token,
+      '' + process.env.JWT_SECRET,
+      async (err: VerifyErrors | null, decode: Jwt | JwtPayload | string | undefined) => {
+        if (err) {
+          res.status(401).send({ message: 'Token inválido' })
+        }
+        else {
+          const user = await prismaClient.user.findFirst({
+            where: {
+              resetToken: token
+            }
+          })
+          if (user) {
+            await prismaClient.user.update({
+              where: {
+                id: user.id
+              },
+              data: {
+                active: true
+              }
+            })
+            res.send({ message: 'Email verificado com sucesso' })
+          }
+        }
+      }
+    )
+  },
+
+  async forgetPassword(req: Request, res: Response) {
+    const { email } = req.body;
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email
+      }
+    })
+    if (user) {
+      const token = jwt.sign({ id: user.id }, '' + process.env.JWT_SECRET, {
+        expiresIn: '3h',
+      });
+      await prismaClient.user.update({
+        where: {
+          email
+        },
+        data: {
+          resetToken: token
+        }
+      });
+
+      mailtrap.sendMail({
+        from: "Sammy's Store <noreplay@sammystore.com>",
+        to: `${user.name} <${user.email}>`,
+        subject: `Recuperar senha`,
+        html: `
+        <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Maven+Pro:wght@600&display=swap" rel="stylesheet">
+        <style>
+          html * {
+            font-family: 'Inter', sans-serif;
+            font-family: 'Maven Pro', sans-serif;
+          }
+        </style>
+        </head>
+        <body>
+          <p>Clique no link para atualizar sua senha:</p>
+          <a href="${baseUrl()}/reset-password/${token}">Atualizar senha</a>
+          <br/>
+          <p>Caso não consiga ir pelo link acima, copie e cole esta url no seu navegadir:<br/>
+          ${baseUrl()}/reset-password/${token}</p>
+
+        </body>
+        `
+      }, (err, body) => {
+        if (err) {
+          console.log(err)
+        } else {
+          // console.log(body)
+        }
+      })
+      res.send({ message: 'Um link de recuperação foi enviado para seu email' })
+    } else {
+      res.status(404).send({ message: 'Usuário não encontrado' })
+    }
+  },
+
+  async resetPassword(req: Request, res: Response) {
+    const { token, password } = req.body
+    jwt.verify(
+      token,
+      '' + process.env.JWT_SECRET,
+      async (err: VerifyErrors | null, decode: Jwt | JwtPayload | string | undefined) => {
+        if (err) {
+          res.status(401).send({ message: 'Token inválido' })
+        }
+        else {
+          const user = await prismaClient.user.findFirst({
+            where: {
+              resetToken: token
+            }
+          })
+          if (user) {
+            if (password) {
+              await prismaClient.user.update({
+                where: {
+                  id: user.id
+                },
+                data: {
+                  password: bcrypt.hashSync(password, 8)
+                }
+              })
+              res.send({ message: 'Senha atualiza com sucesso' })
+            }
+          } else {
+            res.status(404).send({ message: 'Usuário não encontrado' })
+          }
+        }
+      }
+    )
+  }
 };

@@ -31,7 +31,7 @@ export default function UserListScreen() {
         } else {
             fetchData()
         }
-    }, [userInfo, successDelete]);
+    }, [userInfo, successDelete, dispatch]);
 
     const deleteHandler = async (idUser) => {
         if (window.confirm('Deseja realmente delete este usuário?')) {

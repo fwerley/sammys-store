@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -37,15 +36,7 @@ export default function PaymentMethodScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(cartPaymentMethod(paymentMethodName));
-    if (paymentMethodName === 'CREDIT_CARD') {
-      dispatch(cartPaymentData({
-        name,
-        number,
-        expiry,
-        cvc
-      }))
-    }
+    dispatch(cartPaymentMethod(paymentMethodName));    
     navigate('/placeorder');
   };
 

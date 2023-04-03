@@ -73,7 +73,10 @@ export default function PlaceOrderScreen() {
         '/api/orders',
         {
           orderItems: cart,
-          shippingAddress: { ...newShippingAddress, federativeUnity: newShippingAddress.federativeUnity[0].sigla },
+          shippingAddress: {
+            ...newShippingAddress,
+            federativeUnity: newShippingAddress.federativeUnity[0].sigla
+          },
           paymentMethod,
           seller,
           orderPrice: {

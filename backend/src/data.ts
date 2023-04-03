@@ -3,9 +3,9 @@ const data = {
     {
       // _id: '1',
       name: 'Tênis Puma Carina Bold BDP - feminino',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe12345',
       slug: 'tenis-puma-carina-bold-bdp',
-      category: 'Tênis',
+      category: 'Shoes',
       image: 'https://imgcentauro-a.akamaihd.net/500x500/96409501A3/tenis-puma-carina-bold-bdp-feminino-img.jpg', // 679px × 829px
       price: 349,
       countInStock: 6,
@@ -17,7 +17,7 @@ const data = {
     {
       // _id: '1',
       name: 'Camisa Palmeiras II 23/24',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe123456',
       slug: 'camisa-palmeiras-ii-23-24',
       category: 'Shirts',
       image: 'https://a-static.mlcdn.com.br/800x560/camisa-palmeiras-ii-23-24-s-no-torcedor-puma-masculina/netshoes/2i3-7590-014-05/ae3f60e2136f1b1e858dc1fe5bf452dc.jpeg', // 679px × 829px
@@ -31,7 +31,7 @@ const data = {
     {
       // _id: '1',
       name: 'Nike Slim shirt',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe123456',
       slug: 'nike-slim-shirt',
       category: 'Shirts',
       image: '/images/p1.jpg', // 679px × 829px
@@ -45,7 +45,7 @@ const data = {
     {
       // _id: '2',
       name: 'Adidas Fit Shirt',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe123456',
       slug: 'adidas-fit-shirt',
       category: 'Shirts',
       image: '/images/p2.jpg',
@@ -59,7 +59,7 @@ const data = {
     {
       // _id: '3',
       name: 'Nike Slim Pant',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe654321',
       slug: 'nike-slim-pant',
       category: 'Pants',
       image: '/images/p3.jpg',
@@ -73,7 +73,7 @@ const data = {
     {
       // _id: '4',
       name: 'Adidas Fit Pant',
-      sellerId: 'bcea4b7b-de3d-4a63-8b49-c33358f09312',
+      sellerId: 'qwe654321',
       slug: 'adidas-fit-pant',
       category: 'Pants',
       image: '/images/p4.jpg',

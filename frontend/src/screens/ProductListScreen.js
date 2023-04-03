@@ -43,7 +43,7 @@ export default function ProductListScreen() {
         } else {
             fetchData();
         }
-    }, [page, userInfo, successDelete]);
+    }, [page, userInfo, successDelete, dispatch, sellerMode]);
 
     const createHandler = async () => {
         if (window.confirm('Deseja criar um novo produto')) {

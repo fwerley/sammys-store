@@ -31,7 +31,7 @@ import { toast } from 'react-toastify';
 import { fetchTransaction, fetchTransactionFail, selectTransaction, successTransaction } from '../slice/transactionSlice';
 
 export default function OrderScreen() {
-  const { error, order, orderLoading, loadingDeliver, successDeliver, errorDeliver } = useSelector(selectOrder);
+  const { error, order, orderLoading, loadingDeliver, successDeliver } = useSelector(selectOrder);
   const { userInfo } = useSelector(selectUser);
   const { successPay } = useSelector(selectPayment);
   const { transaction, loading: loadingTransaction } = useSelector(selectTransaction);
@@ -40,7 +40,7 @@ export default function OrderScreen() {
   const dispatch = useDispatch();
 
   const [modalShow, setModalShow] = useState(false);
-  const [loadData, setLoadData] = useState(true);
+  // const [loadData, setLoadData] = useState(true);
 
   const { id: orderId } = params;
 
@@ -84,7 +84,7 @@ export default function OrderScreen() {
   }
 
   useEffect(() => {
-    setLoadData(true);
+    // setLoadData(true);
     if (!userInfo) {
       return navigate('/signin');
     }
@@ -93,7 +93,7 @@ export default function OrderScreen() {
       fetchTransactionData();
       dispatch(deliverReset())
     }
-    setLoadData(false);
+    // setLoadData(false);
   }, [order, userInfo, orderId, successDeliver, navigate, dispatch]);
 
 
@@ -114,7 +114,7 @@ export default function OrderScreen() {
       }, 4000)
     }
     return () => clearInterval(interval);
-  }, [successPay, transaction])
+  }, [successPay, transaction, dispatch, modalShow])
 
   const switchOrderMessage = (state) => {
     switch (state) {
@@ -124,42 +124,36 @@ export default function OrderScreen() {
             Pagamento aprovado {formatedDate(transaction.paidAt)}
           </MessageBox>
         )
-        break;
       case 'PROCESSING':
         return (
           <MessageBox>
             Seu pagamento está sendo processado ⌛
           </MessageBox>
         )
-        break;
       case 'PENDING':
         return (
           <MessageBox>
             Pagamento com pendência de confirmação.
           </MessageBox>
         )
-        break;
       case 'REFUNDED':
         return (
           <MessageBox>
             O pagamento foi extornado.
           </MessageBox>
         )
-        break;
       case 'REFUSED':
         return (
           <MessageBox>
             O pagamento foi recusado pelo operador do cartão.
           </MessageBox>
         )
-        break;
       case 'CHARGBACK':
         return (
           <MessageBox>
             O cancelamento da compra foi solicitado.
           </MessageBox>
         )
-        break;
       case 'ERROR':
         return (
           <MessageBox variant='danger'>
@@ -167,7 +161,6 @@ export default function OrderScreen() {
             Tente novamente!
           </MessageBox>
         )
-        break;
       default:
         return (
           <MessageBox>

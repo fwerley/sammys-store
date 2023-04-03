@@ -47,7 +47,7 @@ a {
   display: flex;
   line-height: normal;
   flex-direction: column;
-  color: #100901;
+  color: #022d49;
   cursor: pointer;
 }
 
@@ -216,6 +216,11 @@ main {
 .table tbody tr:hover {
   background: #ddd;
   transition: .4s
+}
+
+.payments-icons {
+  font-size: small;
+  color: #a8a8a8;
 }
 
 /* Map */
@@ -407,7 +412,110 @@ button.thumbnail {
   font-weight: bold;
 }
 
+.list-users-chat {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.list-users-chat .badge {
+  height: 15px !important;
+  width: 10px !important;
+}
+
+/* Pulse indicator chat Support */
+.blob-green {
+  background-color: green !important;
+}
+
+.blob-red {
+  background-color: red !important;
+}
+
+.blob {
+  background: black;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+  margin: 10px;
+  height: 15px;
+  width: 15px;
+  transform: scale(1);
+  animation: pulse-black 2s infinite;
+}
+
+.blob.blue {
+  background: rgba(52, 172, 224, 1);
+  box-shadow: 0 0 0 0 rgba(52, 172, 224, 1);
+  animation: pulse-blue 2s infinite;
+}
+
+@keyframes pulse-blue {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 172, 224, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(52, 172, 224, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 172, 224, 0);
+  }
+}
+
+/*End Pulse indicator chat Support */
+
+/* Chatbox */
+.selected {
+  background-color: #ccc;
+}
+
+.message-logged {
+  align-items: end;
+  margin-top: .2rem;
+}
+
+.message-nlogged {
+  align-items: start;
+  margin-top: .2rem;
+}
+
+.support-message {
+  min-height: 60vh;
+  max-height: 60vh;
+  /* max-width: 400px; */
+  overflow-y: auto;
+}
+
+.chatbox {
+  color: rgb(var(--primary-color));
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.chatbox .card-body {
+  min-height: 300px;
+  max-height: 300px;
+  max-width: 400px;
+  overflow-y: auto;
+}
+
+.input-message>div {
+  flex: 1;
+  margin-right: 5px;
+}
+
+/* EndChatbox */
+
 @media (max-width: 992px) {
+  .chatbox {
+    right: 0;
+    bottom: 0.5rem;
+  }
+
   .logo-seller {
     height: 0;
     position: relative;
@@ -442,12 +550,12 @@ button.thumbnail {
 
 /* Add card item */
 .success-animation {
-  margin: 150px auto;
+  margin: 50px auto;
 }
 
 .checkmark {
-  width: 20px;
-  height: 20px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   display: block;
   stroke-width: 2;
@@ -504,3 +612,8 @@ button.thumbnail {
 }
 
 /* End add card item */
+
+footer h6 {
+  font-family: Modulus;
+  font-weight: bolder;
+}

@@ -48,13 +48,13 @@ export default function UserEditScreen() {
             }
         }
         fetchData();
-    }, [userId, userInfo])
+    }, [userId, userInfo, dispatch])
 
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
             dispatch(userUpdateRequest());
-            const { data } = await axios.put(`/api/users/${userId}`, {
+            await axios.put(`/api/users/${userId}`, {
                 name, email, isAdmin, isSeller
             }, {
                 headers: { authorization: `Bearer ${userInfo.token}` }

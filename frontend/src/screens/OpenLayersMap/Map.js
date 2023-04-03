@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as ol from 'ol';
-import { toLonLat, transform } from 'ol/proj';
+import { transform } from 'ol/proj';
 import MapContext from './MapContext';
 
 export default function Map({ children, zoom, center, callback }) {
@@ -30,9 +30,7 @@ export default function Map({ children, zoom, center, callback }) {
         map.getView().setCenter(center);
     }, [center, map]);
 
-    useEffect(() => {        
-        const start = () => console.log('starting...')
-        const end = () => console.log('end')
+    useEffect(() => {
         if (map !== null) {
             map.on('click', (evt) => callback([
                 transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326'),

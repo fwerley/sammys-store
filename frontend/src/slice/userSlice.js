@@ -19,6 +19,12 @@ const userSlice = createSlice({
   name: 'user',
   initialState: userStore,
   reducers: {
+    resetUser(state) {
+      return {
+        ...state,
+        loading: false
+      }
+    },
     uploadRequestLogo(state) {
       return {
         ...state,
@@ -163,6 +169,7 @@ const userSlice = createSlice({
 });
 
 export const {
+  resetUser,
   uploadRequestLogo,
   uploadSuccessLogo,
   uploadFailLogo,

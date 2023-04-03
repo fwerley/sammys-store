@@ -40,6 +40,9 @@ routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
 routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
 routes.post('/api/users/signin', UserController.signin);
 routes.post('/api/users/signup', UserController.signup);
+routes.post('/api/users/confirm-account', UserController.confirmAccount)
+routes.post('/api/users/forget-password', UserController.forgetPassword)
+routes.post('/api/users/reset-password', UserController.resetPassword)
 
 // Correios section
 routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)

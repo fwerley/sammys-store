@@ -1,6 +1,7 @@
 import { query, Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { Prisma } from '@prisma/client'; '@prisma/client';
+import dataSellers from '../dataSellers';
 import data from '../data';
 
 const PAGE_SIZE = 3;
@@ -8,6 +9,11 @@ const PAGE_SIZE = 3;
 export default {
   async insert(req: Request, res: Response) {
     await prismaClient.product.deleteMany({});
+    await prismaClient.seller.deleteMany({});
+    
+    const createSellers = await prismaClient.seller.createMany({
+      data: dataSellers.sellers
+    })
     const createdProducts = await prismaClient.product.createMany({
       data: data.products,
     });

@@ -33,7 +33,7 @@ export default function OrderHistoryScreen() {
             }
         };
         fetchData();
-    }, [])
+    }, [dispatch, userInfo])
     return (
         <div>
             <HelmetSEO

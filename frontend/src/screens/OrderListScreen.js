@@ -20,7 +20,7 @@ export default function OrderListScreen() {
     const { pathname } = useLocation();
     const sellerMode = pathname.indexOf('/seller') === 0;
     const { userInfo } = useSelector(selectUser);
-    const { orders, loading, error, loadingDelete, successDelete, errorDelete } = useSelector(selectOrder);
+    const { orders, loading, error, loadingDelete, successDelete } = useSelector(selectOrder);
 
     const deleteHandler = async (orderId) => {
         if (window.confirm('Deseja realmente deletar este pedido?')) {
@@ -53,10 +53,10 @@ export default function OrderListScreen() {
         }
         if (successDelete) {
             dispatch(deleteReset())
-        } {
+        } else {
             fetchData();
         }
-    }, [userInfo, successDelete]);
+    }, [userInfo, dispatch, sellerMode, successDelete]);
 
     return (
         <div>
@@ -102,7 +102,7 @@ export default function OrderListScreen() {
                                         type='button'
                                         variant='light'
                                         onClick={() => {
-                                            navigate((sellerMode ? '/seller' : '')+`/order/${order.id}`)
+                                            navigate((sellerMode ? '/seller' : '') + `/order/${order.id}`)
                                         }}
                                     >
                                         Detalhes

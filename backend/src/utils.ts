@@ -2,6 +2,7 @@ import { Order, OrderItem, PriceOrder, Product, ShippingAddress, User } from '@p
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import mg from 'mailgun-js';
+import nodemailer from 'nodemailer';
 import { StatusType } from './services/IPaymentProvider';
 
 export const generateToken = (user: User) => {
@@ -56,10 +57,29 @@ export const isSellerOrAdmin = (req: Request, res: Response, next: NextFunction)
   }
 }
 
+export const baseUrl = () => {
+  return process.env.BASE_URL
+    ? process.env.BASE_URL
+    : process.env.NODE_ENV !== 'production'
+      ? 'http://localhost:3000'
+      : 'https://sammy-store.onrender.com'
+}
+
+// Não está sendo usado mais o mailgum
 export const mailgun = () => mg({
   apiKey: '' + process.env.MAILGUN_API_KEY,
   domain: '' + process.env.MAILGUN_DOMAIN
 })
+
+// Usado como dev. Tem um plano para production Mailtrap
+export const mailtrap = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: '' + process.env.MAILTRAP_DEV_USER,
+    pass: '' + process.env.MAILTRAP_DEV_PASS,
+  }
+});
 
 export const formatCoin = (value: number) => {
   return new Intl.NumberFormat("pt-BR", { style: 'currency', currency: "BRL" }).format(value);
@@ -96,8 +116,8 @@ export const translateStatus = (status: string): any => {
 export const translatePaymentMethod = (status: string): any => {
   const statusMap: StatusType<string> = {
     CREDIT_CARD: "Cartão de crédito",
-    BILLET: "Boleto",    
-    PIX: "PIX",    
+    BILLET: "Boleto",
+    PIX: "PIX",
   }
 
   return statusMap[status]
@@ -110,28 +130,40 @@ export const payOrderEmailTemplate = (order: (
     shippingAddress: ShippingAddress;
   }), products: (OrderItem & {
     product: Product;
-})[]) => {
-  return `<h1>Obrigado por comprar na nossa loja</h1>
+  })[]) => {
+  return `
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Maven+Pro:wght@600&display=swap" rel="stylesheet">
+    <style>
+      html * {
+        font-family: 'Inter', sans-serif;
+        font-family: 'Maven Pro', sans-serif;
+      }
+    </style>
+    </head>
+  <h1>Obrigado por comprar na nossa loja</h1>
     <p>Olá ${order.user.name},</p>
     <p>Nós começamos a preparar seu pedido para o envio.</p>
-    <h2>[Pedido ${order.id}] (${order.createdAt.toString().substring(0,10)})</h2>
+    <h2>[Pedido ${order.id}] (${order.createdAt.toString().substring(0, 10)})</h2>
     <table>
       <thead>
         <tr>
           <th><strong>Produto</strong></th>
-          <th><strong>Quantidade</strong></th>
+          <th align="center"><strong>Quantidade</strong></th>
           <th><strong align="right">Preço</strong></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="margin-bottom: 4px">
         ${products.map((item) => `
           <tr>
             <td>${item.product.name}</td>
-            <td>${item.quantity}</td>
-            <td>${formatCoin(item.product.price)}</td>
+            <td align="center">${item.quantity}</td>
+            <td align="right">${formatCoin(item.product.price)}</td>
           </tr>
         `).join('\n')}
-      </tbody>
+      </tbody>      
       <tfoot>
         <tr>
           <td colspan="2">Preço dos items</td>
@@ -142,8 +174,12 @@ export const payOrderEmailTemplate = (order: (
           <td align="right">${formatCoin(order.orderPrice.shippingPrice)}</td>
         </tr>
         <tr>
-        <td colspan="2"><strong>Total</strong></td>
-        <td align="right"><strong>${formatCoin(order.orderPrice.totalPrice)}</strong></td>
+          <td colspan="2">Taxa</td>
+          <td align="right">${formatCoin(order.orderPrice.taxPrice)}</td>
+        </tr>
+        <tr style="border-top: 1px dashed #ccc">
+        <td colspan="2" style="font-weight:bold">Total</td>
+        <td align="right" style="font-weight:bold">${formatCoin(order.orderPrice.totalPrice)}</td>
         </tr>
         <tr>
           <td colspan="2">Forma de pagamento</td>

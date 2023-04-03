@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -18,16 +18,15 @@ export default function ProfileScreen() {
 
     const { userInfo, loadingUpdate } = useSelector(selectUser);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const [name, setName] = useState(userInfo.name)
     const [email, setEmail] = useState(userInfo.email)
     const [password, setPassword] = useState('')
     const [combinePassword, setCombinePassword] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [sellerName, setSellerName] = useState(userInfo.seller.name || '')
-    const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo || '')
-    const [sellerDescription, setSellerDescription] = useState(userInfo.seller.description || '')
+    const [sellerName, setSellerName] = useState(userInfo.seller ? userInfo.seller.name : '')
+    const [sellerLogo, setSellerLogo] = useState(userInfo.seller ? userInfo.seller.logo : '')
+    const [sellerDescription, setSellerDescription] = useState(userInfo.seller ? userInfo.seller.description : '')
 
     const inputElement = document.getElementById("confirmPassword");
     const inputElement2 = document.getElementById("password");
@@ -61,7 +60,7 @@ export default function ProfileScreen() {
     const checkPassword = (e) => {
         setConfirmPassword(e.target.value);
         if (password !== e.target.value) {
-            if (e.target.value != '') {
+            if (e.target.value !== '') {
                 inputElement.style.borderColor = "red";
                 inputElement2.style.borderColor = "red";
                 setCombinePassword(false);
@@ -115,7 +114,7 @@ export default function ProfileScreen() {
             <hr />
             <form onSubmit={submitHandler}>
                 <Row>
-                    <Col>
+                    <Col md={userInfo.isSeller ? 4 : 12}>
                         <h2>Meus dados</h2>
                         <Form.Group className="mb-3" controlId="name">
                             <Form.Label>Nome</Form.Label>

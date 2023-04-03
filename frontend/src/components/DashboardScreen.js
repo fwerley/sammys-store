@@ -50,7 +50,7 @@ export default function DashboardScreen() {
       }
     }
     fetchData()
-  }, [userInfo])
+  }, [userInfo, dispatch])
 
   return (
     <div>

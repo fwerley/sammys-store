@@ -59,12 +59,12 @@ model Seller {
 }
 
 model User {
+  id              String            @id @default(uuid())
   name            String
   email           String            @unique
   password        String
-  id              String            @id @default(uuid())
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
+  resetToken      String?
+  active          Boolean           @default(false)
   isAdmin         Boolean           @default(false) @map("is_admin")
   isSeller        Boolean           @default(false)
   seller          Seller?
@@ -72,6 +72,8 @@ model User {
   mobile          String?
   Order           Order[]
   ShippingAddress ShippingAddress[]
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
 
   @@map("users")
 }

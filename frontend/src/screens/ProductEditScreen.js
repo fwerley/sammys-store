@@ -186,7 +186,7 @@ export default function ProductEditScreen() {
                         {loadingUpload && <LoadingBox />}
                     </Form.Group>
                     <hr />
-                    <Form.Group className='mb-3' controlId='additionalImages'>
+                    <Form.Group className='' controlId='additionalImages'>
                         <Form.Label>Imagens adicionais</Form.Label>
                         {images.length === 0 && <MessageBox>Sem imagens</MessageBox>}
                         <ListGroup variant='flush'>

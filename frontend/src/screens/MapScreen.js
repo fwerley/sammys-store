@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { toast } from 'react-toastify';
 import Map from './OpenLayersMap/Map';
-import { saveShippingAddress, saveShippingAddressMapLocation, selectUser, setFullBoxOn } from '../slice/userSlice';
+import { saveShippingAddress, selectUser, setFullBoxOn } from '../slice/userSlice';
 import Layers from './OpenLayersMap/Layers';
 import TileLayer from './OpenLayersMap/TileLayer';
 import { nomination, osm, vector } from './OpenLayersMap/Source';
@@ -21,7 +21,6 @@ export default function MapScreen() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo } = useSelector(selectUser);
   const [zoom, setZoom] = useState(15.5);
   const [center, setCenter] = useState(defalutLocation);
   const [location, setLocation] = useState(center);

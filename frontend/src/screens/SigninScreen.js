@@ -79,9 +79,13 @@ export default function SigninScreen() {
             {loading ? <LoadingBox /> : 'Login'}
           </Button>
         </div>
-        <div className="mb-3">
+        <div className="mb-1">
           Novo por aqui?{' '}
           <Link to={`/signup?redirect=${redirect}`}>Criar conta</Link>
+        </div>
+        <div className="mb-1">
+          Esqueceu a senha?&nbsp;
+          <Link to='/forget-password'>Recuperar</Link>
         </div>
       </Form>
     </Container>

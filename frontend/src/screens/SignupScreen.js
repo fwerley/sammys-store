@@ -7,6 +7,7 @@ import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  resetUser,
   selectUser,
   userFailure,
   userResquest,
@@ -23,7 +24,7 @@ export default function SignupScreen() {
   const navigate = useNavigate();
   const { userInfo, loading } = useSelector(selectUser);
   const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  const redirect = redirectInUrl ? redirectInUrl : '/signin';
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -43,9 +44,11 @@ export default function SignupScreen() {
         email,
         password,
       });
-      dispatch(userSignin(data));
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect);
+      toast.success(data.message);
+      dispatch(resetUser())
+      // dispatch(userSignin(data));
+      // localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate('/signin');
     } catch (error) {
       toast.error(getError(error));
       dispatch(userFailure(error.message));
@@ -76,7 +79,7 @@ export default function SignupScreen() {
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
-            type="emil"
+            type="email"
             required
             onChange={(e) => setEmail(e.target.value)}
           />

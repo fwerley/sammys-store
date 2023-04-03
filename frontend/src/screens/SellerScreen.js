@@ -58,7 +58,7 @@ export default function SellerScreen() {
             <Row>
                 <Col>
                     <div className='gradient-custom-2 rounded theme-store'>
-                        <img src='https://lh3.googleusercontent.com/DY9sdxLtbScygZsehAUbz2fDCsW2WdUwG0k8K48-O68mkRU_tI3yPpZwzDNK_lXhqeldLKH61wljj1xtq23XmiQ3Zgo=w640-h400-e365-rj-sc0x00ffffff' alt='bbbb' />
+                        <img src='https://lh3.googleusercontent.com/DY9sdxLtbScygZsehAUbz2fDCsW2WdUwG0k8K48-O68mkRU_tI3yPpZwzDNK_lXhqeldLKH61wljj1xtq23XmiQ3Zgo=w640-h400-e365-rj-sc0x00ffffff' alt={`Banner ${seller.name}`} />
                     </div>
                 </Col>
             </Row>

@@ -42,6 +42,12 @@ import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
 import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
+import SupportScreen from './screens/SupportScreen';
+import ChatBox from './components/ChatBox';
+import Footer from './components/Footer';
+import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -168,6 +174,9 @@ function App() {
                       <LinkContainer to="/admin/users">
                         <NavDropdown.Item>Usuários</NavDropdown.Item>
                       </LinkContainer>
+                      <LinkContainer to="/admin/support">
+                        <NavDropdown.Item>Suporte</NavDropdown.Item>
+                      </LinkContainer>
                     </NavDropdown>
                   )}
                 </Nav>
@@ -208,7 +217,7 @@ function App() {
           </Nav>
         </div>
         <main>
-          <Container className="mt-3">
+          <Container className="my-3">
             <Routes>
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/cart" element={<CartScreen />} />
@@ -216,6 +225,9 @@ function App() {
               <Route path="/search" element={<SearchScreen />} />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/signup" element={<SignupScreen />} />
+              <Route path="/confirm-account/:token" element={<ConfirmAccountScreen />} />
+              <Route path="/forget-password" element={<ForgetPasswordScreen />} />
+              <Route path="/reset-password/:token" element={<ResetPasswordScreen />} />
               <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
@@ -248,6 +260,10 @@ function App() {
                 <AdminRoute>
                   <UserListScreen />
                 </AdminRoute>} />
+              <Route path='/admin/support' element={
+                <AdminRoute>
+                  <SupportScreen />
+                </AdminRoute>} />
               <Route path='/admin/products' element={
                 <AdminRoute>
                   <ProductListScreen />
@@ -277,8 +293,13 @@ function App() {
             </Routes>
           </Container>
         </main>
-        <footer>
-          <div className="text-center">Todos os direitos reservados (c)</div>
+        <footer className='bg-light p-4 mt-5'>
+          <Footer />
+          {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
+          <div className="text-center text-secondary mt-2">
+            © Sammy's Store. {new Date().getFullYear()}.
+            Todos os direitos reservados
+          </div>
         </footer>
       </div>
     </BrowserRouter>

@@ -4,7 +4,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 import * as Yup from 'yup';
 import transactionService from '../services/TransactionServide';
-import { mailgun, payOrderEmailTemplate } from '../utils';
+import { mailgun, mailtrap, payOrderEmailTemplate } from '../utils';
 /**
  * Controller responsavel por lincar a criação de uma transação de compra, com todos os dados necessarios para registrar a requisição
  * @param {Request} req
@@ -79,12 +79,12 @@ export default {
 
       const products = await prismaClient.orderItem.findMany({
         where: {
-          orderId: orderId 
+          orderId: orderId
         },
         include: {
           product: true
         }
-      }) 
+      })
 
       const order = await prismaClient.order.findUnique({
         where: {
@@ -92,8 +92,8 @@ export default {
         },
         include: {
           user: true,
-          orderPrice: true, 
-          shippingAddress: true  
+          orderPrice: true,
+          shippingAddress: true
         },
       });
       if (!order) {
@@ -147,10 +147,11 @@ export default {
         default:
           res.status(200).json({ message: "Transação criada." })
       }
-      mailgun().messages().send({
-        from: "Sammy's Store <sammystore@mg.yourdomain.com>",
+
+      mailtrap.sendMail({
+        from: "Sammy's Store <noreplay@sammystore.com>",
         to: `${order.user.name} <${order.user.email}>`,
-        subject: `Novo pedido ${order.id}`,
+        subject: `Sammy's Store - Novo pedido`,
         html: payOrderEmailTemplate(order, products)
       }, (err, body) => {
         if (err) {
@@ -159,6 +160,20 @@ export default {
           console.log(body)
         }
       })
+
+      // mailgun().messages().send({
+      //   from: "Sammy's Store <noreplay@sammystore.com>",
+      //   to: `${order.user.name} <${order.user.email}>`,
+      //   subject: `Novo pedido ${order.id}`,
+      //   html: payOrderEmailTemplate(order, products)
+      // }, (err, body) => {
+      //   if (err) {
+      //     console.log(err)
+      //   } else {
+      //     console.log(body)
+      //   }
+      // })
+
     } catch (error) {
       res.status(400).send({ message: 'Erro ao criar a transação: ' + error })
     }

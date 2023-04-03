@@ -99,7 +99,7 @@ function CardItem() {
 
             // Se foi feito compra parcelada, o preço deve ser atualiado com acrescimo da taxa
             if (taxPrice !== order.orderPrice.taxPrice) {
-                const { response } = await axios.put(
+                await axios.put(
                     `/api/orders/${order.id}`,
                     {
                         taxPrice,
@@ -109,7 +109,7 @@ function CardItem() {
                 )
             }
             // Aguardar atualização de taxa do BD
-            const { data } = await axios.post(
+            await axios.post(
                 `/api/orders/${order.id}/pay`,
                 {
                     paymentType: order.paymentMethod,
