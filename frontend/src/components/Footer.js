@@ -34,6 +34,10 @@ export default function Footer() {
                     <Link to='/'>Categorias</Link><br />
                 </Col>
             </Row>
+            <div className="text-center text-secondary mt-2">
+                © Sammy's Store. {new Date().getFullYear()}.
+                Todos os direitos reservados | 39.752.686/0001-02
+            </div>
         </Container>
     )
 }

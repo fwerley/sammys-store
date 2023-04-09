@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Tab from 'react-bootstrap/Tab';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Nav from 'react-bootstrap/Nav';
 
 import CheckoutSteps from '../components/CheckoutSteps';
 import { selectUser } from '../slice/userSlice';
@@ -36,7 +37,7 @@ export default function PaymentMethodScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(cartPaymentMethod(paymentMethodName));    
+    dispatch(cartPaymentMethod(paymentMethodName));
     navigate('/placeorder');
   };
 
@@ -49,46 +50,69 @@ export default function PaymentMethodScreen() {
       />
       <CheckoutSteps step1 step2 step3></CheckoutSteps>
       <div className="container small-container">
-        <h1 className="my-3">Forma de pagamento</h1>
+        <h1 className="my-4">Forma de pagamento</h1>
         <Form onSubmit={submitHandler}>
-          <Tab.Container id="left-tabs-example" defaultActiveKey={paymentMethodName === 'Cartao' ? 'first' : 'second'}>
+          <Tab.Container id="left-tabs-payments" defaultActiveKey={paymentMethodName}>
             <Row>
               <Col sm={3}>
-                {/* <Nav variant="pills" className="flex-column">
+                <Nav variant="pills" className="flex-column fw-bold payments-link mb-1" onSelect={(event) => setPaymentMethod(event)}>
                   <Nav.Item>
-                    <Nav.Link eventKey="first"> */}
-                <Form.Check
-                  type="radio"
-                  id="Cartao"
-                  label="Cartão"
-                  value="CREDIT_CARD"
-                  checked={paymentMethodName === 'CREDIT_CARD'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                {/* </Nav.Link>
+                    <Nav.Link eventKey="CREDIT_CARD">
+                      {/* <Form.Check
+                        type="radio"
+                        id="Cartao"
+                        label="Cartão"
+                        value="CREDIT_CARD"
+                        checked={paymentMethodName === 'CREDIT_CARD'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      /> */}
+                      Cartão
+                    </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="second"> */}
-                <Form.Check
-                  type="radio"
-                  id="Boleto"
-                  label="Boleto"
-                  value="BILLET"
-                  checked={paymentMethodName === 'BILLET'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  id="PIX"
-                  label="PIX"
-                  value="PIX"
-                  checked={paymentMethodName === 'PIX'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
+                    <Nav.Link eventKey="BILLET">
+                      Boleto
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link eventKey="PIX">
+                      PIX
+                    </Nav.Link>
+                  </Nav.Item>
+                </Nav>
               </Col>
+              <Col sm={9}>
+                <Tab.Content className='border p-2 rounded'>
+                  <Tab.Pane eventKey="CREDIT_CARD">
+                    - Parcele em até 12 vezes no cartão de crédito.<br/>
+                    - Compre diretamente no débito.<br/>
+                    - Compras 100% seguras
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="BILLET">
+                    - Gere uma fatura para pagamento<br/>
+                    - Até três dias para pagar
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="PIX">
+                    - Gere um código de pagamento.<br/>
+                    - Processamento imediato da compra.<br/>
+                    - Sem burocracias
+                  </Tab.Pane>
+                </Tab.Content>
+              </Col>
+              <div className='payments-icons d-flex justify-content-center align-items-center flex-column my-2'>
+                <div>
+                  <i className="fas fa-lock"></i>&nbsp;&nbsp;Compra protegida
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <i className="fa-brands fa-pix" style={{ color: '#4BB8A9' }}></i>&nbsp;&nbsp;
+                  <i className="fab fa-cc-mastercard" style={{ color: '#ff5f00' }}></i>&nbsp;&nbsp;
+                  <i className="fab fa-cc-visa" style={{ color: '#1a1f71' }}></i>&nbsp;&nbsp;
+                  <i className="fas fa-barcode"></i>
+                </div>
+              </div>
             </Row>
           </Tab.Container>
-          <div className="my-3">
+          <div className="my-3 text-end">
             <Button type="submit">
               <ArrowRight />&nbsp;
               Continuar
@@ -96,6 +120,6 @@ export default function PaymentMethodScreen() {
           </div>
         </Form>
       </div>
-    </div>
+    </div >
   );
 }

@@ -7,7 +7,7 @@ const data = {
             description: 'Sua loja de artigos em geral',
             rating: 4.5,
             numReviews: 22,
-            userId: 'e87d529b-fd2b-495e-8577-e2ac859f720b',
+            userId: 'bdc09432-e226-4fda-9b28-bec299d789f8',
         },
         {
             id: 'qwe654321',
@@ -16,7 +16,7 @@ const data = {
             description: 'Maquiagem, perfumes e bijuterias',
             rating: 4.2,
             numReviews: 64,
-            userId: 'a4788b24-3829-4515-9d06-1a8993b73636',
+            userId: 'd4e9f2dd-e99b-4a31-8e6e-5c3299292839',
         },
         {
             id: 'qwe12345',
@@ -25,7 +25,7 @@ const data = {
             description: 'Tenis, sapatos esportivos e casuais',
             rating: 4.8,
             numReviews: 18,
-            userId: '11a2ffcb-c4fd-4a07-8702-56710654a1ad',
+            userId: '43e95ebc-741b-4733-9405-600bc348b70c',
         }
     ]
 }

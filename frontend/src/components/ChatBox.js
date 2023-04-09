@@ -6,7 +6,7 @@ import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import ListGroup from 'react-bootstrap/ListGroup';
 import socketIOClient from 'socket.io-client';
-import { Link, Send } from 'react-bootstrap-icons';
+import { ChatDots, Link, Send } from 'react-bootstrap-icons';
 
 const ENDPOINT = window.location.host.indexOf('localhost') >= 0
     ? 'http://127.0.0.1:5000'
@@ -92,7 +92,8 @@ export default function ChatBox(props) {
                         className='shadow'
                         onClick={supportHandler}>
                         <span className='h4'>
-                            <i className="fas fa-headset"></i>
+                            <ChatDots />
+                            {/* <i className="fas fa-headset"></i> */}
                         </span>
                     </Button>
                 </OverlayTrigger>

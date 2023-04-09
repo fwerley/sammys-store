@@ -50,11 +50,11 @@ export default function CartScreen() {
               Carrinho vazio. <Link to="/">Ir para o início</Link>
             </MessageBox>
           ) : (
-            <ListGroup>
+            <ListGroup className='mb-1'>
               {cart.map((item) => (
                 <ListGroup.Item key={item.id}>
                   <Row className="align-items-center">
-                    <Col md={4}>
+                    <Col md={4} xs={12}>
                       <img
                         src={item.image}
                         alt={item.name}
@@ -62,7 +62,7 @@ export default function CartScreen() {
                       />{' '}
                       <Link to={`/product/${item.slug}`}>{item.name}</Link>
                     </Col>
-                    <Col md={3}>
+                    <Col md={3} xs={5}>
                       <Button
                         variant="light"
                         onClick={() =>
@@ -83,8 +83,8 @@ export default function CartScreen() {
                         <i className="fas fa-plus-circle" />
                       </Button>
                     </Col>
-                    <Col md={3}>R$ {item.price},00</Col>
-                    <Col md={2}>
+                    <Col md={3} xs={4}>R$ {item.price},00</Col>
+                    <Col md={2} xs={3}>
                       <Button
                         onClick={() => removeItemHandler(item)}
                         variant="light"

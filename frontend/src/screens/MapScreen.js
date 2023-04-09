@@ -88,7 +88,6 @@ export default function MapScreen() {
     const getData = async () => {
       const { data } = await nomination.get(
         `reverse?format=jsonv2&lat=${location[1]}&lon=${location[0]}&addressdetails=1`)
-      console.log(data.address);
       dispatch(
         saveShippingAddress({
           number: data.address.house_number || '',
@@ -116,7 +115,7 @@ export default function MapScreen() {
     navigate('/shipping');
   }
   return (
-    <div className='full-box'>
+    <div className='full-box mt-n1'>
       <div className='map-input-box d-flex justify-content-center'>
         <input type='text' placeholder='Pesquisar endereço' />
         <Button type='button' onClick={onConfirm}>

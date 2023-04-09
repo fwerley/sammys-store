@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Cart3 } from 'react-bootstrap-icons';
+import { Cart3, Heart } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/Container';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -48,6 +48,7 @@ import Footer from './components/Footer';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
+import { UserIcon } from './components/UserIcon';
 
 function App() {
   const dispatch = useDispatch();
@@ -60,8 +61,28 @@ function App() {
     dispatch(cartDelete());
     window.location.href = '/signin';
   };
+  const [width, setWidth] = useState(window.innerWidth);
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [navbarExpanded, setNavbarExpanded] = useState(false);
   // const [categories, setCategories] = useState([]);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+
+  const eventCollapse = (param) => {
+    if (width <= 768) {
+      setNavbarExpanded(param);
+    }
+  }
+
+  useEffect(() => {
+    // Se width for menor que 768, o dispositivo é mobile
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,8 +112,8 @@ function App() {
         }
       >
         <ToastContainer position="bottom-center" limit={1} />
-        <header className='shadow-sm'>
-          <Navbar bg="light" variant="light" expand="lg">
+        <header className='shadow-sm mb-3'>
+          <Navbar collapseOnSelect expanded={navbarExpanded} bg="light" variant="light" expand="lg">
             <Container>
               <Button
                 variant='ligth'
@@ -100,17 +121,17 @@ function App() {
               >
                 <i className='fas fa-bars' />
               </Button>
-              <LinkContainer to="/">
+              <LinkContainer to="/" onClick={() => eventCollapse(false)}>
                 <div className="logo-desc mx-2">
                   <div>Sammy's</div>
                   <div>Store</div>
                 </div>
               </LinkContainer>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => eventCollapse(!navbarExpanded)} />
               <Navbar.Collapse id='basic-navbar-nav'>
-                <SearchBox />
+                <SearchBox eventCollapse={eventCollapse} />
                 <Nav className='justify-content-end'>
-                  <Link to="/cart" className="nav-link">
+                  <Link to="/cart" className="nav-link" onClick={() => eventCollapse(false)}>
                     <div className="cart-container">
                       <div className="circle">
                         <span className="cart-item text-center">
@@ -128,8 +149,22 @@ function App() {
                       Meu Carrinho
                     </span>
                   </Link>
+                  {/* <Link to="/favorites" className="nav-link" onClick={() => eventCollapse(false)}>
+                    <div className="circle">
+                      <Heart />
+                    </div>
+                    <span style={{ display: 'none' }}>
+                      &nbsp;Meus desejos
+                    </span>
+                  </Link> */}
                   {userInfo ? (
-                    <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
+                    <NavDropdown
+                      title={<UserIcon />}
+                      id="basic-nav-dropdown"
+                      drop={width <= 768 ? 'end' : 'start'}
+                      onSelect={() => eventCollapse(false)}
+                    >
+                      <NavDropdown.Item disabled>{userInfo.name}</NavDropdown.Item>
                       <LinkContainer to="/profile">
                         <NavDropdown.Item>Meus dados</NavDropdown.Item>
                       </LinkContainer>
@@ -217,7 +252,7 @@ function App() {
           </Nav>
         </div>
         <main>
-          <Container className="my-3">
+          <Container>
             <Routes>
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/cart" element={<CartScreen />} />
@@ -296,10 +331,6 @@ function App() {
         <footer className='bg-light p-4 mt-5'>
           <Footer />
           {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
-          <div className="text-center text-secondary mt-2">
-            © Sammy's Store. {new Date().getFullYear()}.
-            Todos os direitos reservados
-          </div>
         </footer>
       </div>
     </BrowserRouter>

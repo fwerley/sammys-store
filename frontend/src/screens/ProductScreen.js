@@ -27,18 +27,21 @@ import {
 import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { formatedDate, getError } from '../utils';
+import { formatCoin, formatedDate, getError } from '../utils';
 import { addCartItem, addSeller, selectCart } from '../slice/cartSlice';
 import HelmetSEO from '../components/HelmetSEO';
 import { Cart3 } from 'react-bootstrap-icons';
 import { selectUser } from '../slice/userSlice';
+import { CirclePicker } from 'react-color';
 
 function ProductScreen() {
 
   let reviewRef = useRef();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [color, setColor] = useState('');
   const [selectedImage, setSelectedImage] = useState('');
+  const [width, setWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -63,6 +66,7 @@ function ProductScreen() {
   }, [dispatch, slug]);
 
   const addToCartHandler = async () => {
+    let productChooses = product;
     const existItem = cart.find((x) => x.id === product.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product.id}`);
@@ -70,7 +74,15 @@ function ProductScreen() {
       window.alert('Desculpe. Quantidade insuficiente no estoque');
       return;
     }
-    dispatch(addCartItem({ ...product, quantity }));
+    if (!color && product.colors && product.colors.length > 0) {
+      window.alert('Selecione a cor do seu produto');
+      return;
+    } else {
+      const existItem = cart.find((x) => x.id === product.id);
+      const arrayColors = existItem && existItem.colorsSelect ? [...existItem.colorsSelect, color] : [color]
+      productChooses = { ...product, colorsSelect: arrayColors }
+    }
+    dispatch(addCartItem({ ...productChooses, quantity }));
     sellerIdCart === '' && dispatch(addSeller(product.sellerId))
     navigate('/cart');
   };
@@ -103,6 +115,10 @@ function ProductScreen() {
     }
   }
 
+  useEffect(() => {
+    console.log(color)
+  }, [color])
+
   return loading ? (
     <div className="d-flex justify-content-center">
       <LoadingBox />
@@ -117,32 +133,11 @@ function ProductScreen() {
   ) : (
     <div>
       <Row>
-        <Col md={1} sm={2} xs={2} className="d-flex flex-column justify-content-center card-images">
-          {product.images ?
-            [product.image, ...product.images].map((x) => (
-              <Row key={x} className="mb-1">
-                <Card>
-                  <Button
-                    className='thumbnail'
-                    type='button'
-                    variant='light'
-                    onClick={() => setSelectedImage(x)}
-                  >
-                    <Card.Img
-                      variant='top'
-                      src={x}
-                      alt='product' />
-                  </Button>
-                </Card>
-              </Row>
-            )) : ''
-          }
-        </Col>
         <Col md={5}>
           <img src={selectedImage || product.image} className="img-large" alt={product.name} />
         </Col>
-        <Col md={3}>
-          <ListGroup variante="flush">
+        <Col md={4}>
+          <ListGroup variante="flush" className='my-1'>
             <ListGroup.Item>
               <HelmetSEO
                 title={product.name}
@@ -158,6 +153,41 @@ function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
+            <div className='my-2'>
+              Cores&nbsp;&nbsp;
+              <CirclePicker
+                className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
+                width='98%'
+                color={color}
+                circleSize={width > 768 ? 18 : 26}
+                circleSpacing={12}
+                onChange={(e) => setColor(e.hex)}
+                colors={product.colors}
+              />
+            </div>
+            <div className="d-flex card-images my-2">
+              {product.images ?
+                [product.image, ...product.images].map((x) => (
+                  <Row key={x} className="my-1">
+                    <Col md={2}>
+                      <Card className='border-0 card-thumbnail'>
+                        <Button
+                          className='thumbnail'
+                          type='button'
+                          variant='light'
+                          onClick={() => setSelectedImage(x)}
+                        >
+                          <Card.Img
+                            variant='top'
+                            src={x}
+                            alt='product' />
+                        </Button>
+                      </Card>
+                    </Col>
+                  </Row>
+                )) : ''
+              }
+            </div>
             <ListGroup.Item>
               Descrição:
               <p>{product.description}</p>
@@ -169,9 +199,14 @@ function ProductScreen() {
             <Card.Body>
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <Row>
-                    <Col>Preço:</Col>
-                    <Col>R$ {product.price},00</Col>
+                  <Row className='d-flex align-items-center'>
+                    <Col md={4} xs={4}>Preço:</Col>
+                    <Col md={8} xs={8}>
+                      <h5 style={{ fontWeight: 'bolder' }}>{formatCoin(product.price)}</h5>
+                      <div className='product-price-desc'>
+                        Em até 12x de {formatCoin((product.price + product.price * 0.2) / 12)}
+                      </div>
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -186,8 +221,7 @@ function ProductScreen() {
                     </Col>
                   </Row>
                 </ListGroup.Item>
-
-                {product.countInStock > 0 && (
+                {product.countInStock > 0 && width > 768 && (
                   <ListGroup.Item>
                     <div className="d-grid">
                       <Button onClick={addToCartHandler} variant="primary" className='shadow-sm'>
@@ -211,7 +245,7 @@ function ProductScreen() {
               <i className="fas fa-barcode"></i>
             </div>
           </div>
-          <Card>
+          <Card id='seller-content'>
             <Card.Body>
               <ListGroup variant="flush">
                 <ListGroup.Item>
@@ -300,6 +334,14 @@ function ProductScreen() {
           )}
         </div>
       </div>
+      {product.countInStock > 0 && width < 768 && (
+        <div className="button-card-product-mobile">
+          <Button onClick={addToCartHandler} variant="primary" className='shadow'>
+            <Cart3 />&nbsp;
+            Add ao carrinho
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

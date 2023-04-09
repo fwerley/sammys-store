@@ -26,6 +26,9 @@ model Product {
   slug         String          @unique
   image        String
   images       String[]
+  sizes        String[]
+  colors       String[]
+  variants     String[]
   brand        String
   category     String
   description  String
@@ -172,4 +175,5 @@ enum Status {
 enum PaymentType {
   BILLET
   CREDIT_CARD
+  PIX
 }

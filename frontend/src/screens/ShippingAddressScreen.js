@@ -158,7 +158,7 @@ export default function ShippingAddressScreen() {
           </Row>
           <div className="mb-3 d-flex justify-content-between">
             <Button
-              variant="light"
+              variant="primary"
               id="chooseOnMap"
               type="button"
               onClick={() => navigate('/map')}
@@ -166,13 +166,13 @@ export default function ShippingAddressScreen() {
               <PinMapFill />&nbsp;
               Ver no mapa
             </Button>
-            {shippingAddress.location && shippingAddress.location.lat ? (
+            {/* {shippingAddress.location && shippingAddress.location.lat ? (
               <div className='d-flex align-items-center justify-content-center btn-primary px-2 rounded'>
                 <GlobeAmericas />&nbsp;
                 {Number(shippingAddress.location.lat).toFixed(2)}&nbsp;
                 {Number(shippingAddress.location.lng).toFixed(2)}
               </div>
-            ) : (<div>Sem localização</div>)}
+            ) : (<div>Sem localização</div>)} */}
             <Button variant="primary" type="submit">
               <ArrowRight />&nbsp;
               Continuar

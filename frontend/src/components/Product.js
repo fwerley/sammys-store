@@ -15,6 +15,7 @@ import LoadingBox from './LoadingBox';
 function Product(props) {
   const dispatch = useDispatch();
   const [addItem, setAddItem] = useState(false);
+  const [hoverButton, setHoverButton] = useState('d-none');
   const { product, seller } = props;
   const { cart, seller: sellerIdCart } = useSelector(selectCart);
 
@@ -34,7 +35,7 @@ function Product(props) {
   };
 
   return (
-    <Card className='h-100'>
+    <Card className='h-100' onMouseEnter={() => setHoverButton('')} onMouseLeave={() => setHoverButton('d-none')}>
       <Link to={`/product/${product.slug}`}>
         <img src={product.image} className="card-img-top" alt={product.image} />
       </Link>
@@ -44,12 +45,12 @@ function Product(props) {
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Card.Text>
-          <div className='d-flex justify-content-around'>
+          <div className='d-flex justify-content-between'>
             <strong>R$ {product.price},00</strong>
             {seller && (<Link to={`/seller/${product.sellerId}`}>{product.seller.name}</Link>)}
           </div>
         </Card.Text>
-        <div className="d-flex justify-content-center position-absolute cart-button shadow rounded">
+        <div className={`d-flex justify-content-center position-absolute cart-button shadow rounded ${hoverButton}`}>
           {product.countInStock > 0 ? (
             <Button onClick={addToCartHandler}>
               {addItem ? <LoadingBox variant='light' /> : (<>+<Cart3 /></>)}

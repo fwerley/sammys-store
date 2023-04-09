@@ -10,7 +10,7 @@ export default {
   async insert(req: Request, res: Response) {
     await prismaClient.product.deleteMany({});
     await prismaClient.seller.deleteMany({});
-    
+
     const createSellers = await prismaClient.seller.createMany({
       data: dataSellers.sellers
     })
@@ -43,7 +43,7 @@ export default {
   async update(req: Request, res: Response) {
 
     const productId = req.params.id;
-    const { name, slug, price, image, images, category, countInStock, brand, description } = req.body;
+    const { name, slug, price, image, images, sizes, colors, variants, category, countInStock, brand, description } = req.body;
     try {
       const product = await prismaClient.product.update({
         where: {
@@ -55,6 +55,9 @@ export default {
           price,
           image,
           images,
+          sizes,
+          colors,
+          variants,
           category,
           countInStock,
           brand,

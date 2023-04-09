@@ -47,7 +47,7 @@ export default function PlaceOrderScreen() {
   const { paymentMethod, cart, seller } = cartStore;
 
 
-  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto" }
+  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto", PIX: "PIX" }
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(cart.reduce((a, c) => a + c.quantity * c.price, 0));
@@ -142,10 +142,10 @@ export default function PlaceOrderScreen() {
   return (
     <div>
       <Helmet>
-        <title>Ordem de compra</title>
+        <title>Pedido de compra</title>
       </Helmet>
       <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
-      <h1 className="my-3">Ordem de compra</h1>
+      <h1 className="my-3">Pedido de compra</h1>
       <Row>
         <Col md={8}>
           <Card className="mb-3">
@@ -179,7 +179,7 @@ export default function PlaceOrderScreen() {
                 {cart.map((item) => (
                   <ListGroup.Item key={item.id}>
                     <Row className="align-items-center">
-                      <Col md={6}>
+                      <Col md={8} xs={12}>
                         <img
                           src={item.image}
                           alt={item.name}
@@ -187,10 +187,10 @@ export default function PlaceOrderScreen() {
                         />{' '}
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
                       </Col>
-                      <Col md={3}>
+                      <Col md={2} xs={6}>
                         <span>{item.quantity}</span>
                       </Col>
-                      <Col md={3}>R$ {item.price},00</Col>
+                      <Col md={2} xs={6}>R$ {item.price},00</Col>
                     </Row>
                   </ListGroup.Item>
                 ))}

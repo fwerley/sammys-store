@@ -61,7 +61,7 @@ app.get("*", (req: Request, res: Response) => {
     if (data) {
       htmlData = htmlData.replace(
         "<title>Sammy´s Store</title>",
-        `<title>${data?.data.name}</title>`
+        `<title>${data.data.name}</title>`
       )
         .replace('Sammy´s Store', data.data.name)
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)

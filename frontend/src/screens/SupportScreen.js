@@ -137,7 +137,7 @@ export default function SupportScreen() {
                                     >
                                         {user.name}
                                     </Button>
-                                    <div class={user.unread ? 'blob blue' : user.online ? 'blob blob-green' : 'blob blob-red'}></div>
+                                    <div className={user.unread ? 'blob blue' : user.online ? 'blob blob-green' : 'blob blob-red'}></div>
                                 </ListGroup.Item>
                             ))}
                     </ListGroup>

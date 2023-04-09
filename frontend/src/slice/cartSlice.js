@@ -11,7 +11,7 @@ const cartStore = {
   itemsPrice: null,
   shippingPrice: null,
   totalPrice: null,
-  paymentMethod: pymtMethod ? JSON.parse(pymtMethod) : 'Cartao',
+  paymentMethod: pymtMethod ? JSON.parse(pymtMethod) : 'CREDIT_CARD',
   paymentData: null
 };
 
@@ -45,7 +45,6 @@ const cartSlice = createSlice({
     cartRemoveItem(state, { payload }) {
       const cartItems = state.cart.filter((item) => item.id !== payload.id);
       localStorage.setItem('cart', JSON.stringify(cartItems));
-      console.log(cartItems.length)
       if (cartItems.length === 0) {
         localStorage.removeItem('seller');
         return {
