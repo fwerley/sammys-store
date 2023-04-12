@@ -55,6 +55,7 @@ export default function SellerProducts() {
       <div className='d-flex justify-content-center'>
         {[...Array(pages).keys()].map((x) => (
           <Button
+            key={x}
             onClick={() => setPage(x + 1)}
             className={Number(page) === x + 1 ? 'fw-bold mx-1' : 'mx-1'}
             variant="light"

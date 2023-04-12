@@ -25,7 +25,7 @@ export default function ProductListScreen() {
     const dispatch = useDispatch();
     const sellerMode = pathname.indexOf('/seller') === 0;
     useEffect(() => {
-        const queryFilter = sellerMode ? `&seller=${userInfo.seller.id}` : ''
+        const queryFilter = sellerMode ? `&seller=${userInfo.seller && userInfo.seller.id}` : ''
         const fetchData = async () => {
             dispatch(fetchRequest())
             try {

@@ -49,6 +49,7 @@ import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
 import { UserIcon } from './components/UserIcon';
+import PoliciesPrivacy from './screens/PoliciesPrivacy';
 
 function App() {
   const dispatch = useDispatch();
@@ -186,7 +187,11 @@ function App() {
                     </Link>
                   )}
                   {userInfo && userInfo.isSeller && (
-                    <NavDropdown title="Vendedor" id="admin-nav-dropdown">
+                    <NavDropdown
+                      title="Vendedor"
+                      id="admin-nav-dropdown"
+                      onSelect={() => eventCollapse(false)}
+                    >
                       <LinkContainer to="/seller/products">
                         <NavDropdown.Item>Produtos</NavDropdown.Item>
                       </LinkContainer>
@@ -196,7 +201,11 @@ function App() {
                     </NavDropdown>
                   )}
                   {userInfo && userInfo.isAdmin && (
-                    <NavDropdown title="Admin" id="admin-nav-dropdown">
+                    <NavDropdown
+                      title="Admin"
+                      id="admin-nav-dropdown"
+                      onSelect={() => eventCollapse(false)}
+                    >
                       <LinkContainer to="/admin/dashboard">
                         <NavDropdown.Item>Dashboard</NavDropdown.Item>
                       </LinkContainer>
@@ -266,6 +275,7 @@ function App() {
               <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
+              <Route path="/policies/privacy" element={<PoliciesPrivacy />} />
               <Route path="/order/:id" element={
                 <ProtectedRoute>
                   <OrderScreen />

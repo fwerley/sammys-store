@@ -115,10 +115,6 @@ function ProductScreen() {
     }
   }
 
-  useEffect(() => {
-    console.log(color)
-  }, [color])
-
   return loading ? (
     <div className="d-flex justify-content-center">
       <LoadingBox />
@@ -153,18 +149,20 @@ function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <div className='my-2'>
-              Cores&nbsp;&nbsp;
-              <CirclePicker
-                className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
-                width='98%'
-                color={color}
-                circleSize={width > 768 ? 18 : 26}
-                circleSpacing={12}
-                onChange={(e) => setColor(e.hex)}
-                colors={product.colors}
-              />
-            </div>
+            {product.colors && product.colors.length > 0 && (
+              <div className='my-2'>
+                Cores&nbsp;&nbsp;
+                <CirclePicker
+                  className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
+                  width='98%'
+                  color={color}
+                  circleSize={width > 768 ? 18 : 26}
+                  circleSpacing={12}
+                  onChange={(e) => setColor(e.hex)}
+                  colors={product.colors}
+                />
+              </div>
+            )}
             <div className="d-flex card-images my-2">
               {product.images ?
                 [product.image, ...product.images].map((x) => (

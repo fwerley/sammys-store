@@ -24,17 +24,24 @@ export default function Footer() {
                 </Col>
                 <Col>
                     <h6>Ajuda</h6>
-                    <Link to='/'>Cadastrar</Link><br />
-                    <Link to='/'>Login</Link>
+                    <Link to='/policies/privacy'>Politica de privacidade</Link><br />
+                    <Link to='/signup'>Cadastrar</Link><br />
+                    <Link to='/signin'>Login</Link>
                 </Col>
                 <Col>
                     <h6>Produtos</h6>
                     <Link to='/'>Seja um fornecedor</Link><br />
                     <Link to='/'>Seja um vendedor</Link><br />
                     <Link to='/'>Categorias</Link><br />
+                <div className='d-flex justify-content-between w-50 mt-2'>
+                    <i className="fa-brands fa-pix" style={{ color: '#4BB8A9' }}></i>&nbsp;&nbsp;
+                    <i className="fab fa-cc-mastercard" style={{ color: '#ff5f00' }}></i>&nbsp;&nbsp;
+                    <i className="fab fa-cc-visa" style={{ color: '#1a1f71' }}></i>&nbsp;&nbsp;
+                    <i className="fas fa-barcode"></i>
+                </div>
                 </Col>
             </Row>
-            <div className="text-center text-secondary mt-2">
+            <div className="text-center text-secondary mt-2">                
                 © Sammy's Store. {new Date().getFullYear()}.
                 Todos os direitos reservados | 39.752.686/0001-02
             </div>

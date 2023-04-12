@@ -1,0 +1,40 @@
+{
+    "data": [
+        {
+            "email": {
+                "Umbler": {
+                    "type": "Recebimento de emils",
+                    "link": "https://app.umbler.com"
+                },
+                "Mailtrap": {
+                    "type": "Envio de emails",
+                    "link": "https://mailtrap.io"
+                }
+            },
+            "host": {
+                "Hostinher": {
+                    "type": "Provedor domínio",
+                    "link": "https://hpanel.hostinger.com"
+                }
+            },
+            "cloud": {
+                "Cloudinary": {
+                    "type": "Servidor de imagens",
+                    "link": "https://cloudinary.com"
+                }
+            },
+            "database": {
+                "Supabase": {
+                    "type": "Banco de dados Postegres",
+                    "link": "https://app.supabase.com"
+                }
+            },
+            "gateway": {
+                "Pagarme": {
+                    "type": "Gateway de pagamentos",
+                    "link": "https://dash.pagar.me"
+                }
+            }
+        }
+    ]
+}

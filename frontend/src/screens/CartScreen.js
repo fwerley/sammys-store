@@ -54,7 +54,7 @@ export default function CartScreen() {
               {cart.map((item) => (
                 <ListGroup.Item key={item.id}>
                   <Row className="align-items-center">
-                    <Col md={4} xs={12}>
+                    <Col md={6} xs={12}>
                       <img
                         src={item.image}
                         alt={item.name}
@@ -83,8 +83,8 @@ export default function CartScreen() {
                         <i className="fas fa-plus-circle" />
                       </Button>
                     </Col>
-                    <Col md={3} xs={4}>R$ {item.price},00</Col>
-                    <Col md={2} xs={3}>
+                    <Col md={2} xs={4}>R$ {item.price},00</Col>
+                    <Col md={1} xs={3}>
                       <Button
                         onClick={() => removeItemHandler(item)}
                         variant="light"

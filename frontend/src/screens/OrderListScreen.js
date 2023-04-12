@@ -39,7 +39,7 @@ export default function OrderListScreen() {
     }
 
     useEffect(() => {
-        const queryFilter = sellerMode ? `?seller=${userInfo.seller.id}` : ''
+        const queryFilter = sellerMode ? `?seller=${userInfo.seller && userInfo.seller.id}` : ''
         const fetchData = async () => {
             try {
                 dispatch(createRequest());
