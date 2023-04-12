@@ -148,7 +148,7 @@ export default {
         });
 
         mailtrap.sendMail({
-          from: "Sammy's Store <noreplay@sammystore.com>",
+          from: "Sammy's Store <noreplay@sammystore.com.br>",
           to: `${creatUser.name} <${creatUser.email}>`,
           subject: `Confirmar email`,
           html: `
@@ -309,7 +309,7 @@ export default {
       });
 
       mailtrap.sendMail({
-        from: "Sammy's Store <contato@sammystore.com>",
+        from: "Sammy's Store <noreplay@sammystore.com.br>",
         to: `${user.name} <${user.email}>`,
         subject: `Recuperar senha`,
         html: `

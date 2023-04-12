@@ -149,7 +149,7 @@ export default {
       }
 
       mailtrap.sendMail({
-        from: "Sammy's Store <noreplay@sammystore.com>",
+        from: "Sammy's Store <noreplay@sammystore.com.br>",
         to: `${order.user.name} <${order.user.email}>`,
         subject: `Sammy's Store - Novo pedido`,
         html: payOrderEmailTemplate(order, products)
