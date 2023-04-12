@@ -309,7 +309,7 @@ export default {
       });
 
       mailtrap.sendMail({
-        from: "Sammy's Store <noreplay@sammystore.com>",
+        from: "Sammy's Store <contato@sammystore.com>",
         to: `${user.name} <${user.email}>`,
         subject: `Recuperar senha`,
         html: `

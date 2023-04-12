@@ -46,7 +46,7 @@ function HomeScreen() {
           <Link to=''>
             <img
               className="d-block w-100"
-              src="https://upload.wikimedia.org/wikipedia/commons/2/29/Dscn7471_sunset-sundog_crop_800x300.jpg"
+              src="images/banner.png"
               alt="First slide"
             />
           </Link>
