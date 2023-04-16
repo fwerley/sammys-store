@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, '/frontend/build')));
 const indexPath = path.join(__dirname, '/frontend/build', 'index.html');
 
 app.get("*", (req: Request, res: Response) => {
-  
+
   //Este escopo de função foi implementado para incluir as metatags 
   fs.readFile(indexPath, 'utf8', async (err, htmlData) => {
     if (err) {
@@ -70,7 +70,6 @@ app.get("*", (req: Request, res: Response) => {
         // .replace('website', 'product')
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
         .replace(`https://res.cloudinary.com/dunfd3yla/image/upload/v1681611871/logos/android-chrome-512x512_pkqqna.png`, data.data.image)
-        console.log(htmlData)
       return res.send(htmlData);
     } else {
       return res.send(htmlData);
@@ -85,7 +84,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 const server = http.createServer(app);
-const io = new Server(server, {cors: {origin: '*'}});
+const io = new Server(server, { cors: { origin: '*' } });
 const users: IUserIO[] = [];
 
 io.on('connection', (socket) => {
