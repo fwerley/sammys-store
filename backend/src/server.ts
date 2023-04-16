@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { routes } from './routes';
 import axios from 'axios';
+import isbot from 'isbot';
 
 interface ServerData {
   id: string
@@ -15,6 +16,7 @@ interface ServerData {
   category: string
   description: string
   price: Number
+  status: Number
 }
 
 interface IUserIO {
@@ -26,8 +28,44 @@ interface IUserIO {
   id: string
 }
 
+export const metaTags = (title: string, description: string, image: string, url: string, type: string) => {
+  return `
+  <html>
+    <head>
+      <title>${defaultTitle}</title>
+      <meta charset="utf-8">
+      <link rel="icon" href="${defaultImage}" />
+      <meta class="meta-description" name="description" content="${defaultDescription}">
+      <!-- Google+ / Schema.org -->
+      <meta itemprop="name" content="${title}">
+      <meta itemprop="description" content="${description}">
+      <meta itemprop="image" content="${image}">
+      <!-- Twitter Meta -->
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="Sammy's Store" />
+      <meta name="twitter:title" content="${title}" />
+      <meta name="twitter:description" content="${description}" />
+      <meta name="twitter:image" content="${image}"/>
+      <!-- Facebook Meta -->
+      <meta property="og:type" content="${type}" />
+      <meta property="og:title" content="${title}" />
+      <meta property="og:description" content="${description}" />
+      <meta property="og:image" content="${image}" />
+      <meta name="og:url" property="og:url" content="${url}" />
+    </head>
+    <body>
+    </body>
+  </html>`;
+}
+
+const __dirname = path.resolve();
 const port = Number(process.env.PORT) || 5000;
-const host = process.env.HOSTNAME || 'http://localhost:5000'
+const host = process.env.HOSTNAME || 'http://localhost:5000';
+const defaultTitle = "Sammy's Store";
+const defaultDescription = 'Sua loja de artigos de beleza, roupas, calçados e relógios';
+const defaultImage = path.join(__dirname, `/frontend/build/favicon.ico`);
+const defaultUrl = 'https://sammystore.com.br';
+const defaultType = 'website'
 
 const app = express();
 
@@ -35,46 +73,67 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 
-const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 
 const indexPath = path.join(__dirname, '/frontend/build', 'index.html');
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const userAgent = req.headers['user-agent'] || '';
+  if (isbot(userAgent)) next();
+  else res.sendFile(indexPath)
+});
+
+app.get('/product/:slugSEO', async (req: Request, res: Response) => {
+  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  const { slugSEO } = req.params;
+  const url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host;
+  try {
+    const { data } = await axios.get<ServerData>(`${url}/api/products/SEO/${slugSEO}`);
+    if (data.status === 404)
+      res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
+    else
+      res.send(metaTags(data.name, data.description, data.image, fullUrl, 'product').replace('website', 'product'))
+  } catch (error) {
+    res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
+  }
+})
+
 app.get("*", (req: Request, res: Response) => {
 
+  res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
   //Este escopo de função foi implementado para incluir as metatags 
-  fs.readFile(indexPath, 'utf8', async (err, htmlData) => {
-    if (err) {
-      console.error('Error during file reading', err);
-      return res.status(404).end()
-    }
+  // fs.readFile(indexPath, 'utf8', async (err, htmlData) => {
+  //   if (err) {
+  //     console.error('Error during file reading', err);
+  //     return res.status(404).end()
+  //   }
 
-    let data;
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    try {
-      const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
-      const url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
-      data = await axios.get<ServerData>(`${url}/api/products/SEO/${slug}`);
-    } catch (error) {
-      return res.send(htmlData);
-    }
+  //   let data;
+  //   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  //   try {
+  //     const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
+  //     const url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
+  //     data = await axios.get<ServerData>(`${url}/api/products/SEO/${slug}`);
+  //   } catch (error) {
+  //     return res.send(htmlData);
+  //   }
 
-    if (data) {
-      htmlData = htmlData.replace(
-        "<title>Sammy´s Store</title>",
-        `<title>Sammy's Store | ${data.data.name}</title>`
-      )
-        .replace('Sammy´s Store', `Sammy's Store | ` +data.data.name)
-        .replace('https://sammystore.com.br', fullUrl)
-        .replace('website', 'product')
-        // .replace('website', 'product')
-        .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
-        .replace(`https://res.cloudinary.com/dunfd3yla/image/upload/v1681611871/logos/android-chrome-512x512_pkqqna.png`, data.data.image)
-      return res.send(htmlData);
-    } else {
-      return res.send(htmlData);
-    }
-  })
+  //   if (data) {
+  //     htmlData = htmlData.replace(
+  //       "<title>Sammy´s Store</title>",
+  //       `<title>Sammy's Store | ${data.data.name}</title>`
+  //     )
+  //       .replace('Sammy´s Store', `Sammy's Store | ` + data.data.name)
+  //       .replace('https://sammystore.com.br', fullUrl)
+  //       .replace('website', 'product')
+  //       // .replace('website', 'product')
+  //       .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
+  //       .replace(`https://res.cloudinary.com/dunfd3yla/image/upload/v1681611871/logos/android-chrome-512x512_pkqqna.png`, data.data.image)
+  //     return res.send(htmlData);
+  //   } else {
+  //     return res.send(htmlData);
+  //   }
+  // })
   // res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
 }
 )

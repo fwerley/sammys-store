@@ -23,6 +23,7 @@
     "correios-brasil": "^3.0.0",
     "cpf-cnpj-validator": "^1.0.3",
     "express": "^4.17.3",
+    "isbot": "^3.6.8",
     "jsonwebtoken": "^8.5.1",
     "libphonenumber-js": "^1.10.12",
     "mailgun-js": "^0.22.0",
