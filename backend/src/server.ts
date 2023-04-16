@@ -64,7 +64,7 @@ app.get("*", (req: Request, res: Response) => {
         "<title>Sammy´s Store</title>",
         `<title>Sammy's Store | ${data.data.name}</title>`
       )
-        .replace('Sammy´s Store', data.data.name)
+        .replace('Sammy´s Store', `Sammy's Store | ` +data.data.name)
         .replace('https://sammystore.com.br', fullUrl)
         .replace('website', 'product')
         // .replace('website', 'product')
