@@ -52,6 +52,7 @@ export const metaTags = (title: string, description: string, image: string, url:
       <meta property="og:description" content="${description}" />
       <meta property="og:image" content="${image}" />
       <meta name="og:url" property="og:url" content="${url}" />
+      <meta name="fb:app_id" property="fb:app_id" content="1180331102646514" />
     </head>
     <body>
     </body>
@@ -63,7 +64,7 @@ const port = Number(process.env.PORT) || 5000;
 const host = process.env.HOSTNAME || 'http://localhost:5000';
 const defaultTitle = "Sammy's Store";
 const defaultDescription = 'Sua loja de artigos de beleza, roupas, calçados e relógios';
-const defaultImage = `/favicon.ico`;
+const defaultImage = `/android-chrome-512x512.png`;
 const defaultUrl = 'https://sammystore.com.br';
 const defaultType = 'website'
 
