@@ -63,7 +63,7 @@ const port = Number(process.env.PORT) || 5000;
 const host = process.env.HOSTNAME || 'http://localhost:5000';
 const defaultTitle = "Sammy's Store";
 const defaultDescription = 'Sua loja de artigos de beleza, roupas, calçados e relógios';
-const defaultImage = path.join(__dirname, `/frontend/build/favicon.ico`);
+const defaultImage = `/favicon.ico`;
 const defaultUrl = 'https://sammystore.com.br';
 const defaultType = 'website'
 
@@ -92,14 +92,13 @@ app.get('/product/:slugSEO', async (req: Request, res: Response) => {
     if (data.status === 404)
       res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
     else
-      res.send(metaTags(data.name, data.description, data.image, fullUrl, 'product').replace('website', 'product'))
+      res.send(metaTags("Sammy's Store | " + data.name, data.description, data.image, fullUrl, 'product'))
   } catch (error) {
     res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
   }
 })
 
 app.get("*", (req: Request, res: Response) => {
-
   res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
   //Este escopo de função foi implementado para incluir as metatags 
   // fs.readFile(indexPath, 'utf8', async (err, htmlData) => {
@@ -135,8 +134,7 @@ app.get("*", (req: Request, res: Response) => {
   //   }
   // })
   // res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
-}
-)
+})
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send({ message: err.message });
