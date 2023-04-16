@@ -65,6 +65,10 @@ a {
   display: -webkit-box;
 }
 
+.nav-pills .nav-link.active {
+  background-color: rgb(var(--secondary-color)) !important;
+}
+
 .search-area {
   width: fit-content !important;
 }
@@ -146,6 +150,11 @@ main {
 
 .product-price-desc {
   font-size: small;
+}
+
+.circle-picker span div {
+  box-shadow: rgb(108, 108, 108) 0px 0px 5px;
+  border-radius: 50%;
 }
 
 .cart-button {
@@ -658,7 +667,7 @@ button.thumbnail {
 
 /* End add card item */
 
-footer h6 {
+footer h5 {
   font-family: Modulus;
   font-weight: bolder;
 }

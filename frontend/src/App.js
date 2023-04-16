@@ -17,6 +17,7 @@ import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import ProductScreen from './screens/ProductScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import ScrollToTop from './components/ScrollToTop';
 import SigninScreen from './screens/SigninScreen';
 import SignupScreen from './screens/SignupScreen';
 import OrderScreen from './screens/OrderScreen';
@@ -50,6 +51,7 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
 import { UserIcon } from './components/UserIcon';
 import PoliciesPrivacy from './screens/PoliciesPrivacy';
+import ProductAdmin from './screens/Admin/ProductAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -72,7 +74,7 @@ function App() {
   }
 
   const eventCollapse = (param) => {
-    if (width <= 768) {
+    if (width <= 995) {
       setNavbarExpanded(param);
     }
   }
@@ -101,6 +103,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div
         className={
           // sidebarIsOpen
@@ -311,7 +314,8 @@ function App() {
                 </AdminRoute>} />
               <Route path='/admin/products' element={
                 <AdminRoute>
-                  <ProductListScreen />
+                  {/* <ProductListScreen /> */}
+                  <ProductAdmin />
                 </AdminRoute>} />
               <Route path='/admin/product/:id' element={
                 <AdminRoute>

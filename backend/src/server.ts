@@ -53,7 +53,8 @@ app.get("*", (req: Request, res: Response) => {
     try {
       const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
       let url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
-      data = await axios.get<ServerData>(`${url}/api/products/slug/${slug}`);
+      data = await axios.get<ServerData>(`${url}/api/products/SEO/${slug}`);
+      console.log(`${url}/api/products/SEO/${slug}` +'\n', data)
     } catch (error) {
       return res.send(htmlData);
     }
@@ -67,6 +68,8 @@ app.get("*", (req: Request, res: Response) => {
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
         .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
         .replace(`/android-chrome-512x512.png`, data.data.image)
+      return res.send(htmlData);
+    } else {
       return res.send(htmlData);
     }
   })

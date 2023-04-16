@@ -150,14 +150,15 @@ function ProductScreen() {
               ></Rating>
             </ListGroup.Item>
             {product.colors && product.colors.length > 0 && (
-              <div className='my-2'>
-                Cores&nbsp;&nbsp;
+              <div className={`d-flex ${width < 768 && 'justify-content-center'} p-2`}>
+                {/* Cores&nbsp;&nbsp; */}
                 <CirclePicker
-                  className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
+                  className={`mt-3 ${width < 768 && 'justify-content-center'}`}
+                  // className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
                   width='98%'
                   color={color}
-                  circleSize={width > 768 ? 18 : 26}
-                  circleSpacing={12}
+                  circleSize={width > 768 ? 20 : 26}
+                  circleSpacing={14}
                   onChange={(e) => setColor(e.hex)}
                   colors={product.colors}
                 />

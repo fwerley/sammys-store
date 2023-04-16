@@ -213,6 +213,25 @@ export default {
     res.json(categories);
   },
 
+  async slugSEO(req: Request, res: Response) {
+    const slugParam = req.params.slugSEO;
+    const data = await prismaClient.product.findUnique({
+      where: {
+        slug: slugParam
+      },
+      select: {
+        name: true,
+        image: true,
+        description: true
+      }
+    });
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send({ message: 'Produto não encontrado' });
+    }
+  },
+
   async slug(req: Request, res: Response) {
     const slugParam = req.params.slug;
     const result = await prismaClient.product.findFirst({

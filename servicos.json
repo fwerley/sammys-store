@@ -1,40 +1,78 @@
 {
     "data": [
         {
-            "email": {
-                "Umbler": {
-                    "type": "Recebimento de emils",
-                    "link": "https://app.umbler.com"
+            "tecnologies": [
+                {
+                    "category": "Email",
+                    "email": {
+                        "umbler": {
+                            "type": "Recebimento de emils",
+                            "link": "https://app.umbler.com"
+                        },
+                        "mailtrap": {
+                            "type": "Envio de emails",
+                            "link": "https://mailtrap.io"
+                        }
+                    }
                 },
-                "Mailtrap": {
-                    "type": "Envio de emails",
-                    "link": "https://mailtrap.io"
+                {
+                    "category": "Host",
+                    "host": {
+                        "hostinher": {
+                            "type": "Provedor domínio",
+                            "link": "https://hpanel.hostinger.com"
+                        }
+                    }
+                },
+                {
+                    "category": "Cloud Image",
+                    "cloud_image": {
+                        "cloudinary": {
+                            "type": "Servidor de imagens",
+                            "link": "https://cloudinary.com"
+                        }
+                    }
+                },
+                {
+                    "category": "Database",
+                    "database": {
+                        "supabase": {
+                            "type": "Banco de dados Postegres",
+                            "link": "https://app.supabase.com"
+                        }
+                    }
+                },
+                {
+                    "category": "Gateway",
+                    "gateway": {
+                        "pagarme": {
+                            "type": "Gateway de pagamentos",
+                            "link": "https://dash.pagar.me"
+                        }
+                    }
                 }
-            },
-            "host": {
-                "Hostinher": {
-                    "type": "Provedor domínio",
-                    "link": "https://hpanel.hostinger.com"
+            ]
+        },
+        {
+            "ls_suppliers": [
+                {
+                    "name": "USCLOSER",
+                    "products": [
+                        "Relódios",
+                        "Perfumes",
+                        "..."
+                    ],
+                    "link": "https://uscloser.com/loja"
+                },
+                {
+                    "name": "SAME DAY SUPLEMENTS",
+                    "products": [
+                        "Minoxidil"
+
+                    ],
+                    "aditional": "Cupom ANDRENUNES e BARBA24"
                 }
-            },
-            "cloud": {
-                "Cloudinary": {
-                    "type": "Servidor de imagens",
-                    "link": "https://cloudinary.com"
-                }
-            },
-            "database": {
-                "Supabase": {
-                    "type": "Banco de dados Postegres",
-                    "link": "https://app.supabase.com"
-                }
-            },
-            "gateway": {
-                "Pagarme": {
-                    "type": "Gateway de pagamentos",
-                    "link": "https://dash.pagar.me"
-                }
-            }
+            ]
         }
     ]
 }
