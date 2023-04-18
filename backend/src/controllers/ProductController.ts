@@ -1,4 +1,4 @@
-import { query, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { Prisma } from '@prisma/client'; '@prisma/client';
 import dataSellers from '../dataSellers';
@@ -25,7 +25,7 @@ export default {
     const createdProduct = await prismaClient.product.create({
       data: {
         name: 'Sample name ' + Date.now(),
-        seller: req.user?.id,
+        seller: req.user.id,
         slug: 'sample-name-' + Date.now(),
         image: '/images/p1.jpg',
         price: 0,

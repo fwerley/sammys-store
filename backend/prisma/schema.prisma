@@ -61,6 +61,15 @@ model Seller {
   @@map("seller")
 }
 
+model federatedCredentials {
+  id       String @id @default(cuid())
+  userId   String @unique @map("user_id")
+  provider String
+  subject  String @unique
+
+  @@map("federated_credentials")
+}
+
 model User {
   id              String            @id @default(cuid())
   name            String

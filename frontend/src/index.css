@@ -134,6 +134,31 @@ main {
   font-size: small;
 }
 
+.social-fb button {
+  background-color: #1877f2;
+  font-size: 1.2rem;
+}
+
+.social-fb button:hover {
+  background-color: #022d49 ;
+}
+
+.social-media span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-media span::before, .social-media span::after {
+  content: "";
+  display: flex;
+  width: 120px;
+  height: 1.5px;
+  background: #ced4da;
+  margin: 0 1rem;
+  /* position: absolute; */
+}
+
 .product {
   border: 1px #404040 solid;
   margin: 1rem;
@@ -194,6 +219,10 @@ main {
 
 .payments-link .nav-link.active {
   background-color: rgb(var(--primary-color)) !important;
+}
+
+.btn:hover {
+  background-color: #022d49;
 }
 
 .btn-primary:disabled {

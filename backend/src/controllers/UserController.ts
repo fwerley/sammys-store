@@ -1,11 +1,14 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-// import asyncHandler  from 'express-async-handler';
 import { prismaClient } from '../database/prismaClient';
 import dataUsers from '../dataUsers';
 import { baseUrl, generateToken, mailtrap } from '../utils';
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import facebook from 'passport-facebook';
+
 import { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 
 export default {
   async insert(req: Request, res: Response) {
@@ -119,6 +122,12 @@ export default {
       }
     }
     res.status(401).send({ message: 'Email ou senha inválido' });
+  },
+
+  async signinFB(req: Request, res: Response, next: NextFunction) {
+    console.log(req.user);
+    passport.authenticate('facebook', { failureRedirect: '/login', failureMessage: true }),
+      res.redirect('/');
   },
 
   async signup(req: Request, res: Response) {

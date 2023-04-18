@@ -50,11 +50,11 @@ export default function ProductEditScreen() {
     const [price, setPrice] = useState(String(product.price) || '');
     const [image, setImage] = useState(product.image || '');
     const [images, setImages] = useState(product.images || []);
-    const [sizes, setSizes] = useState(product.sizes && product.sizes.length > 0 && true || false);
+    const [sizes, setSizes] = useState((product.sizes && product.sizes.length > 0 && true) || false);
     const [arraySizes, setArraySizes] = useState(product.sizes || []);
-    const [colors, setColors] = useState(product.colors && product.colors.length && true || false);
+    const [colors, setColors] = useState((product.colors && product.colors.length && true) || false);
     const [arrayColors, setArrayColors] = useState(product.colors || []);
-    const [variant, setVariant] = useState(product.variants && product.variants.length && true || false);
+    const [variant, setVariant] = useState((product.variants && product.variants.length && true) || false);
     const [arrayVariants, setArrayVariants] = useState(product.variants || []);
     const [category, setCategory] = useState(product.category || '');
     const [countInStock, setCountInStock] = useState(String(product.countInStock) || '');
@@ -136,7 +136,7 @@ export default function ProductEditScreen() {
 
         let colorFind = arrayColors.find((colorArray) => colorArray === color.hex)
         const newArrayColors = colorFind
-            ? arrayColors.filter((colorFiltered) => colorFind != colorFiltered)
+            ? arrayColors.filter((colorFiltered) => colorFind !== colorFiltered)
             : [...arrayColors, color.hex]
         setArrayColors(
             newArrayColors
@@ -150,7 +150,7 @@ export default function ProductEditScreen() {
 
     const nameAndSlug = (e) => {
         setName(e.target.value);
-        setSlug(e.target.value.replaceAll(" ", "-").toLowerCase().trim())
+        setSlug(e.target.value.replaceAll(" ", "-").toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
     }
 
     useEffect(() => {

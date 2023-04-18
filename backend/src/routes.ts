@@ -9,6 +9,7 @@ import { isAdmin, isAuth, isSellerOrAdmin } from './utils';
 import PostBackController from './controllers/PostBackControler';
 import UploadController from './controllers/UploadController';
 import SellerController from './controllers/SellerController';
+import passport from 'passport';
 
 const routes = express.Router();
 const upload = multer();
@@ -40,6 +41,7 @@ routes.put('/api/users/profile', isAuth, UserController.profile);
 routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
 routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
 routes.post('/api/users/signin', UserController.signin);
+routes.get('/api/auth_oauth/signin', UserController.signinFB);
 routes.post('/api/users/signup', UserController.signup);
 routes.post('/api/users/confirm-account', UserController.confirmAccount)
 routes.post('/api/users/forget-password', UserController.forgetPassword)

@@ -111,11 +111,11 @@ export default class PagarmeProvider implements IPaymentProvider {
       credit_card: {
         card: {
           billing_address: address,
-          number: params.creditCard.number.replace(/[^?0-9]/g, ""),
-          holder_name: params.creditCard.holderName,
-          exp_month: params.creditCard.expiration.split("/")[0],
-          exp_year: params.creditCard.expiration.split("/")[1],
-          cvv: params.creditCard.cvv
+          number: params.creditCard!.number.replace(/[^?0-9]/g, ""),
+          holder_name: params.creditCard!.holderName,
+          exp_month: params.creditCard!.expiration.split("/")[0],
+          exp_year: params.creditCard!.expiration.split("/")[1],
+          cvv: params.creditCard!.cvv
         },
         operation_type: "auth_and_capture",
         recurrence: false,
@@ -146,6 +146,7 @@ export default class PagarmeProvider implements IPaymentProvider {
         items,
         payments
       }
+      
       const response = await basePagarme.post("orders", data)
 
       const returnStatus: StatusTransaction = {

@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
 import LoadingBox from '../components/LoadingBox';
+import axios from 'axios';
 
 export default function SigninScreen() {
   const { search } = useLocation();
@@ -44,6 +45,10 @@ export default function SigninScreen() {
       dispatch(userFailure(error.message));
     }
   };
+
+  const redirectAuthFB = async () => {
+    window.location.replace('http://localhost:5000/auth/facebook')
+  }
 
   useEffect(() => {
     if (userInfo) {
@@ -75,8 +80,17 @@ export default function SigninScreen() {
           />
         </Form.Group>
         <div className="mb-3">
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className='w-25'>
             {loading ? <LoadingBox /> : 'Login'}
+          </Button>
+        </div>
+        <div className='social-media mb-3'>
+          <span>OU</span>
+        </div>
+        <div className="d-flex justify-content-center mb-3 social-fb">
+          <Button type="button" onClick={redirectAuthFB}>
+            <i className="fa-brands fa-facebook"></i>&nbsp;
+            Continuar com o Facebook
           </Button>
         </div>
         <div className="mb-1">

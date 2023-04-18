@@ -2,10 +2,12 @@ import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
-import fs from 'fs';
 import { routes } from './routes';
 import axios from 'axios';
+import cors from 'cors';
 import isbot from 'isbot';
+import passport from 'passport';
+import '../src/controllers/passaport';
 
 interface ServerData {
   id: string
@@ -71,8 +73,16 @@ const defaultType = 'website'
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 app.use(routes);
+
+app.get('/auth/facebook', passport.authenticate('facebook',
+  {
+    scope: ['email', 'user_location']
+  }
+));
 
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 
@@ -101,40 +111,6 @@ app.get('/product/:slugSEO', async (req: Request, res: Response) => {
 
 app.get("*", (req: Request, res: Response) => {
   res.send(metaTags(defaultTitle, defaultDescription, defaultImage, defaultUrl, defaultType));
-  //Este escopo de função foi implementado para incluir as metatags 
-  // fs.readFile(indexPath, 'utf8', async (err, htmlData) => {
-  //   if (err) {
-  //     console.error('Error during file reading', err);
-  //     return res.status(404).end()
-  //   }
-
-  //   let data;
-  //   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  //   try {
-  //     const slug = req.params["0"].split('/').pop(); //{ '0': '/product/nike-slim-pant' } => nike-slim-pant
-  //     const url = process.env.HOSTNAME ? `${req.protocol}://${req.get('host')}` : host
-  //     data = await axios.get<ServerData>(`${url}/api/products/SEO/${slug}`);
-  //   } catch (error) {
-  //     return res.send(htmlData);
-  //   }
-
-  //   if (data) {
-  //     htmlData = htmlData.replace(
-  //       "<title>Sammy´s Store</title>",
-  //       `<title>Sammy's Store | ${data.data.name}</title>`
-  //     )
-  //       .replace('Sammy´s Store', `Sammy's Store | ` + data.data.name)
-  //       .replace('https://sammystore.com.br', fullUrl)
-  //       .replace('website', 'product')
-  //       // .replace('website', 'product')
-  //       .replace('Sua loja de artigos de beleza, roupas, calçados e relógios', data.data.description)
-  //       .replace(`https://res.cloudinary.com/dunfd3yla/image/upload/v1681611871/logos/android-chrome-512x512_pkqqna.png`, data.data.image)
-  //     return res.send(htmlData);
-  //   } else {
-  //     return res.send(htmlData);
-  //   }
-  // })
-  // res.status(200).sendFile(path.join(__dirname, '/frontend/build/index.html'))
 })
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

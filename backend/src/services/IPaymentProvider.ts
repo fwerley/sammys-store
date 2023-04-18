@@ -13,7 +13,7 @@ type ProcessParams = {
     installments: number;
     customer: User;
     billing: ShippingAddress;
-    creditCard: CreditCard;
+    creditCard?: CreditCard;
 }
 
 interface StatusType<TValue> {
