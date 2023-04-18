@@ -8,7 +8,7 @@ type Data = {
 declare global {
     namespace Express {
         interface Request {
-            user?: Record<string,any> | any;           
+            user?: Record<string,any>;           
         }
     }
 }
