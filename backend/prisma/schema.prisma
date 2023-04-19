@@ -62,30 +62,32 @@ model Seller {
 }
 
 model federatedCredentials {
-  id       String @id @default(cuid())
-  userId   String @unique @map("user_id")
+  userId   String
   provider String
   subject  String @unique
+  user     User   @relation(fields: [userId], references: [id])
+  id       String @id @default(cuid())
 
   @@map("federated_credentials")
 }
 
 model User {
-  id              String            @id @default(cuid())
-  name            String
-  email           String            @unique
-  password        String
-  resetToken      String?
-  active          Boolean           @default(false)
-  isAdmin         Boolean           @default(false) @map("is_admin")
-  isSeller        Boolean           @default(false)
-  seller          Seller?
-  document        String?
-  mobile          String?
-  Order           Order[]
-  ShippingAddress ShippingAddress[]
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  createdAt       DateTime          @default(now()) @map("created_at")
+  id                   String                 @id @default(cuid())
+  name                 String
+  email                String                 @unique
+  password             String
+  resetToken           String?
+  active               Boolean                @default(false)
+  isAdmin              Boolean                @default(false) @map("is_admin")
+  isSeller             Boolean                @default(false)
+  seller               Seller?
+  document             String?
+  mobile               String?
+  Order                Order[]
+  ShippingAddress      ShippingAddress[]
+  updatedAt            DateTime               @updatedAt @map("updated_at")
+  createdAt            DateTime               @default(now()) @map("created_at")
+  federatedCredentials federatedCredentials[]
 
   @@map("users")
 }

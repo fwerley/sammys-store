@@ -6,8 +6,6 @@ import { routes } from './routes';
 import axios from 'axios';
 import cors from 'cors';
 import isbot from 'isbot';
-import passport from 'passport';
-import '../src/controllers/passaport';
 
 interface ServerData {
   id: string
@@ -75,14 +73,7 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
 app.use(routes);
-
-app.get('/auth/facebook', passport.authenticate('facebook',
-  {
-    scope: ['email', 'user_location']
-  }
-));
 
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 

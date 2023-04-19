@@ -13,10 +13,9 @@ import {
   userSignin,
 } from '../slice/userSlice';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { APP_ID_FB, getError } from '../utils';
 
 import LoadingBox from '../components/LoadingBox';
-import axios from 'axios';
 
 export default function SigninScreen() {
   const { search } = useLocation();
@@ -24,9 +23,11 @@ export default function SigninScreen() {
   const navigate = useNavigate();
   const { userInfo, loading } = useSelector(selectUser);
   const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const accessTokenFb = new URLSearchParams(search).get('accessFbToken') || '';
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
   const [email, setEmail] = useState('');
+  const [dLoad, setDLaod] = useState(false);
   const [password, setPassword] = useState('');
 
   const submitHandler = async (e) => {
@@ -47,8 +48,30 @@ export default function SigninScreen() {
   };
 
   const redirectAuthFB = async () => {
-    window.location.replace('http://localhost:5000/auth/facebook')
+    window.location.replace(
+      `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&scope=email&code=${encodeURIComponent('/')}`
+    )
   }
+
+  useEffect(() => {
+    const request = async () => {
+      setDLaod(true);
+      try {
+        const { data } = await Axios.get(`/api/auth_oauth/me?accessToken=${accessTokenFb}`);
+        console.log(data)
+        dispatch(userSignin(data));
+        localStorage.setItem('userInfo', JSON.stringify(data));
+        navigate(redirect);
+        setDLaod(false);
+      } catch (error) {
+        toast.error(getError(error));
+        dispatch(userFailure(error.message));
+        setDLaod(false);
+      }
+    }
+    if (accessTokenFb)
+      request();
+  }, [accessTokenFb])
 
   useEffect(() => {
     if (userInfo) {
@@ -102,6 +125,9 @@ export default function SigninScreen() {
           <Link to='/forget-password'>Recuperar</Link>
         </div>
       </Form>
+      <div id='spinner' className={`${dLoad ? '' : 'd-none'}`}>
+        <i className="fa-solid fa-spinner fa-spin"></i>
+      </div>
     </Container>
   );
 }

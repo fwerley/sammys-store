@@ -1,3 +1,5 @@
+export const APP_ID_FB = 1180331102646514;
+
 export const getError = (error) => {
   return error.response && error.response.data.message
     ? error.response.data.message

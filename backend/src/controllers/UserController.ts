@@ -4,11 +4,12 @@ import { prismaClient } from '../database/prismaClient';
 import dataUsers from '../dataUsers';
 import { baseUrl, generateToken, mailtrap } from '../utils';
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
-import facebook from 'passport-facebook';
 
 import { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
+import axios from 'axios';
+
+const accessTokens = new Set();
 
 export default {
   async insert(req: Request, res: Response) {
@@ -124,10 +125,96 @@ export default {
     res.status(401).send({ message: 'Email ou senha inválido' });
   },
 
-  async signinFB(req: Request, res: Response, next: NextFunction) {
-    console.log(req.user);
-    passport.authenticate('facebook', { failureRedirect: '/login', failureMessage: true }),
-      res.redirect('/');
+  async signinFB(req: Request, res: Response) {
+    try {
+      const authCode = <string | number | boolean>req.query.code;
+      console.log(authCode)
+      const accessTokenUrl = 'https://graph.facebook.com/v16.0/oauth/access_token?' +
+        `client_id=${'' + process.env.FB_APP_ID}&` +
+        `client_secret=${'' + process.env.FB_APP_SECRET}&` +
+        `redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&` +
+        `code=${encodeURIComponent(authCode)}`;
+
+      const { data } = await axios.get(accessTokenUrl)
+      accessTokens.add(data['access_token']);
+      res.redirect(`http://localhost:3000/signin?accessFbToken=${encodeURIComponent(data['access_token'])}`)
+      // res.redirect(`/api/auth_oauth/me?accessToken=${encodeURIComponent(data['access_token'])}`)
+    } catch (error) {
+      res.status(500).send({ message: 'Falha na autenticação. Por favor, tente novamente em alguns minutos' })
+    }
+  },
+
+  async me(req: Request, res: Response) {
+    try {
+      const accessToken = <string | number | boolean>req.query.accessToken;
+      if (!accessTokens.has(accessToken)) {
+        throw new Error(`Invalid access token "${accessToken}"`);
+      }
+      const { data } = await axios.get(
+        `https://graph.facebook.com/me?access_token=${encodeURIComponent(accessToken)}&fields=name,email`
+      )
+      const userRef = await prismaClient.federatedCredentials.findUnique({
+        where: {
+          subject: data.id
+        }
+      });
+      if (!userRef) {
+        const newUser = await prismaClient.federatedCredentials.create({
+          data: {
+            user: {
+              connect: {
+                email: data.email
+              },
+              create: {
+                name: data.name,
+                email: data.email,
+                password: randomUUID(),
+                active: true
+              }
+            },
+            provider: 'facebook.com',
+            subject: data.id
+          },
+          include: {
+            user: true
+          }
+        })
+        res.send({
+          id: newUser.id,
+          name: newUser.user.name,
+          email: newUser.user.email,
+          token: generateToken(newUser.user)
+        });
+      } else {
+        const user = await prismaClient.user.findFirst({
+          where: {
+            id: userRef.userId,
+          }, include: {
+            seller: true
+          }
+        });
+        if (user) {
+          if (!user.active) {
+            res.send({
+              message: 'Sua conta está desativada. Entre em contato com o suporte'
+            });
+          }
+          res.send({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            mobile: user.mobile,
+            isAdmin: user.isAdmin,
+            isSeller: user.isSeller,
+            seller: user.isSeller ? user.seller : {},
+            document: user.document,
+            token: generateToken(user),
+          });
+        }
+      }
+    } catch (error) {
+      res.status(500).send({ message: '2 - Falha na autenticação. Por favor, tente novamente em alguns minutos' })
+    }
   },
 
   async signup(req: Request, res: Response) {
