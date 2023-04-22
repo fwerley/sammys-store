@@ -19,14 +19,14 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import MessageBox from './MessageBox';
 import LoadingBox from './LoadingBox';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { formatCoin, getError } from '../utils';
 
 
 function ModalBox(props) {
     return (
         <Modal
             {...props}
-            // size='sm'
+            size={`${props.type === 'BILLET' ? 'sm' : ''}`}
             // dialogClassName="modal-90w"
             aria-labelledby="container-modal-title-vcenter"
             centered
@@ -37,26 +37,15 @@ function ModalBox(props) {
                     {props.title}
                 </Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
-                {renderSwitch(props.type)}
+                {ComponentPay(props.type)}
             </Modal.Body>
         </Modal>
     )
 }
 
-
-const renderSwitch = (param) => {
-    switch (param) {
-        case 'CREDIT_CARD':
-            return <CardItem />
-        default:
-            <MessageBox>
-                Não conseguimos carregar a informação. Tente novamente em alguns minutos ⌛
-            </MessageBox>
-    }
-}
-
-function CardItem() {
+const ComponentPay = (typeRender) => {
     const [cvc, setCvc] = useState('');
     const [expiry, setExpiry] = useState('');
     const [focus, setFocus] = useState('');
@@ -69,6 +58,8 @@ function CardItem() {
     const { userInfo } = useSelector(selectUser);
     const { successPay, loadingPay, errorPay } = useSelector(selectPayment)
 
+    const [cpf, setCPF] = useState('');
+
     const handleInputFocus = (e) => {
         setFocus(e.target.name);
     };
@@ -79,7 +70,7 @@ function CardItem() {
         for (let index = 0; index < 12; index++) {
             let correctValue = (value / (index + 1)) + (value / (index + 1)) * 0.05 * index;
             stringSelect.push({
-                label: `Parcela ${(index + 1)} x R$ ${correctValue.toFixed(2).replace('.', ',')}`,
+                label: `Parcela ${(index + 1)} x ${formatCoin(correctValue)}`,
                 installments: index + 1,
                 value: correctValue.toFixed(2) * (index + 1),
                 taxPrice: correctValue.toFixed(2) * (index + 1) - value
@@ -92,32 +83,36 @@ function CardItem() {
         setTaxPrice(installments[0]?.taxPrice);
     }, [installments])
 
-
     const payOrder = async () => {
         try {
+            if (!cpf) {
+                toast.warning('O campo CPF é obrigatório');
+                return;
+            }
+
             dispatch(paymentRequest())
 
             // Se foi feito compra parcelada, o preço deve ser atualiado com acrescimo da taxa
-            if (taxPrice !== order.orderPrice.taxPrice) {
-                await axios.put(
-                    `/api/orders/${order.id}`,
-                    {
-                        taxPrice,
-                        totalPrice: order.orderPrice.itemsPrice + order.orderPrice.shippingPrice + taxPrice
-                    },
-                    { headers: { authorization: `Bearer ${userInfo.token}` } }
-                )
-            }
+            // if (taxPrice !== order.orderPrice.taxPrice) {
+            //     await axios.put(
+            //         `/api/orders/${order.id}`,
+            //         {
+            //             taxPrice,
+            //             totalPrice: order.orderPrice.itemsPrice + order.orderPrice.shippingPrice + taxPrice
+            //         },
+            //         { headers: { authorization: `Bearer ${userInfo.token}` } }
+            //     )
+            // }
             // Aguardar atualização de taxa do BD
             await axios.post(
                 `/api/orders/${order.id}/pay`,
                 {
                     paymentType: order.paymentMethod,
-                    installments: installments[0].installments,
+                    installments: order.paymentMethod === 'BILLET' ? 1 : installments[0].installments,
                     customerName: userInfo.name,
                     customerEmail: userInfo.email,
-                    customerMobile: userInfo.mobile,
-                    customerDocument: userInfo.document,
+                    customerMobile: userInfo.mobile || '',
+                    customerDocument: cpf,
                     billingAddress: order.shippingAddress.address,
                     billingNumber: order.shippingAddress.number,
                     billingNeighborhood: order.shippingAddress.neighborhood,
@@ -146,7 +141,7 @@ function CardItem() {
         }
     }
 
-    return (
+    const CardPay = (
         <Card>
             <Card.Body>
                 {/* <Card.Title>Dados do cartão de crédito</Card.Title> */}
@@ -200,14 +195,24 @@ function CardItem() {
                                                 </Col>
                                                 <Col sm={6}>
                                                     <Form.Group className="mb-3" controlId="installments">
-                                                        <Form.Label>Parcelas</Form.Label>
-                                                        <Typeahead
+                                                        <Form.Label>CPF do titular</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            as={InputMask}
+                                                            mask="999.999.999-99"
+                                                            name="cpf"
+                                                            value={cpf}
+                                                            placeholder="000.000.000-00"
+                                                            required
+                                                            onChange={(e) => setCPF(e.target.value)}
+                                                        />
+                                                        {/* <Typeahead
                                                             id="basic-example"
                                                             onChange={setInstallments}
                                                             options={arrayInstallments()}
                                                             placeholder="N° de parcelas"
                                                             selected={installments}
-                                                        />
+                                                        /> */}
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -290,6 +295,58 @@ function CardItem() {
             </Card.Body>
         </Card>
     )
+    const BilletPay = (
+        loadingPay ?
+            <LoadingBox></LoadingBox> :
+            successPay ?
+                <MessageBox variant="success">
+                    Solicitação recebida.
+                    Verifique na seção pagamento o link para o seu boleto! 😊
+                </MessageBox> :
+                errorPay !== '' ?
+                    <MessageBox>
+                        Infelizmente não foi possivel concluir a transação ⚠️
+                        Tente novamente em alguns minutos!
+                    </MessageBox> :
+                    <div>
+                        <Form>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3" controlId="installments">
+                                        <Form.Label>CPF do pagador</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            as={InputMask}
+                                            mask="999.999.999-99"
+                                            name="cpf"
+                                            value={cpf}
+                                            placeholder="000.000.000-00"
+                                            required
+                                            onChange={(e) => setCPF(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+
+                        </Form>
+                        <div className="d-grid">
+                            <Button type="button" className='d-flex flex-row justify-content-center' onClick={payOrder}>
+                                Gerar boleto
+                            </Button>
+                        </div>
+                    </div>
+    )
+
+    switch (typeRender) {
+        case 'CREDIT_CARD':
+            return CardPay
+        case 'BILLET':
+            return BilletPay
+        default:
+            <MessageBox>
+                Não conseguimos carregar a informação. Tente novamente em alguns minutos ⌛
+            </MessageBox>
+    }
 }
 
 export default ModalBox;

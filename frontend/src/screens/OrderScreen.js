@@ -29,6 +29,7 @@ import ModalBox from '../components/ModalBox';
 import HelmetSEO from '../components/HelmetSEO';
 import { toast } from 'react-toastify';
 import { fetchTransaction, fetchTransactionFail, selectTransaction, successTransaction } from '../slice/transactionSlice';
+import SuccessCircleAnimate from '../components/SuccessCircleAnimate';
 
 export default function OrderScreen() {
   const { error, order, orderLoading, loadingDeliver, successDeliver } = useSelector(selectOrder);
@@ -40,7 +41,9 @@ export default function OrderScreen() {
   const dispatch = useDispatch();
 
   const [modalShow, setModalShow] = useState(false);
+  const [copyBillet, setCopyBillet] = useState(false);
   // const [loadData, setLoadData] = useState(true);
+  const [t, setT] = useState('My test');
 
   const { id: orderId } = params;
 
@@ -105,8 +108,11 @@ export default function OrderScreen() {
           setModalShow(false)
         }
       }, 4000)
+
       interval = setInterval(() => {
-        if (transaction && (transaction.status === 'APPROVED' || transaction.status === 'ERROR')) {
+        if (transaction && (transaction.status === 'APPROVED' || transaction.status === 'ERROR') || (
+          order.paymentMethod === 'BILLET' && transaction.status === 'STARTED'
+        )) {
           dispatch(paymentReset())
           fetchOrder()
         }
@@ -117,7 +123,31 @@ export default function OrderScreen() {
   }, [successPay, transaction, dispatch, modalShow])
 
   const switchOrderMessage = (state) => {
+    const copyCordeBillet = () => {
+      navigator.clipboard.writeText(transaction.barCode)
+      setCopyBillet(true);
+    }
     switch (state) {
+      case 'STARTED':
+        return (
+          <MessageBox variant="info">
+            <div className="boleto-container">
+              <div
+                className={`d-flex justify-content-between mb-2 align-items-center ${copyBillet ? 'border-success' : ''}`}
+                onClick={copyCordeBillet}
+              >
+                {transaction.barCode || '54352348297528374328975'} 
+                <span>
+                  {!copyBillet ?
+                    <i className="fa-solid fa-copy"></i>
+                    : <SuccessCircleAnimate dimension={20} />
+                  }
+                </span>
+              </div>
+              <Link to={transaction.urlBillet} style={{ textDecoration: 'underline' }} target='_blank'>Imprimir boleto</Link>
+            </div>
+          </MessageBox>
+        )
       case 'APPROVED':
         return (
           <MessageBox variant="success">
@@ -217,7 +247,7 @@ export default function OrderScreen() {
                   Enviado no dia {formatedDate(order.deliveredAt)}
                 </MessageBox>
               ) : (
-                <MessageBox variant="danger">Não enviado</MessageBox>
+                <MessageBox variant="warning">Não enviado</MessageBox>
               )}
             </Card.Body>
           </Card>
@@ -237,7 +267,7 @@ export default function OrderScreen() {
               ) : transaction.status ?
                 switchOrderMessage(transaction.status)
                 :
-                <MessageBox variant="danger">Pagamento pendente</MessageBox>
+                <MessageBox variant="warning">Pagamento pendente</MessageBox>
               }
             </Card.Body>
           </Card>
@@ -297,9 +327,9 @@ export default function OrderScreen() {
                     </Col>
                     <Col><strong>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</strong></Col>
                   </Row>
-                </ListGroup.Item>
+                </ListGroup.Item>              
                 {loadingTransaction ? ('') :
-                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' && order.user.id === userInfo.id ?
+                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' && order.user.id === userInfo.id  && !transaction.urlBillet ?
                     (
                       <ListGroup.Item>
                         <div className="d-grid">
@@ -315,7 +345,7 @@ export default function OrderScreen() {
                           </Button>
                         </div>
                       </ListGroup.Item>
-                    ) : !order.isPaid && order.user.id === userInfo.id ? (
+                    ) : !order.isPaid && order.user.id === userInfo.id && !transaction.urlBillet ? (
                       <ListGroup.Item>
                         <div className="d-grid">
                           <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>

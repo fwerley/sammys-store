@@ -47,7 +47,7 @@ function Product(props) {
         <Card.Text>
           <div className='d-flex justify-content-between'>
             <strong>R$ {product.price},00</strong>
-            {seller && (<Link to={`/seller/${product.sellerId}`}>{product.seller && product.seller.name}</Link>)}
+            {/* {seller && (<Link to={`/seller/${product.sellerId}`}>{product.seller && product.seller.name}</Link>)} */}
           </div>
         </Card.Text>
         <div className={`d-flex justify-content-center position-absolute cart-button shadow rounded ${hoverButton}`}>

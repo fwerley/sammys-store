@@ -1,5 +1,6 @@
 import { Transaction } from "@prisma/client";
 import { cpf } from "cpf-cnpj-validator";
+import parsePhoneNumber from 'libphonenumber-js';
 import moment from 'moment';
 import { Address, CustomerInput, ItemInput, PaymentParams, Payments, Phones, ShippingInput } from "pagarme";
 import { prismaClient } from "../database/prismaClient";
@@ -22,6 +23,18 @@ export default class PagarmeProvider implements IPaymentProvider {
         shippingAddress: true
       }
     });
+    const addressUser = await prismaClient.user.findUnique({
+      where: {
+        id: order?.user.id
+      },
+      include: {
+        ShippingAddress: {
+          where: {
+            default: true
+          }
+        }
+      }
+    })
 
     if (!order) {
       throw `Order ${order} was not found`;
@@ -30,47 +43,56 @@ export default class PagarmeProvider implements IPaymentProvider {
     let clientType = cpf.isValid(order.user.document!) ? 'individual' : 'company'
 
     const address: Address = {
-      line_1: order.shippingAddress.address,
-      line_2: order.shippingAddress.number,
-      zip_code: order.shippingAddress.postalCode,
-      city: order.shippingAddress.city,
+      country: 'BR',
       state: order.shippingAddress.federativeUnity,
-      country: 'BR'
+      city: order.shippingAddress.city,
+      zip_code: order.shippingAddress.postalCode,
+      line_1: `${order.shippingAddress.address}, ${order.shippingAddress.number}`,
+      line_2: order.shippingAddress.neighborhood || '',
     }
+
+    const phoneNumber = parsePhoneNumber(order.user.mobile || '')
 
     const phones: Phones = {
       home_phone: {
         country_code: '55',
-        area_code: '21',
-        number: '000000000'
+        area_code: '88',
+        number: '981522160'
       },
       mobile_phone: {
-        country_code: '55',
-        area_code: '21',
-        number: '000000000'
+        country_code: phoneNumber?.country || '55',
+        area_code: phoneNumber?.nationalNumber?.slice(0, 2) || '88',
+        number: order.user.mobile?.slice(2) || '981522160'
       }
     }
 
     const customer: CustomerInput = {
+      //Adress
+      address: addressUser?.ShippingAddress && addressUser?.ShippingAddress.length > 0 ? {
+        country: 'BR',
+        state: addressUser.ShippingAddress[0].federativeUnity,
+        city: addressUser.ShippingAddress[0].city,
+        zip_code: addressUser.ShippingAddress[0].postalCode,
+        line_1: addressUser.ShippingAddress[0].address + ', ' + addressUser.ShippingAddress[0].number,
+        line_2: addressUser.ShippingAddress[0].neighborhood || '',
+      } : address,
       name: order.user.name,
       type: clientType,
       email: order.user.email,
       // document: order.user.document!,
-      document: order.user.document!.replace(/[^?0-9]/g, ""),
-      //Adress
-      address,
+      document: params.customer.document!.replace(/[^?0-9]/g, ""),
+      document_type: clientType === 'individual' ? 'CPF' : 'CNPJ',
       //Phones
       phones
     }
 
     const shipping: ShippingInput = {
+      //O endereço de entrega pode não ser o endereço de cadastro do usuario    
+      address,
       amount: order.orderPrice.shippingPrice * 100,
-      description: "Entregar com urgencia",
+      description: `Enviado pela Sammy's Store para ${order.shippingAddress.fullName}`,
       recipient_name: order.shippingAddress.fullName,
-      recipient_phone: order.shippingAddress.number,
-      //O endereço de entrega pode não ser o endereço de cadastro do usuario
-      //Adress - CONSERTAR NO TYPES DO PAGARME , POIS O ENDEREÇO DE CADASTRO NÃO É NECESSARIAMENTE O ENDEREÇO DE ENTREGA
-      address
+      recipient_phone: order.shippingAddress.phoneNumber || '88981522160',
     }
 
     let items = await Promise.all(order.orderItems.map(async (item) => {
@@ -96,8 +118,8 @@ export default class PagarmeProvider implements IPaymentProvider {
     const billetParams: Payments[] = [{
       boleto: {
         bank: '001',
-        document_number: "ID TRANSACTION",
-        instructions: 'Pagar até a data limite',
+        document_number: "",
+        instructions: 'Pagar em até três',
         due_at: new Date(moment().add(3, "days").toISOString()),
         //  document_number: transaction.code,
         type: 'BDP',
@@ -146,7 +168,7 @@ export default class PagarmeProvider implements IPaymentProvider {
         items,
         payments
       }
-      
+
       const response = await basePagarme.post("orders", data)
 
       const returnStatus: StatusTransaction = {
@@ -156,7 +178,7 @@ export default class PagarmeProvider implements IPaymentProvider {
           id: response.data.charges[0].last_transaction.card.id
         } : undefined,
         billet: params.paymentType == "BILLET" ? {
-          barcode: response.data.charges[0].last_transaction.barcode,
+          barcode: response.data.charges[0].last_transaction.line,
           url: response.data.charges[0].last_transaction.url,
         } : undefined,
         processorResponse: JSON.stringify(response.data)

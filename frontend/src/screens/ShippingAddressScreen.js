@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputMask from 'react-input-mask';
-import { PinMapFill, ArrowRight, GlobeAmericas } from 'react-bootstrap-icons';
+import { PinMapFill, ArrowRight } from 'react-bootstrap-icons';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
@@ -28,6 +28,7 @@ export default function ShippingAddressScreen() {
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [number, setNumber] = useState(shippingAddress.number || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
+  const [phoneNumber, setPhoneNumber] = useState(shippingAddress.phoneNumber || '');
   const [neighborhood, setNeighborhood] = useState(shippingAddress.neighborhood || '');
   const [city, setCity] = useState(shippingAddress.city || '');
   const [postalCode, setPostalCode] = useState(
@@ -46,9 +47,10 @@ export default function ShippingAddressScreen() {
     setAddress(shippingAddress.address)
     setNeighborhood(shippingAddress.neighborhood)
     setCity(shippingAddress.city)
+    setPhoneNumber(shippingAddress.phoneNumber)
     setPostalCode(shippingAddress.postalCode)
-    setCountry(shippingAddress.federativeUnity) 
-  },[shippingAddress])
+    setCountry(shippingAddress.federativeUnity)
+  }, [shippingAddress])
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -60,6 +62,7 @@ export default function ShippingAddressScreen() {
         neighborhood,
         city,
         postalCode,
+        phoneNumber,
         federativeUnity,
         location: shippingAddress.location
       })
@@ -80,14 +83,30 @@ export default function ShippingAddressScreen() {
       <div className="container small-container">
         <h1 className="my-3">Endereço de envio</h1>
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="fullName">
-            <Form.Label>Nome completo</Form.Label>
-            <Form.Control
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </Form.Group>
+          <Row>
+            <Col md={8}>
+              <Form.Group className="mb-3" controlId="fullName">
+                <Form.Label>Nome completo</Form.Label>
+                <Form.Control
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="fullName">
+                <Form.Label>Número contato</Form.Label>
+                <Form.Control
+                  as={InputMask}
+                  mask="(99) 9-9999-9999"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
           <Row>
             <Col sm={6}>
               <Form.Group className="mb-3" controlId="address">

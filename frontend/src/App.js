@@ -185,7 +185,7 @@ function App() {
                       </Link>
                     </NavDropdown>
                   ) : (
-                    <Link to="/signin" className="nav-link">
+                    <Link to="/signin" className="nav-link" onClick={() => eventCollapse(false)}>
                       Login
                     </Link>
                   )}
@@ -318,9 +318,9 @@ function App() {
                   <ProductAdmin />
                 </AdminRoute>} />
               <Route path='/admin/product/:id' element={
-                <AdminRoute>
+                <SellerRoute>
                   <ProductEditScreen />
-                </AdminRoute>} />
+                </SellerRoute>} />
               <Route path='/admin/user/:id' element={
                 <AdminRoute>
                   <UserEditScreen />
@@ -346,7 +346,7 @@ function App() {
           <Footer />
           {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
         </footer>
-      </div>
+      </div>      
     </BrowserRouter>
   );
 }

@@ -42,6 +42,27 @@ a {
   color: rgb(var(--secondary-color));
 }
 
+.boleto-container > div {
+  border: 1px dashed #ccc;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: .5rem;
+}
+
+.boleto-container span {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: rgb(var(--primary-color));
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
 .logo-desc {
   font-family: Modulus;
   font-weight: bolder;
@@ -112,22 +133,22 @@ main {
 }
 
 #spinner {
-  position: fixed;
   background-color: rgb(var(--secondary-color), 0.2);
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
   z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-#spinner i{
-  position: absolute;
+#spinner i {
   color: #022d49;
   font-size: 5rem;
-  left: 47%;
-  top: 40%;
-  transform: translate(-50%, -50%);
 }
 
 .btn-primary,
@@ -153,27 +174,45 @@ main {
   font-size: small;
 }
 
-.social-fb button {
-  background-color: #1877f2;
-  font-size: 1.2rem;
+.social-login button {
+  font-size: 1.1rem;
+  width: 18rem;
 }
 
-.social-fb button:hover {
+.social-login button:hover {
   background-color: #022d49;
+}
+
+.social-fb button {
+  background-color: #1877f2;
+}
+
+.social-gg button {
+  background-color: #eee;
+  color: dimgray;
+}
+
+.fa-google {
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .social-media span {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .social-media span::before,
 .social-media span::after {
   content: "";
   display: flex;
-  width: 120px;
-  height: 1.5px;
+  width: 1.5px;
+  height: 100px;
   background: #ced4da;
   margin: 0 1rem;
   /* position: absolute; */
@@ -253,6 +292,10 @@ main {
 
 .small-container {
   max-width: 600px;
+}
+
+.middle-container {
+  max-width: 860px;
 }
 
 .checkout-steps>div {
@@ -415,8 +458,6 @@ ul>li {
   padding: 20px;
   border-radius: 0.4em;
 }
-
-.tree-branch-wrapper {}
 
 .directory .tree,
 .directory .tree-node,
@@ -604,8 +645,6 @@ button.thumbnail {
   margin-right: 5px;
 }
 
-.card-images {}
-
 .card-images img {
   width: 4rem;
 }
@@ -628,6 +667,31 @@ button.thumbnail {
 
   #seller-content {
     display: none;
+  }
+
+  .container-social {
+    flex-direction: column;
+    margin: 1.5rem 0;
+  }
+
+  .social-media {
+    margin-bottom: 2rem;
+    margin-right: 0rem !important;
+  }
+
+  .social-media span {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .social-media span::before,
+  .social-media span::after {
+    width: 100px;
+    height: 1.5px;
+    /* background: #ced4da;
+    margin: 0 1rem; */
+    /* position: absolute; */
   }
 
   .logo-seller {
@@ -653,7 +717,7 @@ button.thumbnail {
 
 /* Add card item */
 .success-animation {
-  margin: 50px auto;
+  /* margin: 50px auto; */
 }
 
 .checkmark {
@@ -661,7 +725,7 @@ button.thumbnail {
   height: 200px;
   border-radius: 50%;
   display: block;
-  stroke-width: 2;
+  stroke-width: 6;
   stroke: rgb(var(--primary-color));
   stroke-miterlimit: 10;
   box-shadow: inset 0px 0px 0px rgb(var(--primary-color));

@@ -128,7 +128,6 @@ export default {
   async signinFB(req: Request, res: Response) {
     try {
       const authCode = <string | number | boolean>req.query.code;
-      console.log(authCode)
       const accessTokenUrl = 'https://graph.facebook.com/v16.0/oauth/access_token?' +
         `client_id=${'' + process.env.FB_APP_ID}&` +
         `client_secret=${'' + process.env.FB_APP_SECRET}&` +

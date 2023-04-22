@@ -114,8 +114,10 @@ model ShippingAddress {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
   federativeUnity String
-  neighborhood    String?
   number          String
+  neighborhood    String?
+  phoneNumber     String?
+  default         Boolean?
   userId          String?
   order           Order?
   user            User?    @relation(fields: [userId], references: [id], onDelete: NoAction)
@@ -129,6 +131,9 @@ model Transaction {
   status            Status    @default(STARTED)
   installments      Int
   processorResponse String?
+  cardId            String?
+  barCode           String?
+  urlBillet         String?
   orderId           String    @unique
   paidAt            DateTime?
   transactionId     String?   @unique

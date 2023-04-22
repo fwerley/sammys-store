@@ -343,6 +343,7 @@ declare module "pagarme" {
     // country: string;
     email: string;
     document: string;
+    document_type: String;
     address: Address
     phones: Phones;
     // birthday: string;
@@ -350,7 +351,7 @@ declare module "pagarme" {
 
   export interface Address {
     line_1: string,
-    line_2: string,
+    line_2?: string,
     zip_code: string,
     city: string,
     state: string,

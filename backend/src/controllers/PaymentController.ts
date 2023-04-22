@@ -42,10 +42,10 @@ export default {
         installments: Yup.number().min(1).when("paymentType", (paymentType, schema) => paymentType === "CREDIT_CARD" ? schema.max(12) : schema.max(1)),
         customerName: Yup.string().required(),
         customerEmail: Yup.string().required().email(),
-        customerMobile: Yup.string()
+        customerMobile: customerMobile ? Yup.string()
           .required()
           .test("is-valid-mobile", "${path} is not a number", (value) =>
-            parsePhoneNumber(value!, "BR")!.isValid()),
+            parsePhoneNumber(value!, "BR")!.isValid()) : Yup.string(),
         customerDocument: Yup.string()
           .required()
           .test("is-valid-document", "${path} is not a valid CPF / CNPJ", (value) =>
@@ -99,7 +99,7 @@ export default {
       if (!order) {
         return res.status(404).send({ message: "Order not found" })
       }
-
+      
       const service = await transactionService({
         billing: {
           address: billingAddress,
@@ -110,7 +110,9 @@ export default {
           number: billingNumber,
           neighborhood: billingNeighborhood,
           createdAt: new Date(),
-          id: "pkpojpo",
+          default: null,
+          phoneNumber: null,
+          id: 'null',
           updatedAt: new Date(),
           userId: ""
         },
@@ -157,22 +159,9 @@ export default {
         if (err) {
           console.log(err)
         } else {
-          console.log(body)
+          // console.log(body)
         }
       })
-
-      // mailgun().messages().send({
-      //   from: "Sammy's Store <noreplay@sammystore.com>",
-      //   to: `${order.user.name} <${order.user.email}>`,
-      //   subject: `Novo pedido ${order.id}`,
-      //   html: payOrderEmailTemplate(order, products)
-      // }, (err, body) => {
-      //   if (err) {
-      //     console.log(err)
-      //   } else {
-      //     console.log(body)
-      //   }
-      // })
 
     } catch (error) {
       res.status(400).send({ message: 'Erro ao criar a transação: ' + error })

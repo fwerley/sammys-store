@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
@@ -48,8 +50,9 @@ export default function SigninScreen() {
   };
 
   const redirectAuthFB = async () => {
+    setDLaod(true);
     window.location.replace(
-      `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&scope=email&code=${encodeURIComponent('/')}`
+      `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&scope=email`
     )
   }
 
@@ -80,51 +83,66 @@ export default function SigninScreen() {
   }, [navigate, redirect, userInfo]);
 
   return (
-    <Container className="small-container">
+    <Container className="middle-container">
       <Helmet>
         <title>Login</title>
       </Helmet>
       <h1 className="my-3">Login</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="emil"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Senha</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <div className="mb-3">
-          <Button type="submit" disabled={loading} className='w-25'>
-            {loading ? <LoadingBox /> : 'Login'}
-          </Button>
-        </div>
-        <div className='social-media mb-3'>
-          <span>OU</span>
-        </div>
-        <div className="d-flex justify-content-center mb-3 social-fb">
-          <Button type="button" onClick={redirectAuthFB}>
-            <i className="fa-brands fa-facebook"></i>&nbsp;
-            Continuar com o Facebook
-          </Button>
-        </div>
-        <div className="mb-1">
-          Novo por aqui?{' '}
-          <Link to={`/signup?redirect=${redirect}`}>Criar conta</Link>
-        </div>
-        <div className="mb-1">
-          Esqueceu a senha?&nbsp;
-          <Link to='/forget-password'>Recuperar</Link>
-        </div>
-      </Form>
+      <Row>
+        <Col md={6}>
+          <Form onSubmit={submitHandler}>
+            <Form.Group className="mb-3" controlId="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="emil"
+                required
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="password">
+              <Form.Label>Senha</Form.Label>
+              <Form.Control
+                type="password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <div className="mb-3">
+              <Button type="submit" disabled={loading} className='w-50 shadow-sm'>
+                {loading ? <LoadingBox /> : 'Login'}
+              </Button>
+            </div>
+          </Form>
+        </Col>
+        <Col md={6} className='d-flex align-items-center container-social'>
+          <div className='social-media me-3'>
+            <span>OU</span>
+          </div>
+          <div className='social-login'>
+            <div className="d-flex justify-content-center mb-4 social-fb shadow-sm">
+              <Button type="button" onClick={redirectAuthFB}>
+                <i className="fa-brands fa-facebook"></i>&nbsp;
+                Continuar com o Facebook
+              </Button>
+            </div>
+            <div className="d-flex justify-content-center mb-3 social-gg shadow-sm">
+              <Button type="button" onClick={redirectAuthFB}>
+                <i className="fab fa-google"></i>&nbsp;
+                Continuar com o Google
+              </Button>
+            </div>
+          </div>
+        </Col>
+
+      </Row>
+      <div className="mb-1">
+        Novo por aqui?{' '}
+        <Link to={`/signup?redirect=${redirect}`}>Criar conta</Link>
+      </div>
+      <div className="mb-1">
+        Esqueceu a senha?&nbsp;
+        <Link to='/forget-password'>Recuperar</Link>
+      </div>
       <div id='spinner' className={`${dLoad ? '' : 'd-none'}`}>
         <i className="fa-solid fa-spinner fa-spin"></i>
       </div>

@@ -13,9 +13,8 @@ import { IPaymentProvider, ProcessParams } from "./IPaymentProvider";
 const gatwayPay: IPaymentProvider = new PagarmeProvider()
 
 async function transactionService(params: ProcessParams): Promise<Transaction> {
-
     try {
-    
+
         const response = await gatwayPay.process(params);
 
         const createOrUpdateTransanction = await prismaClient.order.update({
@@ -30,11 +29,14 @@ async function transactionService(params: ProcessParams): Promise<Transaction> {
                             installments: params.installments,
                             transactionId: response.transactionId,
                             status: response.status,
+                            barCode: response.billet?.barcode,
+                            urlBillet: response.billet?.url,
+                            cardId: response.card?.id,
                             processorResponse: response.processorResponse
 
                         },
                         update: {
-                            code: randomUUID(),
+                            // code: randomUUID(),
                             installments: params.installments,
                             transactionId: response.transactionId,
                             status: response.status,
@@ -49,7 +51,7 @@ async function transactionService(params: ProcessParams): Promise<Transaction> {
         })
 
         return createOrUpdateTransanction.transaction!
-        
+
     } catch (error) {
         console.debug(error)
         return Promise.reject(error)
