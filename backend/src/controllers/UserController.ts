@@ -171,8 +171,9 @@ export default {
 
     const { provider } = req.query;
     const authCode = <string>req.query.code;
-
+    accessTokens.clear()
     try {
+
       switch (provider) {
         case 'facebook':
           const state = <string | number | boolean>req.query.state;
