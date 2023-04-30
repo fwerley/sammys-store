@@ -55,9 +55,7 @@ export default function SigninScreen() {
 
   const redirectAuthFB = async () => {
     setDLaod(true);    
-    window.location.replace(urlAuthFB
-      // `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth_oauth/signin')}&scope=email&state=${redirect}`
-    )
+    window.location.replace(urlAuthFB)
   }
 
   const redirectAuthGG = async () => {

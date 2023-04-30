@@ -11,9 +11,8 @@ import { randomUUID } from 'crypto';
 import axios from 'axios';
 
 const HOST = process.env.HOSTNAME || 'http://localhost:5000';
-type DataUser = {
-  data: UserProvider
-}
+const DOMINIO = 'https://sammystore.com.br'
+
 type UserProvider = {
   name: string;
   email: string;
@@ -27,7 +26,8 @@ const oauth2Client = new google.auth.OAuth2(
    * This is where Google will redirect the user after they
    * give permission to your application
    */
-  `${HOST}` + '/api/auth_oauth/signin?provider=google',
+  // `${HOST}` + '/api/auth_oauth/signin?provider=google',
+  `${DOMINIO}` + '/api/auth_oauth/signin?provider=google',
 );
 
 export default {
@@ -147,7 +147,7 @@ export default {
   async getFacebookAuthURL(req: Request, res: Response) {
     const { redirect } = req.query;
     res.send(`https://www.facebook.com/v16.0/dialog/oauth?client_id=${process.env.FB_APP_ID}&redirect_uri=${encodeURIComponent(
-      `${req.protocol}://${req.get('host')}` + '/api/auth_oauth/signin?provider=facebook')}&scope=email&state=${redirect}`)
+      `${DOMINIO}` + '/api/auth_oauth/signin?provider=facebook')}&scope=email&state=${redirect}`)
   },
 
   async getGoogleAuthURL(req: Request, res: Response) {
@@ -179,13 +179,13 @@ export default {
           const accessTokenUrl = 'https://graph.facebook.com/v16.0/oauth/access_token?' +
             `client_id=${'' + process.env.FB_APP_ID}&` +
             `client_secret=${'' + process.env.FB_APP_SECRET}&` +
-            `redirect_uri=${encodeURIComponent(`${HOST}` + '/api/auth_oauth/signin?provider=facebook')}&` +
+            `redirect_uri=${encodeURIComponent(`${DOMINIO}` + '/api/auth_oauth/signin?provider=facebook')}&` +
             `code=${encodeURIComponent(authCode)}`;
 
           const { data } = await axios.get(accessTokenUrl)
           accessTokens.add(data['access_token']);
           // res.status(200).redirect(`http://localhost:3000/signin?accessToken=${encodeURIComponent(data['access_token'])}&redirect=${state}&provider=facebook`)
-          res.status(200).redirect(`${HOST}/signin?accessToken=${encodeURIComponent(data['access_token'])}&redirect=${state}&provider=facebook`)
+          res.status(200).redirect(`${DOMINIO}/signin?accessToken=${encodeURIComponent(data['access_token'])}&redirect=${state}&provider=facebook`)
           // res.redirect(`/api/auth_oauth/me?accessToken=${encodeURIComponent(data['access_token'])}`)
           break;
         case 'google':
@@ -193,7 +193,7 @@ export default {
           accessTokens.add(tokens.access_token);
           accessTokens.add(tokens.id_token);
           // res.status(200).redirect(`http://localhost:3000/signin?accessToken=${encodeURIComponent(tokens.access_token!)}&provider=google`)
-          res.status(200).redirect(`${HOST}/signin?accessToken=${encodeURIComponent(tokens.access_token!)}&provider=google`)
+          res.status(200).redirect(`${DOMINIO}/signin?accessToken=${encodeURIComponent(tokens.access_token!)}&provider=google`)
           break;
         default:
           res.status(400).send({ message: 'Provedor de autenticação não identificado' })
@@ -207,7 +207,6 @@ export default {
   async me(req: Request, res: Response) {
 
     const { provider } = req.query;
-    console.log(provider)
     let userData: UserProvider = {
       name: '',
       email: '',
@@ -234,7 +233,6 @@ export default {
               },
             },
           )
-          console.log(dataInfo.data)
           userData = dataInfo.data
           break;
       }
