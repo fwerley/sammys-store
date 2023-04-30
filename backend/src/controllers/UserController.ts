@@ -207,6 +207,8 @@ export default {
   async me(req: Request, res: Response) {
 
     const { provider } = req.query;
+    console.log(provider)
+    console.log(accessTokens)
     let userData: UserProvider = {
       name: '',
       email: '',
@@ -233,6 +235,7 @@ export default {
               },
             },
           )
+          console.log(dataInfo)
           userData = dataInfo.data
           break;
       }
