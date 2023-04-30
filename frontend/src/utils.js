@@ -29,7 +29,7 @@ export const formatedDate = (date) => {
     let newDate = new Date(date)
     return newDate.toLocaleDateString('pt-BR')
   } catch (error) {
-      console.log(error)
+    console.log(error)
   }
 }
 

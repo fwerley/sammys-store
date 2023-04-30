@@ -40,7 +40,9 @@ routes.put('/api/users/profile', isAuth, UserController.profile);
 routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
 routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
 routes.post('/api/users/signin', UserController.signin);
-routes.get('/api/auth_oauth/signin', UserController.signinFB);
+routes.get('/api/google/url-auth', UserController.getGoogleAuthURL);
+routes.get('/api/facebook/url-auth', UserController.getFacebookAuthURL);
+routes.get('/api/auth_oauth/signin', UserController.signinSocial);
 routes.get('/api/auth_oauth/me', UserController.me);
 routes.post('/api/users/signup', UserController.signup);
 routes.post('/api/users/confirm-account', UserController.confirmAccount)

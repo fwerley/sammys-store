@@ -42,6 +42,10 @@ a {
   color: rgb(var(--secondary-color));
 }
 
+.container > button:hover{
+  color: #fff;
+}
+
 .boleto-container > div {
   border: 1px dashed #ccc;
   cursor: pointer;

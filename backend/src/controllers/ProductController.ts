@@ -86,6 +86,7 @@ export default {
   },
 
   async store(req: Request, res: Response) {
+    // decodeQR('oi')
     const products = await prismaClient.product.findMany({
       include: {
         seller: {

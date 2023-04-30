@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import { google } from 'googleapis';
 import { prismaClient } from '../database/prismaClient';
 import dataUsers from '../dataUsers';
 import { baseUrl, generateToken, mailtrap } from '../utils';
@@ -9,7 +10,25 @@ import { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import axios from 'axios';
 
+const HOST = process.env.HOSTNAME || 'http://localhost:5000';
+type DataUser = {
+  data: UserProvider
+}
+type UserProvider = {
+  name: string;
+  email: string;
+  id: string
+}
 const accessTokens = new Set();
+const oauth2Client = new google.auth.OAuth2(
+  '' + process.env.GOOGLE_CLIENT_ID,
+  '' + process.env.GOOGLE_CLIENT_SECRET,
+  /*
+   * This is where Google will redirect the user after they
+   * give permission to your application
+   */
+  `${HOST}` + '/api/auth_oauth/signin?provider=google',
+);
 
 export default {
   async insert(req: Request, res: Response) {
@@ -125,36 +144,104 @@ export default {
     res.status(401).send({ message: 'Email ou senha inválido' });
   },
 
-  async signinFB(req: Request, res: Response) {
-    try {
-      const authCode = <string | number | boolean>req.query.code;
-      const accessTokenUrl = 'https://graph.facebook.com/v16.0/oauth/access_token?' +
-        `client_id=${'' + process.env.FB_APP_ID}&` +
-        `client_secret=${'' + process.env.FB_APP_SECRET}&` +
-        `redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&` +
-        `code=${encodeURIComponent(authCode)}`;
+  async getFacebookAuthURL(req: Request, res: Response) {
+    const { redirect } = req.query;
+    res.send(`https://www.facebook.com/v16.0/dialog/oauth?client_id=${process.env.FB_APP_ID}&redirect_uri=${encodeURIComponent(
+      `${req.protocol}://${req.get('host')}` + '/api/auth_oauth/signin?provider=facebook')}&scope=email&state=${redirect}`)
+  },
 
-      const { data } = await axios.get(accessTokenUrl)
-      accessTokens.add(data['access_token']);
-      res.redirect(`http://localhost:3000/signin?accessFbToken=${encodeURIComponent(data['access_token'])}`)
-      // res.redirect(`/api/auth_oauth/me?accessToken=${encodeURIComponent(data['access_token'])}`)
+  async getGoogleAuthURL(req: Request, res: Response) {
+
+    /*
+     * Generate a url that asks permissions to the user's email and profile
+     */
+    const scopes = [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ];
+
+    res.send(oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      prompt: 'consent',
+      scope: scopes, // If you only need one scope you can pass it as string
+    }))
+  },
+
+  async signinSocial(req: Request, res: Response) {
+
+    const { provider } = req.query;
+    const authCode = <string>req.query.code;
+
+    try {
+      switch (provider) {
+        case 'facebook':
+          const state = <string | number | boolean>req.query.state;
+          const accessTokenUrl = 'https://graph.facebook.com/v16.0/oauth/access_token?' +
+            `client_id=${'' + process.env.FB_APP_ID}&` +
+            `client_secret=${'' + process.env.FB_APP_SECRET}&` +
+            `redirect_uri=${encodeURIComponent(`${HOST}` + '/api/auth_oauth/signin?provider=facebook')}&` +
+            `code=${encodeURIComponent(authCode)}`;
+
+          const { data } = await axios.get(accessTokenUrl)
+          accessTokens.add(data['access_token']);
+          // res.status(200).redirect(`http://localhost:3000/signin?accessToken=${encodeURIComponent(data['access_token'])}&redirect=${state}&provider=facebook`)
+          res.status(200).redirect(`${HOST}/signin?accessToken=${encodeURIComponent(data['access_token'])}&redirect=${state}&provider=facebook`)
+          // res.redirect(`/api/auth_oauth/me?accessToken=${encodeURIComponent(data['access_token'])}`)
+          break;
+        case 'google':
+          const { tokens } = await oauth2Client.getToken(authCode);
+          accessTokens.add(tokens.access_token);
+          accessTokens.add(tokens.id_token);
+          // res.status(200).redirect(`http://localhost:3000/signin?accessToken=${encodeURIComponent(tokens.access_token!)}&provider=google`)
+          res.status(200).redirect(`${HOST}/signin?accessToken=${encodeURIComponent(tokens.access_token!)}&provider=google`)
+          break;
+        default:
+          res.status(400).send({ message: 'Provedor de autenticação não identificado' })
+          break;
+      }
     } catch (error) {
       res.status(500).send({ message: 'Falha na autenticação. Por favor, tente novamente em alguns minutos' })
     }
   },
 
   async me(req: Request, res: Response) {
+
+    const { provider } = req.query;
+    console.log(provider)
+    let userData: UserProvider = {
+      name: '',
+      email: '',
+      id: ''
+    }
+    const accessToken = <string | number | boolean>req.query.accessToken;
     try {
-      const accessToken = <string | number | boolean>req.query.accessToken;
       if (!accessTokens.has(accessToken)) {
         throw new Error(`Invalid access token "${accessToken}"`);
       }
-      const { data } = await axios.get(
-        `https://graph.facebook.com/me?access_token=${encodeURIComponent(accessToken)}&fields=name,email`
-      )
+      switch (provider) {
+        case 'facebook':
+          const { data } = await axios.get(
+            `https://graph.facebook.com/me?access_token=${encodeURIComponent(accessToken)}&fields=name,email`
+          )
+          userData = data
+          break;
+        case 'google':
+          const dataInfo = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessTokens.values().next().value}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessTokens.values().next().value}`,
+              },
+            },
+          )
+          console.log(dataInfo.data)
+          userData = dataInfo.data
+          break;
+      }
+
       const userRef = await prismaClient.federatedCredentials.findUnique({
         where: {
-          subject: data.id
+          subject: userData.id
         }
       });
       if (!userRef) {
@@ -162,26 +249,35 @@ export default {
           data: {
             user: {
               connect: {
-                email: data.email
+                email: userData.email
               },
               create: {
-                name: data.name,
-                email: data.email,
+                name: userData.name,
+                email: userData.email,
                 password: randomUUID(),
                 active: true
               }
             },
-            provider: 'facebook.com',
-            subject: data.id
+            provider: provider + '.com',
+            subject: userData.id
           },
           include: {
-            user: true
+            user: {
+              include: {
+                seller: true
+              }
+            }
           }
         })
         res.send({
-          id: newUser.id,
+          id: newUser.user.id,
           name: newUser.user.name,
           email: newUser.user.email,
+          mobile: newUser.user.mobile,
+          isAdmin: newUser.user.isAdmin,
+          isSeller: newUser.user.isSeller,
+          seller: newUser.user.isSeller ? newUser.user.seller : {},
+          document: newUser.user.document,
           token: generateToken(newUser.user)
         });
       } else {
@@ -212,7 +308,7 @@ export default {
         }
       }
     } catch (error) {
-      res.status(500).send({ message: '2 - Falha na autenticação. Por favor, tente novamente em alguns minutos' })
+      res.status(500).send({ message: 'Falha na autenticação. Por favor, tente novamente em alguns minutos' })
     }
   },
 

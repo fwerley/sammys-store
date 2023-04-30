@@ -86,7 +86,7 @@ export default function ShippingAddressScreen() {
           <Row>
             <Col md={8}>
               <Form.Group className="mb-3" controlId="fullName">
-                <Form.Label>Nome completo</Form.Label>
+                <Form.Label>Nome completo do recebedor</Form.Label>
                 <Form.Control
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
@@ -96,7 +96,7 @@ export default function ShippingAddressScreen() {
             </Col>
             <Col md={4}>
               <Form.Group className="mb-3" controlId="fullName">
-                <Form.Label>Número contato</Form.Label>
+                <Form.Label>Número de contato</Form.Label>
                 <Form.Control
                   as={InputMask}
                   mask="(99) 9-9999-9999"

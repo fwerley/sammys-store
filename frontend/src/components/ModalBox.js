@@ -26,7 +26,7 @@ function ModalBox(props) {
     return (
         <Modal
             {...props}
-            size={`${props.type === 'BILLET' ? 'sm' : ''}`}
+            size={`${props.type === 'BILLET' || 'PIX' ? 'sm' : ''}`}
             // dialogClassName="modal-90w"
             aria-labelledby="container-modal-title-vcenter"
             centered
@@ -108,7 +108,7 @@ const ComponentPay = (typeRender) => {
                 `/api/orders/${order.id}/pay`,
                 {
                     paymentType: order.paymentMethod,
-                    installments: order.paymentMethod === 'BILLET' ? 1 : installments[0].installments,
+                    installments: order.paymentMethod === 'CREDIT_CARD' ? installments[0].installments : 1,
                     customerName: userInfo.name,
                     customerEmail: userInfo.email,
                     customerMobile: userInfo.mobile || '',
@@ -327,7 +327,6 @@ const ComponentPay = (typeRender) => {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
                         </Form>
                         <div className="d-grid">
                             <Button type="button" className='d-flex flex-row justify-content-center' onClick={payOrder}>
@@ -336,12 +335,55 @@ const ComponentPay = (typeRender) => {
                         </div>
                     </div>
     )
+    const PixPay = (
+        loadingPay ?
+            <LoadingBox></LoadingBox> :
+            successPay ?
+                <MessageBox variant="success">
+                    Solicitação recebida.
+                    Verifique na seção pagamento o link para o seu boleto! 😊
+                </MessageBox> :
+                errorPay !== '' ?
+                    <MessageBox>
+                        Infelizmente não foi possivel concluir a transação ⚠️
+                        Tente novamente em alguns minutos!
+                    </MessageBox> :
+                    <div>
+                        <Form>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3" controlId="installments">
+                                        <Form.Label>CPF do pagador</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            as={InputMask}
+                                            mask="999.999.999-99"
+                                            name="cpf"
+                                            value={cpf}
+                                            placeholder="000.000.000-00"
+                                            required
+                                            onChange={(e) => setCPF(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Form>
+                        <div className="d-grid">
+                            <Button type="button" className='d-flex flex-row justify-content-center' onClick={payOrder}>
+                                Gerar código PIX
+                            </Button>
+                        </div>
+                    </div>
+
+    )
 
     switch (typeRender) {
         case 'CREDIT_CARD':
             return CardPay
         case 'BILLET':
             return BilletPay
+        case 'PIX':
+            return PixPay
         default:
             <MessageBox>
                 Não conseguimos carregar a informação. Tente novamente em alguns minutos ⌛

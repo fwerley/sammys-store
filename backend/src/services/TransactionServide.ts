@@ -29,8 +29,12 @@ async function transactionService(params: ProcessParams): Promise<Transaction> {
                             installments: params.installments,
                             transactionId: response.transactionId,
                             status: response.status,
-                            barCode: response.billet?.barcode,
-                            urlBillet: response.billet?.url,
+                            barCode: response.billet
+                                ? response.billet.barcode
+                                : response.pix ? response.pix.qr_code : '',
+                            urlBillet: response.billet
+                                ? response.billet.url
+                                : response.pix ? response.pix.url : '',
                             cardId: response.card?.id,
                             processorResponse: response.processorResponse
 

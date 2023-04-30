@@ -91,7 +91,7 @@ export default function OrderListScreen() {
                                 <td>{order.user ? order.user.name : 'Usuário deletado'}</td>
                                 <td>{formatedDate(order.createdAt)}</td>
                                 <td>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</td>
-                                <td>{order.isPaid ? formatedDate(order.orderPrice.updatedAt) : 'Não'}</td>
+                                <td>{order.isPaid ? formatedDate(order.transaction.paidAt) : 'Não'}</td>
                                 <td>
                                     {order.isDelivered
                                         ? formatedDate(order.deliveredAt)

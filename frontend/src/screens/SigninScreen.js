@@ -25,12 +25,16 @@ export default function SigninScreen() {
   const navigate = useNavigate();
   const { userInfo, loading } = useSelector(selectUser);
   const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const accessTokenFb = new URLSearchParams(search).get('accessFbToken') || '';
+  const hostInUrl = new URLSearchParams(search).get('provider');
+  const accessToken = new URLSearchParams(search).get('accessToken') || '';
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
   const [email, setEmail] = useState('');
   const [dLoad, setDLaod] = useState(false);
   const [password, setPassword] = useState('');
+  const [provider, setProvider] = useState(hostInUrl || '');
+  const [urlAuthGG, setUrlAuthGG] = useState('');
+  const [urlAuthFB, setUrlAuthFB] = useState('');
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -50,18 +54,23 @@ export default function SigninScreen() {
   };
 
   const redirectAuthFB = async () => {
-    setDLaod(true);
-    window.location.replace(
-      `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth_oauth/signin')}&scope=email`
+    setDLaod(true);    
+    window.location.replace(urlAuthFB
+      // `https://www.facebook.com/v16.0/dialog/oauth?client_id=${APP_ID_FB}&redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth_oauth/signin')}&scope=email&state=${redirect}`
     )
+  }
+
+  const redirectAuthGG = async () => {
+    setDLaod(true);
+    setProvider('google')
+    window.location.replace(urlAuthGG)
   }
 
   useEffect(() => {
     const request = async () => {
       setDLaod(true);
       try {
-        const { data } = await Axios.get(`/api/auth_oauth/me?accessToken=${accessTokenFb}`);
-        console.log(data)
+        const { data } = await Axios.get(`/api/auth_oauth/me?accessToken=${accessToken}&provider=${provider}`);
         dispatch(userSignin(data));
         localStorage.setItem('userInfo', JSON.stringify(data));
         navigate(redirect);
@@ -72,14 +81,33 @@ export default function SigninScreen() {
         setDLaod(false);
       }
     }
-    if (accessTokenFb)
+    if (accessToken)
       request();
-  }, [accessTokenFb])
+  }, [accessToken])
 
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
+    const getUrlfACEBOOKAuth = async () => {
+      try {
+        const { data } = await Axios.get(`/api/facebook/url-auth?redirect=${redirect}`)
+        setUrlAuthFB(data)       
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    const getUrlGoogleAuth = async () => {
+      try {
+        const { data } = await Axios.get('/api/google/url-auth')
+        setUrlAuthGG(data)       
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getUrlGoogleAuth()
+    getUrlfACEBOOKAuth()
+
   }, [navigate, redirect, userInfo]);
 
   return (
@@ -126,7 +154,7 @@ export default function SigninScreen() {
               </Button>
             </div>
             <div className="d-flex justify-content-center mb-3 social-gg shadow-sm">
-              <Button type="button" onClick={redirectAuthFB}>
+              <Button type="button" onClick={redirectAuthGG}>
                 <i className="fab fa-google"></i>&nbsp;
                 Continuar com o Google
               </Button>
@@ -137,11 +165,11 @@ export default function SigninScreen() {
       </Row>
       <div className="mb-1">
         Novo por aqui?{' '}
-        <Link to={`/signup?redirect=${redirect}`}>Criar conta</Link>
+        <Link to={`/signup?redirect=${redirect}`} style={{ textDecoration: 'underline' }}>Criar conta</Link>
       </div>
       <div className="mb-1">
         Esqueceu a senha?&nbsp;
-        <Link to='/forget-password'>Recuperar</Link>
+        <Link to='/forget-password' style={{ textDecoration: 'underline' }}>Recuperar</Link>
       </div>
       <div id='spinner' className={`${dLoad ? '' : 'd-none'}`}>
         <i className="fa-solid fa-spinner fa-spin"></i>

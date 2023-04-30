@@ -26,6 +26,11 @@ type BilletStatus = {
     barcode: string;
 }
 
+type PixStatus = {
+    url: string;
+    qr_code: string;
+}
+
 type CardStatus = {
     id: string;
 }
@@ -34,6 +39,7 @@ type StatusTransaction = {
     transactionId: string;
     status: Status;
     billet?: BilletStatus;
+    pix?: PixStatus;
     card?: CardStatus;
     processorResponse: string;
 }

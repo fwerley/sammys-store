@@ -38,7 +38,7 @@ export default {
 
       const schema = Yup.object({
         // orderCode: Yup.string().required(),
-        paymentType: Yup.mixed().oneOf(["BILLET", "CREDIT_CARD"]).required(),
+        paymentType: Yup.mixed().oneOf(["BILLET", "CREDIT_CARD", "PIX"]).required(),
         installments: Yup.number().min(1).when("paymentType", (paymentType, schema) => paymentType === "CREDIT_CARD" ? schema.max(12) : schema.max(1)),
         customerName: Yup.string().required(),
         customerEmail: Yup.string().required().email(),

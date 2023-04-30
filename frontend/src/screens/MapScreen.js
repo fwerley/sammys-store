@@ -92,7 +92,7 @@ export default function MapScreen() {
         saveShippingAddress({
           number: data.address.house_number || '',
           address: data.address.road || '',
-          neighborhood: data.address.residential || '',
+          neighborhood: data.address.suburb || '',
           city: data.address.city || '',
           postalCode: data.address.postcode || '',
           federativeUnity: [{

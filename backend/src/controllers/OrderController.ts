@@ -85,6 +85,11 @@ export default {
             totalPrice: true,
             updatedAt: true
           }
+        },
+        transaction: {
+          select: {
+            paidAt: true
+          }
         }
       },
       orderBy: {

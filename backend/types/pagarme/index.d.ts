@@ -419,11 +419,17 @@ declare module "pagarme" {
     statement_descriptor: string;
   }
 
+  export interface PixImputs {
+    expires_in?: number;
+    expires_at?: Date;
+  }
+
   export interface Payments {
     amount: number;
     payment_method: string;
     credit_card?: CreditCardImputs;
     boleto?: BoletoImputs;
+    pix?: PixImputs
   }
 
   export interface PaymentParams {

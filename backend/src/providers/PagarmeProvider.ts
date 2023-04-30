@@ -115,6 +115,14 @@ export default class PagarmeProvider implements IPaymentProvider {
 
     )
 
+    const pixParams: Payments[] = [{
+      pix: {
+        expires_in: 60 * 25
+      },
+      amount: order.orderPrice.totalPrice * 100,
+      payment_method: 'pix'
+    }]
+
     const billetParams: Payments[] = [{
       boleto: {
         bank: '001',
@@ -157,6 +165,9 @@ export default class PagarmeProvider implements IPaymentProvider {
       case 'BILLET':
         payments = billetParams
         break;
+      case 'PIX':
+        payments = pixParams
+        break;
       default:
         throw `PaymentType ${params.paymentType} not found.`
     }
@@ -180,6 +191,10 @@ export default class PagarmeProvider implements IPaymentProvider {
         billet: params.paymentType == "BILLET" ? {
           barcode: response.data.charges[0].last_transaction.line,
           url: response.data.charges[0].last_transaction.url,
+        } : undefined,
+        pix: params.paymentType == "PIX" ? {
+          qr_code: response.data.charges[0].last_transaction.qr_code,
+          url: response.data.charges[0].last_transaction.qr_code_url,
         } : undefined,
         processorResponse: JSON.stringify(response.data)
       }

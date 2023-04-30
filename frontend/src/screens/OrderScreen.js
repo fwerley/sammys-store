@@ -47,7 +47,7 @@ export default function OrderScreen() {
 
   const { id: orderId } = params;
 
-  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto" }
+  const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto", PIX: "PIX" }
 
   const fetchOrder = async () => {
     try {
@@ -86,6 +86,24 @@ export default function OrderScreen() {
     }
   }
 
+  // function toDataURL(url, callback) {
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.onload = function() {
+  //     var reader = new FileReader();
+  //     reader.onloadend = function() {
+  //       callback(reader.result);
+  //     }
+  //     reader.readAsDataURL(xhr.response);
+  //   };
+  //   xhr.open('GET', url);
+  //   xhr.responseType = 'blob';
+  //   xhr.send();
+  // }
+
+  // toDataURL('https://api.pagar.me/core/v5/transactions/tran_oWpDmkWSdSlwPl7X/qrcode?payment_method=pix', function(dataUrl) {
+  //   console.log('RESULT:', dataUrl)
+  // })
+
   useEffect(() => {
     // setLoadData(true);
     if (!userInfo) {
@@ -111,7 +129,7 @@ export default function OrderScreen() {
 
       interval = setInterval(() => {
         if (transaction && (transaction.status === 'APPROVED' || transaction.status === 'ERROR') || (
-          order.paymentMethod === 'BILLET' && transaction.status === 'STARTED'
+          order.paymentMethod === 'BILLET' || order.paymentMethod === 'PIX' && transaction.status === 'STARTED'
         )) {
           dispatch(paymentReset())
           fetchOrder()
@@ -136,7 +154,7 @@ export default function OrderScreen() {
                 className={`d-flex justify-content-between mb-2 align-items-center ${copyBillet ? 'border-success' : ''}`}
                 onClick={copyCordeBillet}
               >
-                {transaction.barCode || '54352348297528374328975'} 
+                {transaction.barCode}
                 <span>
                   {!copyBillet ?
                     <i className="fa-solid fa-copy"></i>
@@ -144,7 +162,9 @@ export default function OrderScreen() {
                   }
                 </span>
               </div>
-              <Link to={transaction.urlBillet} style={{ textDecoration: 'underline' }} target='_blank'>Imprimir boleto</Link>
+              <Link to={transaction.urlBillet} style={{ textDecoration: 'underline' }} target='_blank'>
+                {transaction.urlBillet.includes('pix') ? 'Ver QR Code' : 'Imprimir boleto'}
+              </Link>
             </div>
           </MessageBox>
         )
@@ -327,9 +347,9 @@ export default function OrderScreen() {
                     </Col>
                     <Col><strong>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</strong></Col>
                   </Row>
-                </ListGroup.Item>              
+                </ListGroup.Item>
                 {loadingTransaction ? ('') :
-                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' && order.user.id === userInfo.id  && !transaction.urlBillet ?
+                  transaction && transaction.status !== 'APPROVED' && transaction.status !== 'PROCESSING' && order.user.id === userInfo.id && !transaction.barCode ?
                     (
                       <ListGroup.Item>
                         <div className="d-grid">
@@ -345,7 +365,7 @@ export default function OrderScreen() {
                           </Button>
                         </div>
                       </ListGroup.Item>
-                    ) : !order.isPaid && order.user.id === userInfo.id && !transaction.urlBillet ? (
+                    ) : !order.isPaid && order.user.id === userInfo.id && !transaction.barCode ? (
                       <ListGroup.Item>
                         <div className="d-grid">
                           <Button type="button" className='d-flex flex-row justify-content-center' onClick={() => setModalShow(true)}>

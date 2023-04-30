@@ -3,7 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import mg from 'mailgun-js';
 import nodemailer from 'nodemailer';
+
 import { StatusType } from './services/IPaymentProvider';
+import { google } from 'googleapis';
 
 export const generateToken = (user: User) => {
   const keySecret = '' + process.env.JWT_SECRET;
@@ -32,6 +34,17 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     res.status(401).send({ message: 'Não existe um token associado ao usuario' })
   }
 }
+
+export const oauth2Client = (req: Request, res: Response) =>
+  new google.auth.OAuth2(
+    '' + process.env.GOOGLE_CLIENT_ID,
+    '' + process.env.GOOGLE_CLIENT_SECRET,
+    /*
+     * This is where Google will redirect the user after they
+     * give permission to your application
+     */
+    `${req.protocol}://${req.get('host')}` + '/api/auth_oauth/signin',
+  );
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user && req.user.isAdmin) {
@@ -121,6 +134,10 @@ export const translatePaymentMethod = (status: string): any => {
   }
 
   return statusMap[status]
+}
+
+export const decodeQR = async (dataImg: string) => {
+  
 }
 
 export const payOrderEmailTemplate = (order: (
