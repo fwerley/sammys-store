@@ -35,6 +35,7 @@ import MessageBox from '../components/MessageBox';
 
 import "draft-js/dist/Draft.css"
 import "draftail/dist/draftail.css"
+import CropImage from '../components/CropImage';
 
 export default function ProductEditScreen() {
     const params = useParams();
@@ -99,10 +100,21 @@ export default function ProductEditScreen() {
         }
     }
 
+    async function blobToFile(blob) {
+        let response = await fetch(blob);
+        let data = await response.blob();
+        let metadata = {
+            type: 'image/jpeg'
+        };
+        return new File([data], "image.jpg", metadata);
+    }
+
     const uploadFileHandler = async (e, forImages) => {
-        const file = e.target.files[0];
+        // const file = e.target.files[0];
+        const file = await blobToFile(e)
         const bodyFormData = new FormData();
         bodyFormData.append('file', file);
+        bodyFormData.append('folder', `sellers/${userInfo.seller.id}/products/${productId}`)
         try {
             dispatch(uploadRequestProduct());
             const { data } = await axios.post(`/api/upload/image`, bodyFormData, {
@@ -214,9 +226,6 @@ export default function ProductEditScreen() {
                                 <Form.Control
                                     value={slug}
                                     disabled
-                                // value={slug}
-                                // onChange={(e) => setSlug(e.target.value)}
-                                // required
                                 />
                             </Form.Group>
                             <Form.Group className='mb-3' controlId='price'>
@@ -243,17 +252,18 @@ export default function ProductEditScreen() {
                                     </Row>
 
                                     {/* <Form.Control
-                            value={image}
-                            onChange={(e) => setImage(e.target.value)}
-                            required
-                        /> */}
+                                        value={image}
+                                        onChange={(e) => setImage(e.target.value)}
+                                        required
+                                    /> */}
                                 </Form.Group>
                                 <Form.Group className='mb-3' controlId='imageFile'>
                                     <Form.Label>Upload Imagem</Form.Label>
-                                    <Form.Control
+                                    <CropImage uploadFile={uploadFileHandler} />
+                                    {/* <Form.Control
                                         type='file'
                                         onChange={uploadFileHandler}
-                                    />
+                                    /> */}
                                     {loadingUpload && <LoadingBox />}
                                 </Form.Group>
                                 <hr />
@@ -283,10 +293,11 @@ export default function ProductEditScreen() {
                                 </Form.Group>
                                 <Form.Group className='mb-3' controlId='additionalImageFile'>
                                     <Form.Label>Upload imagens adicionais</Form.Label>
-                                    <Form.Control
+                                    <CropImage uploadFile={(e) => uploadFileHandler(e, true)} />
+                                    {/* <Form.Control
                                         type='file'
                                         onChange={(e) => uploadFileHandler(e, true)}
-                                    />
+                                    /> */}
                                     {loadingUpload && <LoadingBox />}
                                 </Form.Group>
                             </div>

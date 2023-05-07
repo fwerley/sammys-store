@@ -13,7 +13,7 @@ interface IDailyOrders {
 export default {
 
   async insert(req: Request, res: Response) {
-    const { orderPrice, paymentMethod, seller: sellerId, shippingAddress, orderItems } = req.body;
+    const { orderPrice, paymentMethod, seller: sellerId, shippingAddress, orderItems, installments} = req.body;
 
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
@@ -46,13 +46,14 @@ export default {
         },
         shippingAddress: {
           create: shippingAddress,
-        },
+        },        
         orderPrice: {
           create: {
             itemsPrice: priceItems,
             shippingPrice,
             taxPrice,
             totalPrice: priceItems + shippingPrice + taxPrice,
+            installments
           },
         },
         paymentMethod: paymentMethod,
@@ -61,7 +62,7 @@ export default {
         },
         seller: {
           connect: { id: sellerId }
-        }
+        },
       },
     });
     res.status(201).json({ order: createOrder });

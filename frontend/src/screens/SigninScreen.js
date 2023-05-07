@@ -141,7 +141,7 @@ export default function SigninScreen() {
           </Form>
         </Col>
         <Col md={6} className='d-flex align-items-center container-social'>
-          <div className='social-media me-3'>
+          <div className='social-media me-4'>
             <span>OU</span>
           </div>
           <div className='social-login'>

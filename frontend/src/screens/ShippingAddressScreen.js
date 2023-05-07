@@ -98,7 +98,7 @@ export default function ShippingAddressScreen() {
               <Form.Group className="mb-3" controlId="fullName">
                 <Form.Label>Número de contato</Form.Label>
                 <Form.Control
-                  as={InputMask}
+                  as={InputMask}                  
                   mask="(99) 9-9999-9999"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}

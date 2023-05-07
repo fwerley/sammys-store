@@ -8,6 +8,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import LoadingBox from '../components/LoadingBox';
@@ -21,10 +22,11 @@ import {
   selectOrder,
 } from '../slice/orderSlice';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { formatCoin, getError } from '../utils';
 import Axios from 'axios';
 
 export default function PlaceOrderScreen() {
+
   const shippingData = {
     selected: '',
     values: {
@@ -46,6 +48,8 @@ export default function PlaceOrderScreen() {
   const [shippingMethod, setShippingMethod] = useState(shippingData);
   const { paymentMethod, cart, seller } = cartStore;
 
+  const [infoInstallments, setInfoInstallments] = useState([]);
+  const [taxPrice, setTaxPrice] = useState(0);
 
   const paymentTranslate = { CREDIT_CARD: "Cartão", BILLET: "Boleto", PIX: "PIX" }
 
@@ -55,7 +59,6 @@ export default function PlaceOrderScreen() {
   const shippingPriceCalc = (correiosPrice) =>
     itemsPrice > 250 ? round2(0) : round2(correiosPrice);
   // const taxPrice = round2(0.15 * itemsPrice);
-  const taxPrice = 0;
   const valueSelected =
     shippingMethod.selected !== ''
       ? shippingMethod.selected === 'sedex'
@@ -67,7 +70,6 @@ export default function PlaceOrderScreen() {
   const placeOrderHandler = async () => {
     try {
       dispatch(createRequest());
-      // TODO: Verificar seção p/ enviar dados internamente pelo node
       const { location, ...newShippingAddress } = shippingAddress
       const { data } = await Axios.post(
         '/api/orders',
@@ -84,7 +86,8 @@ export default function PlaceOrderScreen() {
             shippingPrice: valueSelected,
             taxPrice,
             totalPrice,
-          },
+            installments: infoInstallments[0].installments
+          }
         },
         {
           headers: {
@@ -102,6 +105,33 @@ export default function PlaceOrderScreen() {
       console.log(err);
     }
   };
+
+  const arrayInstallments = () => {
+    let value = itemsPrice + valueSelected;
+    const stringSelect = [];
+    let correctValue = 0;
+    for (let index = 0; index < 12; index++) {
+      // let correctValue = (value / (index + 1)) + (value / (index + 1)) * 0.05 * index;
+      if (index === 0) {
+        correctValue = value;
+      } else if (index < 7) {
+        correctValue = (value / (index + 1)) + (value / (index + 1)) * 0.038 * index
+      } else if (index < 12) {
+        correctValue = (value / (index + 1)) + (value / (index + 1)) * 0.039 * index
+      }
+      stringSelect.push({
+        label: `${(index + 1)} x ${formatCoin(correctValue)}`,
+        installments: index + 1,
+        value: correctValue.toFixed(2) * (index + 1),
+        taxPrice: correctValue.toFixed(2) * (index + 1) - value
+      })
+    }
+    return stringSelect
+  }
+
+  useEffect(() => {
+    setTaxPrice(infoInstallments[0]?.taxPrice ? infoInstallments[0].taxPrice : 0);
+  }, [infoInstallments])
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -239,7 +269,7 @@ export default function PlaceOrderScreen() {
                               {shippingMethod.time.sedex > 1 ? 's' : ''}
                             </Col>
                             <Col>
-                              R$ {shippingMethod.values.sedex.toFixed(2)}
+                              {formatCoin(shippingMethod.values.sedex)}
                             </Col>
                           </Row>
                         </ListGroup.Item>
@@ -264,17 +294,33 @@ export default function PlaceOrderScreen() {
                               {shippingMethod.time.pac} dia
                               {shippingMethod.time.pac > 1 ? 's' : ''}
                             </Col>
-                            <Col>R$ {shippingMethod.values.pac.toFixed(2)}</Col>
+                            <Col>{formatCoin(shippingMethod.values.pac)}</Col>
                           </Row>
                         </ListGroup.Item>
                       </Form>
                     )}
                   </ListGroup>
                 </ListGroup.Item>
+                {paymentMethod === 'CREDIT_CARD' && (
+                  <ListGroup.Item>
+                    <Row className='d-flex align-items-center'>
+                      <Col md={6}>Parcelas</Col>
+                      <Col>
+                        <Typeahead
+                          id="basic-example"
+                          disabled={shippingMethod.selected === ''}
+                          onChange={setInfoInstallments}
+                          options={arrayInstallments()}
+                          placeholder="N° de parcelas"
+                          selected={infoInstallments}
+                        />
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>)}
                 <ListGroup.Item>
                   <Row>
-                    <Col>Taxas</Col>
-                    <Col>R$ {taxPrice.toFixed(2)}</Col>
+                    <Col>Taxa</Col>
+                    <Col>{formatCoin(taxPrice)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -283,7 +329,7 @@ export default function PlaceOrderScreen() {
                       <strong>Total</strong>
                     </Col>
                     <Col>
-                      <strong>R$ {totalPrice.toFixed(2)}</strong>
+                      <strong>{formatCoin(totalPrice)}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -292,9 +338,12 @@ export default function PlaceOrderScreen() {
                     <Button
                       type="button"
                       onClick={placeOrderHandler}
-                      disabled={cart.length === 0 || shippingMethod.selected === ''}
+                      disabled={
+                        cart.length === 0 || shippingMethod.selected === ''
+                        || (paymentMethod === 'CREDIT_CARD' && infoInstallments.length === 0)
+                      }
                     >
-                      {loading ? <LoadingBox></LoadingBox> : 'Finalizar pedido'}
+                      {loading ? <LoadingBox></LoadingBox> : 'Confirmar pedido'}
                     </Button>
                   </div>
                 </ListGroup.Item>

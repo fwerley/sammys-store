@@ -10,10 +10,12 @@ cloudinary.config({
 
 export default {
     async image(req: Request, res: Response) {
-
+        const { folder } = req.body;
         const streamUpload = (req: Request) => {
             return new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream((error, result) => {
+                const stream = cloudinary.uploader.upload_stream({
+                    folder
+                }, (error, result) => {
                     if (result) {
                         resolve(result);
                     } else {
@@ -23,8 +25,11 @@ export default {
                 streamifier.createReadStream(req.file!.buffer).pipe(stream);
             })
         };
-
-        const result = await streamUpload(req);
-        res.send(result);
+        try {
+            const result = await streamUpload(req);
+            res.send(result);
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

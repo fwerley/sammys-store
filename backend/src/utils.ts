@@ -208,7 +208,8 @@ export const payOrderEmailTemplate = (order: (
     <h2>Endereço de envio</h2>
     <p>
     ${order.shippingAddress.fullName}, <br/>
-    ${order.shippingAddress.address}, <br/>
+    ${order.shippingAddress.address}, 
+    ${order.shippingAddress.number}<br/>
     ${order.shippingAddress.neighborhood}, <br/>
     ${order.shippingAddress.city}, <br/>
     ${order.shippingAddress.federativeUnity}, <br/>

@@ -41,7 +41,7 @@ function Product(props) {
       </Link>
       <Card.Body>
         <Link to={`/product/${product.slug}`}>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title className='h6'>{product.name}</Card.Title>
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Card.Text>
@@ -50,11 +50,11 @@ function Product(props) {
             {/* {seller && (<Link to={`/seller/${product.sellerId}`}>{product.seller && product.seller.name}</Link>)} */}
           </div>
         </Card.Text>
-        <div className={`d-flex justify-content-center position-absolute cart-button shadow rounded ${hoverButton}`}>
+        {/* <div className={`d-flex justify-content-center position-absolute cart-button shadow rounded ${hoverButton}`}>
           {product.countInStock > 0 ? (
             <Button onClick={addToCartHandler}>
               {addItem ? <LoadingBox variant='light' /> : (<>+<Cart3 /></>)}
-              {/* Add ao carrinho */}
+              Add ao carrinho
             </Button>
           ) : (
             <OverlayTrigger
@@ -69,12 +69,12 @@ function Product(props) {
                   style={{ pointerEvents: 'none' }}
                 >
                   + <Cart3 />
-                  {/* Add ao carrinho */}
+                  Add ao carrinho
                 </Button>
               </span>
             </OverlayTrigger>
           )}
-        </div>
+        </div> */}
       </Card.Body>
     </Card>
   );

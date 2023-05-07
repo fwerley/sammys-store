@@ -403,28 +403,66 @@ main {
   margin-top: 0 !important;
 }
 
-.map-input-box {
-  box-sizing: border-box;
-  position: absolute;
+.search-area-map {
   left: 0;
   right: 0;
-  margin: 0.5rem auto;
-  /* width: 100%; */
+  z-index: 999;
+}
+
+.map-input-box {
+  box-sizing: border-box;
+  /* position: absolute; */
+  left: 0;
+  right: 0;
+  margin: 2rem 0 0 0;
+  width: 80%;
   height: 3rem;
   display: flex;
   z-index: 1000;
 }
 
 .map-input-box input {
-  border-radius: 1rem 0 0 1rem;
+  min-width: 40%;
+  max-width: 98% !important;
+  border-radius: .5rem 0 0 .5rem;
   border-right: 0;
   border: none;
-  padding-left: 8px
+  padding-left: 12px
 }
 
 .map-input-box button {
-  border-radius: 0 1rem 1rem 0;
+  border-radius: 0 .5rem .5rem 0;
   border-left: 0;
+  opacity: 1;
+}
+
+.list-container-address {
+  min-width: 40%;
+  max-width: 98%;
+}
+
+.list-container-address div {
+  color: rgb(var(--secondary-color));
+  background-color: #fafafa;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  padding: 4px 4px;
+}
+
+.list-container-address div:hover {
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.list-container-address > :first-child {
+  border-top-left-radius: .2rem;
+  border-top-right-radius: .2rem;
+}
+
+.list-container-address > :last-child {
+  border-bottom-left-radius: .2rem;
+  border-bottom-right-radius: .2rem;
+  border-bottom: none;
 }
 
 .ol-map {
@@ -660,6 +698,12 @@ button.thumbnail {
 /* EndChatbox */
 
 @media (max-width: 992px) {
+
+  .list-container-address{
+    min-width: 50%;
+    max-width: 75%;
+  }
+
   .chatbox {
     right: 0;
     bottom: 0.5rem;

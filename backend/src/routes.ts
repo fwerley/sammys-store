@@ -14,8 +14,8 @@ const routes = express.Router();
 const upload = multer();
 
 //api seed
-routes.get('/api/seedP', ProductController.insert);
-routes.get('/api/seedU', UserController.insert);
+routes.get('/api/seedP', isAuth, isAdmin, ProductController.insert);
+routes.get('/api/seedU', isAuth, isAdmin, UserController.insert);
 
 // Products section
 routes.get('/api/products', ProductController.store);

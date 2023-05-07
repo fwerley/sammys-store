@@ -7,7 +7,6 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputMask from 'react-input-mask';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import { useEffect, useState } from 'react';
 import { paymentFail, paymentRequest, paymentReset, paymentSuccess, selectPayment } from '../slice/paymentSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +25,7 @@ function ModalBox(props) {
     return (
         <Modal
             {...props}
-            size={`${props.type === 'BILLET' || 'PIX' ? 'sm' : ''}`}
+            size={`${props.type === 'BILLET' || props.type === 'PIX' ? 'sm' : ''}`}
             // dialogClassName="modal-90w"
             aria-labelledby="container-modal-title-vcenter"
             centered
@@ -50,9 +49,7 @@ const ComponentPay = (typeRender) => {
     const [expiry, setExpiry] = useState('');
     const [focus, setFocus] = useState('');
     const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
-    const [installments, setInstallments] = useState([]);
-    const [taxPrice, setTaxPrice] = useState(0);
+    const [number, setNumber] = useState('');        
     const dispatch = useDispatch();
     const { order } = useSelector(selectOrder);
     const { userInfo } = useSelector(selectUser);
@@ -63,25 +60,6 @@ const ComponentPay = (typeRender) => {
     const handleInputFocus = (e) => {
         setFocus(e.target.name);
     };
-
-    const arrayInstallments = () => {
-        let value = order.orderPrice.totalPrice;
-        const stringSelect = [];
-        for (let index = 0; index < 12; index++) {
-            let correctValue = (value / (index + 1)) + (value / (index + 1)) * 0.05 * index;
-            stringSelect.push({
-                label: `Parcela ${(index + 1)} x ${formatCoin(correctValue)}`,
-                installments: index + 1,
-                value: correctValue.toFixed(2) * (index + 1),
-                taxPrice: correctValue.toFixed(2) * (index + 1) - value
-            })
-        }
-        return stringSelect
-    }
-
-    useEffect(() => {
-        setTaxPrice(installments[0]?.taxPrice);
-    }, [installments])
 
     const payOrder = async () => {
         try {
@@ -108,7 +86,7 @@ const ComponentPay = (typeRender) => {
                 `/api/orders/${order.id}/pay`,
                 {
                     paymentType: order.paymentMethod,
-                    installments: order.paymentMethod === 'CREDIT_CARD' ? installments[0].installments : 1,
+                    installments: order.paymentMethod === 'CREDIT_CARD' ? 1 : 1,
                     customerName: userInfo.name,
                     customerEmail: userInfo.email,
                     customerMobile: userInfo.mobile || '',

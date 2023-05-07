@@ -31,9 +31,12 @@ model Product {
   variants     String[]
   brand        String
   category     String
+  subCategory  String[]
   description  String
   price        Float
   reviews      ReviewProduct[]
+  freeDelivery Boolean         @default(false)
+  discount     Float           @default(0)
   rating       Float
   seller       Seller          @relation(fields: [sellerId], references: [id])
   createdAt    DateTime        @default(now()) @map("created_at")
@@ -148,6 +151,7 @@ model PriceOrder {
   shippingPrice Float    @map("shipping_price")
   taxPrice      Float    @map("tax_price")
   totalPrice    Float    @map("total_price")
+  installments  Int      @default(1)
   createdAt     DateTime @default(now()) @map("created_at") @db.Date
   updatedAt     DateTime @updatedAt @map("updated_at")
   Order         Order?
@@ -157,6 +161,13 @@ model PriceOrder {
 
 model Order {
   id                String          @id @default(cuid())
+  transaction       Transaction?
+  shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
+  user              User            @relation(fields: [userId], references: [id])
+  orderPrice        PriceOrder      @relation(fields: [priceOrderId], references: [id], onDelete: Cascade)
+  orderItems        OrderItem[]
+  paymentMethod     PaymentType     @default(BILLET)
+  seller            Seller          @relation(fields: [sellerId], references: [id])
   isPaid            Boolean         @default(false) @map("is_paid")
   isDelivered       Boolean         @default(false) @map("is_delivered")
   deliveredAt       DateTime?       @map("delivered_at")
@@ -165,13 +176,6 @@ model Order {
   shippingAddressId String          @unique
   priceOrderId      String          @unique
   userId            String
-  paymentMethod     PaymentType     @default(BILLET)
-  orderItems        OrderItem[]
-  seller            Seller          @relation(fields: [sellerId], references: [id])
-  orderPrice        PriceOrder      @relation(fields: [priceOrderId], references: [id], onDelete: Cascade)
-  shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
-  user              User            @relation(fields: [userId], references: [id])
-  transaction       Transaction?
   sellerId          String
 
   @@map("orders")

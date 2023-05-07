@@ -130,7 +130,7 @@ function ProductScreen() {
     <div>
       <Row>
         <Col md={5}>
-          <img src={selectedImage || product.image} className="img-large" alt={product.name} />
+          <img src={selectedImage || product.image} className="w-100" alt={product.name} />
         </Col>
         <Col md={4}>
           <ListGroup variante="flush" className='my-1'>
