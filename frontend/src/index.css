@@ -42,11 +42,11 @@ a {
   color: rgb(var(--secondary-color));
 }
 
-.container > button:hover{
+.container>button:hover {
   color: #fff;
 }
 
-.boleto-container > div {
+.boleto-container>div {
   border: 1px dashed #ccc;
   cursor: pointer;
   border-radius: 8px;
@@ -188,7 +188,7 @@ main {
 }
 
 .social-fb button {
-  background-color: #1877f2;
+  background-color: #1876f2;
 }
 
 .social-gg button {
@@ -220,6 +220,27 @@ main {
   background: #ced4da;
   margin: 0 1rem;
   /* position: absolute; */
+}
+
+.link-social-media i {
+  cursor: pointer;
+}
+
+.fa-square-facebook {
+  color: #1876f2;
+}
+
+.fa-instagram {
+  color: #bc2a8d;
+}
+
+.link-social-media i:hover {
+  color: rgb(var(--secondary-color));
+  transition: .5s;
+}
+
+.logo-social-container {
+  flex-direction: column;
 }
 
 .product {
@@ -286,6 +307,7 @@ main {
 
 .btn:hover {
   background-color: #022d49;
+  color: #fff;
 }
 
 .btn-primary:disabled {
@@ -454,12 +476,12 @@ main {
   transition: .4s;
 }
 
-.list-container-address > :first-child {
+.list-container-address> :first-child {
   border-top-left-radius: .2rem;
   border-top-right-radius: .2rem;
 }
 
-.list-container-address > :last-child {
+.list-container-address> :last-child {
   border-bottom-left-radius: .2rem;
   border-bottom-right-radius: .2rem;
   border-bottom: none;
@@ -644,6 +666,17 @@ button.thumbnail {
   }
 }
 
+.table .text-success{
+  padding: 5px 10px;
+  background: #d2fccf;
+  border-radius: 2rem;
+}
+
+.table .text-danger{
+  padding: 5px 10px;
+  background: #fccfcf;
+  border-radius: 2rem;
+}
 /*End Pulse indicator chat Support */
 
 /* Chatbox */
@@ -695,11 +728,19 @@ button.thumbnail {
   transition: .4s;
 }
 
+.track-info {
+  font-size: 14px;
+}
+
+.track-info img {
+  width: 100%;
+}
+
 /* EndChatbox */
 
 @media (max-width: 992px) {
 
-  .list-container-address{
+  .list-container-address {
     min-width: 50%;
     max-width: 75%;
   }
@@ -707,6 +748,11 @@ button.thumbnail {
   .chatbox {
     right: 0;
     bottom: 0.5rem;
+  }
+
+  .logo-social-container {
+    flex-direction: row;
+    align-items: center;
   }
 
   .card-thumbnail {

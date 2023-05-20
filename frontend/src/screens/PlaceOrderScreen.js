@@ -66,7 +66,6 @@ export default function PlaceOrderScreen() {
         : shippingMethod.values.pac
       : 0.0;
   const totalPrice = itemsPrice + valueSelected + taxPrice;
-
   const placeOrderHandler = async () => {
     try {
       dispatch(createRequest());
@@ -86,7 +85,7 @@ export default function PlaceOrderScreen() {
             shippingPrice: valueSelected,
             taxPrice,
             totalPrice,
-            installments: infoInstallments[0].installments
+            installments: infoInstallments[0]?.installments || 1
           }
         },
         {
@@ -129,8 +128,16 @@ export default function PlaceOrderScreen() {
     return stringSelect
   }
 
+  const setShipping = (e) => {
+    setShippingMethod({
+      ...shippingMethod,
+      selected: e.target.value,
+    })
+    setInfoInstallments([])
+  }
+
   useEffect(() => {
-    setTaxPrice(infoInstallments[0]?.taxPrice ? infoInstallments[0].taxPrice : 0);
+    setTaxPrice(infoInstallments[0]?.taxPrice ? parseFloat(infoInstallments[0].taxPrice.toFixed(2)) : 0);
   }, [infoInstallments])
 
   useEffect(() => {
@@ -255,12 +262,7 @@ export default function PlaceOrderScreen() {
                                 id="sedex"
                                 value="sedex"
                                 checked={shippingMethod.selected === 'sedex'}
-                                onChange={(e) =>
-                                  setShippingMethod({
-                                    ...shippingMethod,
-                                    selected: e.target.value,
-                                  })
-                                }
+                                onChange={setShipping}
                                 label="SEDEX"
                               />
                             </Col>
@@ -281,12 +283,7 @@ export default function PlaceOrderScreen() {
                                 id="pac"
                                 value="pac"
                                 checked={shippingMethod.selected === 'pac'}
-                                onChange={(e) =>
-                                  setShippingMethod({
-                                    ...shippingMethod,
-                                    selected: e.target.value,
-                                  })
-                                }
+                                onChange={setShipping}
                                 label="PAC"
                               />
                             </Col>
@@ -305,7 +302,7 @@ export default function PlaceOrderScreen() {
                   <ListGroup.Item>
                     <Row className='d-flex align-items-center'>
                       <Col md={6}>Parcelas</Col>
-                      <Col>
+                      <Col>                        
                         <Typeahead
                           id="basic-example"
                           disabled={shippingMethod.selected === ''}

@@ -91,11 +91,13 @@ export default function OrderListScreen() {
                                 <td>{order.user ? order.user.name : 'Usuário deletado'}</td>
                                 <td>{formatedDate(order.createdAt)}</td>
                                 <td>{formatCoin(order.orderPrice.totalPrice.toFixed(2))}</td>
-                                <td>{order.isPaid ? formatedDate(order.transaction.paidAt) : 'Não'}</td>
+                                <td>{order.isPaid ? formatedDate(order.transaction.paidAt) :
+                                    <span className='text-danger'>Não</span>}
+                                </td>
                                 <td>
                                     {order.isDelivered
-                                        ? formatedDate(order.deliveredAt)
-                                        : 'Não'}
+                                        ? <span className='text-success'>Sim</span>
+                                        : <span className='text-danger'>Não</span>}
                                 </td>
                                 <td>
                                     <Button

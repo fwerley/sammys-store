@@ -145,6 +145,20 @@ model Transaction {
   @@map("transaction")
 }
 
+model DeliveryOrder {
+  // https://medium.com/@leandro.souara.web/criando-uma-implementa%C3%A7%C3%A3o-de-webhook-com-nodejs-4a490fb4b4c1
+  id              String   @id @default(cuid())
+  shippingCompany String
+  trackingCode    String
+  link            String?
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId         String   @unique
+  createdAt       DateTime @default(now()) @map("created_at") @db.Date
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("delivery_order")
+}
+
 model PriceOrder {
   id            String   @id @default(cuid())
   itemsPrice    Float    @map("items_price")
@@ -168,6 +182,7 @@ model Order {
   orderItems        OrderItem[]
   paymentMethod     PaymentType     @default(BILLET)
   seller            Seller          @relation(fields: [sellerId], references: [id])
+  deliveryOrder     DeliveryOrder?
   isPaid            Boolean         @default(false) @map("is_paid")
   isDelivered       Boolean         @default(false) @map("is_delivered")
   deliveredAt       DateTime?       @map("delivered_at")

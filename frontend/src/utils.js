@@ -33,6 +33,15 @@ export const formatedDate = (date) => {
   }
 }
 
+export const formatHour = (date) => {
+  try {
+    let newDate = new Date(date)
+    return newDate.toLocaleTimeString('pt-BR')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const estados = [
   { "label": "Acre", "sigla": "AC" },
   { "label": "Alagoas", "sigla": "AL" },

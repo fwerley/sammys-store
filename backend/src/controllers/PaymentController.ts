@@ -168,7 +168,7 @@ export default {
     }
   },
 
-  async deliver(req: Request, res: Response) {
+  async delivered(req: Request, res: Response) {
     const { id: idOrder } = req.params
     try {
       await prismaClient.order.update({
@@ -176,7 +176,6 @@ export default {
           id: idOrder
         },
         data: {
-          isDelivered: true,
           deliveredAt: new Date().toJSON()
         }
       });

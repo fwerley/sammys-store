@@ -51,6 +51,7 @@ routes.post('/api/users/reset-password', UserController.resetPassword)
 
 // Correios section
 routes.post('/api/correios/precoprazo', CorreiosController.precoprazo)
+routes.get('/api/correios/:code', CorreiosController.rastreamento)
 
 // Orders section
 routes.post('/api/orders', isAuth, OrderController.insert)
@@ -59,11 +60,12 @@ routes.get('/api/orders/summary', isAuth, isAdmin, OrderController.summary)
 routes.get('/api/orders/mine', isAuth, OrderController.mine)
 routes.get(`/api/orders/:id`, isAuth, OrderController.find)
 routes.put(`/api/orders/:id`, isAuth, OrderController.updatePrice)
+routes.post(`/api/orders/:id/deliver`, isAuth, isSellerOrAdmin, OrderController.deliver)
 routes.delete(`/api/orders/:id`, isAuth, isAdmin, OrderController.delete)
 
 // Payment section
 routes.get('/api/orders/:id/transaction', isAuth, PaymentController.transaction)
-routes.put('/api/orders/:id/deliver', isAuth, isAdmin, PaymentController.deliver)
+routes.put('/api/orders/:id/delivered', isAuth, isAdmin, PaymentController.delivered)
 routes.post('/api/orders/:id/pay', isAuth, PaymentController.create)
 routes.post('/api/webhook/pagarme', PostBackController.pagarme)
 

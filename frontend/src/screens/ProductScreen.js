@@ -133,7 +133,7 @@ function ProductScreen() {
           <img src={selectedImage || product.image} className="w-100" alt={product.name} />
         </Col>
         <Col md={4}>
-          <ListGroup variante="flush" className='my-1'>
+          <ListGroup variante="flush">
             <ListGroup.Item>
               <HelmetSEO
                 title={product.name}

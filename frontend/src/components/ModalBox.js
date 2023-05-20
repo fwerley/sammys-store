@@ -12,7 +12,7 @@ import { paymentFail, paymentRequest, paymentReset, paymentSuccess, selectPaymen
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { selectUser } from '../slice/userSlice';
-import { selectOrder } from '../slice/orderSlice';
+import { deleteRequest, deliverFail, deliverRequest, deliverSuccess, selectOrder } from '../slice/orderSlice';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import MessageBox from './MessageBox';
@@ -38,20 +38,23 @@ function ModalBox(props) {
             </Modal.Header>
 
             <Modal.Body>
-                {ComponentPay(props.type)}
+                {ComponentChild(props.type)}
             </Modal.Body>
         </Modal>
     )
 }
 
-const ComponentPay = (typeRender) => {
+const ComponentChild = (typeRender) => {
     const [cvc, setCvc] = useState('');
     const [expiry, setExpiry] = useState('');
     const [focus, setFocus] = useState('');
     const [name, setName] = useState('');
-    const [number, setNumber] = useState('');        
+    const [number, setNumber] = useState('');
+    const [shippingCompany, setShippingCompany] = useState('');
+    const [trackingCode, setTrackingCode] = useState('');
+    const [linkShipping, setLinkShipping] = useState('');
     const dispatch = useDispatch();
-    const { order } = useSelector(selectOrder);
+    const { order, loadingDeliver, successDeliver, errorDeliver } = useSelector(selectOrder);
     const { userInfo } = useSelector(selectUser);
     const { successPay, loadingPay, errorPay } = useSelector(selectPayment)
 
@@ -69,24 +72,11 @@ const ComponentPay = (typeRender) => {
             }
 
             dispatch(paymentRequest())
-
-            // Se foi feito compra parcelada, o preço deve ser atualiado com acrescimo da taxa
-            // if (taxPrice !== order.orderPrice.taxPrice) {
-            //     await axios.put(
-            //         `/api/orders/${order.id}`,
-            //         {
-            //             taxPrice,
-            //             totalPrice: order.orderPrice.itemsPrice + order.orderPrice.shippingPrice + taxPrice
-            //         },
-            //         { headers: { authorization: `Bearer ${userInfo.token}` } }
-            //     )
-            // }
-            // Aguardar atualização de taxa do BD
             await axios.post(
                 `/api/orders/${order.id}/pay`,
                 {
                     paymentType: order.paymentMethod,
-                    installments: order.paymentMethod === 'CREDIT_CARD' ? 1 : 1,
+                    installments: order.paymentMethod === 'CREDIT_CARD' ? order.orderPrice.installments : 1,
                     customerName: userInfo.name,
                     customerEmail: userInfo.email,
                     customerMobile: userInfo.mobile || '',
@@ -115,6 +105,29 @@ const ComponentPay = (typeRender) => {
             setTimeout(() => {
                 dispatch(paymentReset())
             }, 3000)
+            console.log(error);
+        }
+    }
+
+    const deliverOrder = async () => {
+        try {
+            dispatch(deliverRequest())
+            const { data } = await axios.post(
+                `/api/orders/${order.id}/deliver`,
+                {
+                    shippingCompany,
+                    linkShipping,
+                    trackingCode
+                },
+                {
+                    headers: {
+                        authorization: `Bearer ${userInfo.token}`
+                    }
+                });
+            dispatch(deliverSuccess(data))
+        } catch (error) {
+            dispatch(deliverFail(getError(error)))
+            toast.error(getError(error));
             console.log(error);
         }
     }
@@ -319,7 +332,7 @@ const ComponentPay = (typeRender) => {
             successPay ?
                 <MessageBox variant="success">
                     Solicitação recebida.
-                    Verifique na seção pagamento o link para o seu boleto! 😊
+                    Verifique na seção pagamento o código, copie e tudo certo! 😊
                 </MessageBox> :
                 errorPay !== '' ?
                     <MessageBox>
@@ -354,6 +367,74 @@ const ComponentPay = (typeRender) => {
                     </div>
 
     )
+    const Delivery = (
+        <>
+            {loadingDeliver ? (
+                <LoadingBox />
+            ) : successDeliver ? (
+                <MessageBox variant="success">
+                    Dados enviados com sucesso
+                </MessageBox>
+            ) : errorDeliver ? (
+                <MessageBox>
+                    Ocorreu um erro!
+                </MessageBox>
+            ) : (
+                <>
+                    <Form>
+                        <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="company">
+                                    <Form.Label>Transportadora</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="transportadora"
+                                        value={shippingCompany}
+                                        placeholder='Correios'
+                                        required
+                                        onChange={(e) => setShippingCompany(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="code">
+                                    <Form.Label>Código</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="codigo"
+                                        value={trackingCode}
+                                        placeholder='NB162402112BR'
+                                        required
+                                        onChange={(e) => setTrackingCode(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="linkShipping">
+                                    <Form.Label>Link (opcional)</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="linkShipping"
+                                        value={linkShipping}
+                                        placeholder='https://...'
+                                        required
+                                        onChange={(e) => setLinkShipping(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Form>
+                    <div className="d-grid">
+                        <Button type="button" className='d-flex flex-row justify-content-center' onClick={deliverOrder}>
+                            Enviar
+                        </Button>
+                    </div>
+                </>
+            )}
+        </>
+    )
 
     switch (typeRender) {
         case 'CREDIT_CARD':
@@ -362,6 +443,8 @@ const ComponentPay = (typeRender) => {
             return BilletPay
         case 'PIX':
             return PixPay
+        case 'delivery':
+            return Delivery
         default:
             <MessageBox>
                 Não conseguimos carregar a informação. Tente novamente em alguns minutos ⌛

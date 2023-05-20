@@ -70,9 +70,13 @@ const orderSlice = createSlice({
         loadingDeliver: true
       }
     },
-    deliverSuccess(state) {
+    deliverSuccess(state, { payload }) {
       return {
         ...state,
+        order: {
+          ...state.order,
+          deliveryOrder: payload
+        },
         loadingDeliver: false,
         successDeliver: true
       }

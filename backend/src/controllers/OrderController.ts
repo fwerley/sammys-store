@@ -13,10 +13,10 @@ interface IDailyOrders {
 export default {
 
   async insert(req: Request, res: Response) {
-    const { orderPrice, paymentMethod, seller: sellerId, shippingAddress, orderItems, installments} = req.body;
-
+    const { orderPrice, paymentMethod, seller: sellerId, shippingAddress, orderItems } = req.body;
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
+    let installments = orderPrice.installments;
 
     // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
     const priceItems = await orderItems.reduce(
@@ -46,7 +46,7 @@ export default {
         },
         shippingAddress: {
           create: shippingAddress,
-        },        
+        },
         orderPrice: {
           create: {
             itemsPrice: priceItems,
@@ -66,6 +66,39 @@ export default {
       },
     });
     res.status(201).json({ order: createOrder });
+    // res.status(201).json({ order: 'createOrder' });
+  },
+
+  async deliver(req: Request, res: Response) {
+    const { shippingCompany, trackingCode, linkShipping, link } = req.body;
+    const { id: orderId } = req.params;
+
+    try {
+      const deliver = await prismaClient.deliveryOrder.create({
+        data: {
+          shippingCompany,
+          trackingCode,
+          link,
+          order: {
+            connect: {
+              id: orderId
+            }
+          }
+        },
+      });
+      await prismaClient.order.update({
+        data: {
+          isDelivered: true
+        },
+        where: {
+          id: orderId
+        }
+      })
+      res.status(201).send(deliver);
+    } catch (error) {
+      res.status(400).send({ message: 'Erro no envio dos daods' })
+    }
+
   },
 
   async store(req: Request, res: Response) {
@@ -211,6 +244,13 @@ export default {
             id: true,
           },
         },
+        deliveryOrder: {
+          select: {
+            link: true,
+            shippingCompany: true,
+            trackingCode: true
+          }
+        }
       },
     });
     if (order) {

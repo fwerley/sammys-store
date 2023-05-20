@@ -30,6 +30,7 @@ import HelmetSEO from '../components/HelmetSEO';
 import { toast } from 'react-toastify';
 import { fetchTransaction, fetchTransactionFail, selectTransaction, successTransaction } from '../slice/transactionSlice';
 import SuccessCircleAnimate from '../components/SuccessCircleAnimate';
+import TrackOrder from '../components/TrackOrder';
 
 export default function OrderScreen() {
   const { error, order, orderLoading, loadingDeliver, successDeliver } = useSelector(selectOrder);
@@ -41,9 +42,8 @@ export default function OrderScreen() {
   const dispatch = useDispatch();
 
   const [modalShow, setModalShow] = useState(false);
+  const [modalDelivery, setModalDelivery] = useState(false);
   const [copyBillet, setCopyBillet] = useState(false);
-  // const [loadData, setLoadData] = useState(true);
-  const [t, setT] = useState('My test');
 
   const { id: orderId } = params;
 
@@ -72,10 +72,10 @@ export default function OrderScreen() {
     }
   };
 
-  const deliverOrderHandler = async () => {
+  const deliveredOrderHandler = async () => {
     try {
       dispatch(deliverRequest())
-      await axios.put(`/api/orders/${order.id}/deliver`, {}, {
+      await axios.put(`/api/orders/${order.id}/delivered`, {}, {
         headers: { authorization: `Bearer ${userInfo.token}` }
       })
       dispatch(deliverSuccess());
@@ -84,6 +84,10 @@ export default function OrderScreen() {
       dispatch(deliverFail(getError(error)));
       toast.error(getError(error));
     }
+  }
+
+  const deliverOrderHandler = () => {
+    setModalDelivery(true)
   }
 
   // function toDataURL(url, callback) {
@@ -110,6 +114,7 @@ export default function OrderScreen() {
       return navigate('/signin');
     }
     if (!order.id || (order.id && order.id !== orderId) || successDeliver) {
+      setModalDelivery(false)
       fetchOrder();
       fetchTransactionData();
       dispatch(deliverReset())
@@ -233,6 +238,12 @@ export default function OrderScreen() {
   ) : (
     <div>
       <ModalBox
+        show={modalDelivery}
+        title='Dados de envio'
+        type='delivery'
+        onHide={() => setModalDelivery(false)}
+      />
+      <ModalBox
         show={modalShow}
         title='Pagamento'
         type={order.paymentMethod}
@@ -262,9 +273,16 @@ export default function OrderScreen() {
               </Card.Text>
               {loadingDeliver ? (
                 <LoadingBox />
-              ) : order.isDelivered ? (
+              ) : order.deliveredAt ? (
                 <MessageBox variant="success">
-                  Enviado no dia {formatedDate(order.deliveredAt)}
+                  Pedido entregue dia {formatedDate(order.deliveredAt)}
+                </MessageBox>
+              ) : order.isDelivered ? (
+                <MessageBox variant="info">
+                  <strong>Pedido enviado</strong> - {order.deliveryOrder?.trackingCode}
+                  {order.deliveryOrder?.shippingCompany === 'Correios' && (
+                    <TrackOrder code={order.deliveryOrder?.trackingCode}/>
+                  )}
                 </MessageBox>
               ) : (
                 <MessageBox variant="warning">Não enviado</MessageBox>
@@ -381,13 +399,24 @@ export default function OrderScreen() {
                         </div>
                       </ListGroup.Item>
                     ) : ('')}
-                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                {userInfo.isAdmin && order.isPaid && !order.deliveryOrder && (
                   <ListGroup.Item>
                     {loadingDeliver && <LoadingBox />}
                     <div className='d-grid'>
                       <Button type='button' onClick={deliverOrderHandler}>
                         <i className="fas fa-shipping-fast" />&nbsp;
                         Enviar pedido
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                )}
+                {userInfo.isAdmin && order.isPaid && !order.deliveredAt && order.deliveryOrder && (
+                  <ListGroup.Item>
+                    {loadingDeliver && <LoadingBox />}
+                    <div className='d-grid'>
+                      <Button type='button' onClick={deliveredOrderHandler}>
+                        <i className="fas fa-box" />&nbsp;
+                        Pedido entregue
                       </Button>
                     </div>
                   </ListGroup.Item>
