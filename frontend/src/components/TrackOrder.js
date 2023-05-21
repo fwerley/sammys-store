@@ -40,17 +40,17 @@ export default function TrackOrder({ code }) {
                                 {
                                     i < 2 || i === (status.length - 1) && resume ? (
                                         <>
-                                            <Col md={1}>
+                                            <Col md={1} xs={2} sm={2}>
                                                 <img src={`https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/${item.urlIcone.split('/').pop()}`} />
                                             </Col>
-                                            <Col md={11}>
+                                            <Col md={11} xs={10} sm={10}>
                                                 <strong>{item.descricao}</strong><br />
                                                 {item.unidade.nome || item.unidade.endereco.cidade}{item.unidade.endereco.uf && ` - ${item.unidade.endereco.uf}`}<br />
                                                 {formatedDate(item.dtHrCriado)} {formatHour(item.dtHrCriado).slice(0, 5)}
                                             </Col>
                                         </>
                                     ) : resume && i === 2 ? (
-                                        <Col md={1}>
+                                        <Col md={1} xs={2}>
                                             . . .
                                             <Button type='button' className='shadow' onClick={() => setResume(false)}>
                                                 <i className="fas fa-expand" />
@@ -59,10 +59,10 @@ export default function TrackOrder({ code }) {
                                         </Col>
                                     ) : !resume ?
                                         <>
-                                            <Col md={1}>
+                                            <Col md={1} xs={2} sm={2}>
                                                 <img src={`https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/${item.urlIcone.split('/').pop()}`} />
                                             </Col>
-                                            <Col md={11}>
+                                            <Col md={11} xs={10} sm={10}>
                                                 <strong>{item.descricao}</strong><br />
                                                 {item.unidade.nome || item.unidade.endereco.cidade}{item.unidade.endereco.uf && ` - ${item.unidade.endereco.uf}`}<br />
                                                 {formatedDate(item.dtHrCriado)} {formatHour(item.dtHrCriado).slice(0, 5)}
