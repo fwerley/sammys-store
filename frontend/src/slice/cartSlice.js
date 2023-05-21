@@ -7,7 +7,7 @@ const sellerSetting = localStorage.getItem('seller');
 
 const cartStore = {
   cart: itsCarts ? JSON.parse(itsCarts) : [],
-  seller: sellerSetting ? JSON.parse(sellerSetting) : '',
+  seller: sellerSetting ? JSON.parse(sellerSetting) : {},
   itemsPrice: null,
   shippingPrice: null,
   totalPrice: null,
@@ -22,7 +22,7 @@ const cartSlice = createSlice({
     addCartItem(state, { payload }) {
       //add to cart
       const newItem = payload;
-      const verifySeller = state.cart.length > 0 && state.seller === newItem.sellerId;
+      const verifySeller = state.cart.length > 0 && state.seller === newItem.seller.id;
       // Veirfica se a loja é a mesma para os itens que já estão no carrinho
       if (!verifySeller && state.cart.length > 0) {
         toast.info('Este item é de outra loja. Conclua seu carrinho e faça uma nova compra 😀')

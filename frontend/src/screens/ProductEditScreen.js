@@ -304,20 +304,21 @@ export default function ProductEditScreen() {
                             <div className='mb-3 border p-2 rounded' >
                                 <Form.Group controlId='sizes'>
                                     <Form.Label><strong>Caracteristicas</strong></Form.Label>
-                                    <Row>
-                                        <Col md={4}>
+                                    <Row className='d-flex align-items-center'>
+                                        <Col md={3}>
                                             <Form.Check
-                                                label="Inserir tamanhos?"
+                                                type='switch'
+                                                label="Tamanhos?"
                                                 checked={sizes}
                                                 onChange={() => setSizes(!sizes)}
                                             />
                                         </Col>
-                                        <Col md={8}>
+                                        <Col md={9}>
                                             <Form.Control
                                                 disabled={!sizes}
                                                 value={arraySizes}
                                                 onChange={(e) => setArraySizes(e.target.value.split(','))}
-                                                placeholder='Separe com virgula P, M, G ou 38,39'
+                                                placeholder='Separe com virgula P, M, G ou 38, 39'
                                             />
                                         </Col>
                                     </Row>
@@ -326,6 +327,7 @@ export default function ProductEditScreen() {
                                     <Row className='d-flex align-items-center my-2'>
                                         <Col md={3}>
                                             <Form.Check
+                                                type='switch'
                                                 label="Variantes?"
                                                 checked={variant}
                                                 onChange={() => setVariant(!variant)}
@@ -346,6 +348,7 @@ export default function ProductEditScreen() {
                                     <Row>
                                         <Col md={7}>
                                             <Form.Check
+                                                type='switch'
                                                 label="Inserir cores?"
                                                 checked={colors}
                                                 onChange={() => setColors(!colors)}
@@ -353,6 +356,7 @@ export default function ProductEditScreen() {
                                             <TwitterPicker
                                                 colors={defaultColorsPicker}
                                                 triangle='hide'
+                                                disabled={colors}
                                                 onChange={handleChange}
                                             />
                                         </Col>
@@ -361,6 +365,7 @@ export default function ProductEditScreen() {
                                                 className='bg-light rounded shadow-sm p-2 mt-4'
                                                 width='200px'
                                                 colors={arrayColors}
+                                                disabled={colors}
                                                 onChange={handleChange}
                                             />
                                         </Col>
@@ -368,12 +373,24 @@ export default function ProductEditScreen() {
                                 </Form.Group>
                             </div>
                             <Form.Group className='mb-3' controlId='category'>
-                                <Form.Label>Categoria</Form.Label>
-                                <Form.Control
-                                    value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                    required
-                                />
+                                <Row>
+                                    <Col>
+                                        <Form.Label>Categoria</Form.Label>
+                                        <Form.Control
+                                            value={category}
+                                            onChange={(e) => setCategory(e.target.value)}
+                                            required
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <Form.Label>Subcategoria</Form.Label>
+                                        <Form.Control
+                                            value={category}
+                                            onChange={(e) => setCategory(e.target.value)}
+                                            required
+                                        />
+                                    </Col>
+                                </Row>
                             </Form.Group>
                             <Form.Group className='mb-3' controlId='countInStock'>
                                 <Form.Label>Estoque</Form.Label>
@@ -394,6 +411,8 @@ export default function ProductEditScreen() {
                             <Form.Group className='mb-3' controlId='description'>
                                 <Form.Label>Descrição</Form.Label>
                                 <Form.Control
+                                    as='textarea'
+                                    rows={3}
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     required

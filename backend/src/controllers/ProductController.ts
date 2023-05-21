@@ -239,8 +239,32 @@ export default {
       where: {
         slug: slugParam,
       },
-      include: {
+      select: {
+        brand: true,
+        category: true,
+        colors: true,
+        countInStock: true,
+        description: true,
+        discount: true,
+        freeDelivery: true,
+        image: true,
+        images: true,
+        name: true,
+        numReviews: true,
+        price: true,
+        rating: true,
+        sizes: true,
+        slug: true,
+        subCategory: true,
+        variants: true,
+        id: true,
         reviews: {
+          select: {
+            comment: true,
+            createdAt: true,
+            name: true,
+            rating: true
+          },
           orderBy: {
             createdAt: 'desc'
           }
@@ -251,7 +275,8 @@ export default {
             logo: true,
             name: true,
             numReviews: true,
-            rating: true
+            rating: true,
+            id: true
           }
         }
       }

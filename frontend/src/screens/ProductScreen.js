@@ -40,6 +40,8 @@ function ProductScreen() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [color, setColor] = useState('');
+  const [size, setSize] = useState('');
+  const [variant, setVariant] = useState('');
   const [selectedImage, setSelectedImage] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -80,10 +82,26 @@ function ProductScreen() {
     } else {
       const existItem = cart.find((x) => x.id === product.id);
       const arrayColors = existItem && existItem.colorsSelect ? [...existItem.colorsSelect, color] : [color]
-      productChooses = { ...product, colorsSelect: arrayColors }
+      productChooses = { ...productChooses, colorsSelect: arrayColors }
+    }
+    if (!size && product.sizes && product.sizes.length > 0) {
+      window.alert('Selecione o tamanho do seu produto');
+      return;
+    } else {
+      const existItem = cart.find((x) => x.id === product.id);
+      const arraySizes = existItem && existItem.sizesSelect ? [...existItem.sizesSelect, size] : [size]
+      productChooses = { ...productChooses, sizesSelect: arraySizes }
+    }
+    if (!variant && product.variants && product.variants.length > 0) {
+      window.alert('Selecione a variação do produto');
+      return;
+    } else {
+      const existItem = cart.find((x) => x.id === product.id);
+      const arrayVariants = existItem && existItem.variantsSelect ? [...existItem.variantsSelect, variant] : [variant]
+      productChooses = { ...productChooses, variantsSelect: arrayVariants }
     }
     dispatch(addCartItem({ ...productChooses, quantity }));
-    sellerIdCart === '' && dispatch(addSeller(product.sellerId))
+    sellerIdCart === '' && dispatch(addSeller(product.seller.id))
     navigate('/cart');
   };
 
@@ -149,21 +167,6 @@ function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            {product.colors && product.colors.length > 0 && (
-              <div className={`d-flex ${width < 768 && 'justify-content-center'} p-2`}>
-                {/* Cores&nbsp;&nbsp; */}
-                <CirclePicker
-                  className={`mt-3 ${width < 768 && 'justify-content-center'}`}
-                  // className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
-                  width='98%'
-                  color={color}
-                  circleSize={width > 768 ? 20 : 26}
-                  circleSpacing={14}
-                  onChange={(e) => setColor(e.hex)}
-                  colors={product.colors}
-                />
-              </div>
-            )}
             <div className="d-flex card-images my-2">
               {product.images ?
                 [product.image, ...product.images].map((x) => (
@@ -187,6 +190,66 @@ function ProductScreen() {
                 )) : ''
               }
             </div>
+            <Form>
+              {(product.colors && product.colors.length > 0 || product.sizes && product.sizes.length > 0) && (
+                <ListGroup.Item>
+                  <Row>
+                    {product.colors && product.colors.length > 0 && (
+                      <Col className={`d-flex align-items-center ${width < 768 && 'justify-content-center'} p-2`}>
+                        {width > 768 && <>Cores&nbsp;&nbsp;</>}
+                        <CirclePicker
+                          className={`d-flex ${width < 768 && 'justify-content-center'}`}
+                          // className={`bg-light ${width < 768 && 'justify-content-center'} rounded shadow-sm p-2`}
+                          // width='98%'
+                          color={color}
+                          circleSize={width > 768 ? 16 : 26}
+                          circleSpacing={14}
+                          onChange={(e) => setColor(e.hex)}
+                          colors={product.colors}
+                        />
+                      </Col>
+                    )}
+                    {product.sizes && product.sizes.length > 0 && (
+                      <Col className={`d-flex align-items-center ${width < 768 && 'justify-content-center'} p-2`}>
+                        Tamanhos&nbsp;
+                        {product.sizes.map((sizeItem, i) => (
+                          <>
+                            <Form.Check
+                              key={i}
+                              type="radio"
+                              value={sizeItem.trim()}
+                              checked={size === sizeItem.trim()}
+                              onChange={(e) => setSize(sizeItem.trim())}
+                              label={sizeItem.trim()}
+                            />&nbsp;
+                          </>
+                        ))}
+                      </Col>
+                    )}
+                  </Row>
+                </ ListGroup.Item>
+              )}
+              {product.variants && product.variants.length > 0 && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col className={`d-flex align-items-center ${width < 768 && 'justify-content-center'} p-2`}>
+                      {product.variants.map((variantItem, i) => (
+                        <>
+                          <Form.Check
+                            key={i}
+                            type="radio"
+                            value={variantItem.trim()}
+                            checked={variant === variantItem.trim()}
+                            onChange={(e) => setVariant(variantItem.trim())}
+                            label={variantItem.trim()}
+                          />&nbsp;
+                        </>
+                      ))}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
+            </Form>
             <ListGroup.Item>
               Descrição:
               <p>{product.description}</p>

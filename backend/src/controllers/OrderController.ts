@@ -17,6 +17,7 @@ export default {
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
     let installments = orderPrice.installments;
+    const {colorsSelect: colors, sizesSelect: sizes, variantsSelect: variants} = orderItems;
 
     // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
     const priceItems = await orderItems.reduce(
@@ -40,6 +41,9 @@ export default {
           createMany: {
             data: orderItems.map((item: OrderItem) => ({
               quantity: item.quantity,
+              sizes,
+              colors,
+              variants,
               productId: item.id,
             })),
           },

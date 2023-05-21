@@ -98,12 +98,15 @@ model User {
 model OrderItem {
   id        String   @id @default(cuid())
   quantity  Int
-  productId String   @map("product_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  orderId   String
+  sizes     String[]
+  colors    String[]
+  variants  String[]
   Order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id])
+  orderId   String
+  productId String   @map("product_id")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("order_items")
 }

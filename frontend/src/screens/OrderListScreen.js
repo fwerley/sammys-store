@@ -76,7 +76,7 @@ export default function OrderListScreen() {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>USUÁRIO</th>
+                            <th>CLIENTE</th>
                             <th>DATA</th>
                             <th>TOTAL</th>
                             <th>PAGO</th>
