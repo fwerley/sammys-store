@@ -1,9 +1,9 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Cart3, Heart } from 'react-bootstrap-icons';
+import { Cart3 } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/Container';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -51,7 +51,7 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
 import { UserIcon } from './components/UserIcon';
 import PoliciesPrivacy from './screens/PoliciesPrivacy';
-import ProductAdmin from './screens/Admin/ProductAdmin';
+import AppAdmin from './screens/Admin/AppAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -59,15 +59,15 @@ function App() {
   const { userInfo, fullBox } = useSelector(selectUser);
   const { categories } = useSelector(selectProducts);
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [navbarExpanded, setNavbarExpanded] = useState(false);
+  // const [categories, setCategories] = useState([]);
   const signoutHandler = () => {
     dispatch(userSignout());
     dispatch(cartDelete());
     window.location.href = '/signin';
   };
-  const [width, setWidth] = useState(window.innerWidth);
-  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-  const [navbarExpanded, setNavbarExpanded] = useState(false);
-  // const [categories, setCategories] = useState([]);
 
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
@@ -101,15 +101,26 @@ function App() {
     }
   }, [categories, dispatch])
 
+  if (window.location.host.split(".")[0] === "admin") {
+    return (
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path='/*' element={
+            // <AdminRoute>
+              <AppAdmin />
+            // </AdminRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    )
+  }
+
   return (
     <BrowserRouter>
       <ScrollToTop />
       <div
         className={
-          // sidebarIsOpen
-          // ? fullBox
-          //  ? "d-flex flex-column site-container active-cont full-box" 
-          //  : "d-flex flex-column site-container active-cont" :
           fullBox ?
             "d-flex flex-column site-container full-box"
             : "d-flex flex-column site-container"
@@ -296,8 +307,9 @@ function App() {
                   <MapScreen />
                 </ProtectedRoute>} />
               {/* Admin Routes */}
-              <Route path='/admin/dashboard' element={
+              <Route path='/admin/dashboard/' element={
                 <AdminRoute>
+                  {/* <AppAdmin /> */}
                   <DashboardScreen />
                 </AdminRoute>} />
               <Route path='/admin/orders' element={
@@ -314,8 +326,8 @@ function App() {
                 </AdminRoute>} />
               <Route path='/admin/products' element={
                 <AdminRoute>
-                  {/* <ProductListScreen /> */}
-                  <ProductAdmin />
+                  <ProductListScreen />
+                  {/* <ProductAdmin /> */}
                 </AdminRoute>} />
               <Route path='/admin/product/:id' element={
                 <SellerRoute>
@@ -339,6 +351,7 @@ function App() {
                   <OrderListScreen />
                 </SellerRoute>} />
               <Route path="/" element={<HomeScreen />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Container>
         </main>
@@ -346,7 +359,7 @@ function App() {
           <Footer />
           {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
         </footer>
-      </div>      
+      </div>
     </BrowserRouter>
   );
 }

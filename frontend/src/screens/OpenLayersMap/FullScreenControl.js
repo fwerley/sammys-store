@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import MapContext from './MapContext';
 import { FullScreen } from 'ol/control'
 
