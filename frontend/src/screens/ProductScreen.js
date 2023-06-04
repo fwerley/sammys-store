@@ -101,7 +101,7 @@ function ProductScreen() {
       productChooses = { ...productChooses, variantsSelect: arrayVariants }
     }
     dispatch(addCartItem({ ...productChooses, quantity }));
-    sellerIdCart === '' && dispatch(addSeller(product.seller.id))
+    !sellerIdCart && dispatch(addSeller(product.seller.id))
     navigate('/cart');
   };
 
@@ -251,7 +251,6 @@ function ProductScreen() {
               )}
             </Form>
             <ListGroup.Item>
-              Descrição:
               <p>{product.description}</p>
             </ListGroup.Item>
           </ListGroup>
@@ -262,9 +261,10 @@ function ProductScreen() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row className='d-flex align-items-center'>
-                    <Col md={4} xs={4}>Preço:</Col>
-                    <Col md={8} xs={8}>
-                      <h5 style={{ fontWeight: 'bolder' }}>{formatCoin(product.price)}</h5>
+                    {/* <Col md={4} xs={4}>Preço:</Col> */}
+                    {/* <Col md={8} xs={8}> */}
+                    <Col>
+                      <h3 style={{ fontWeight: '600' }}>{formatCoin(product.price)}</h3>
                       <div className='product-price-desc'>
                         Em até 12x de {formatCoin((product.price + product.price * 0.2) / 12)}
                       </div>
@@ -273,7 +273,7 @@ function ProductScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Status:</Col>
+                    {/* <Col>Status:</Col> */}
                     <Col>
                       {product.countInStock > 0 ? (
                         <Badge bg="success">Em estoque</Badge>
@@ -288,7 +288,7 @@ function ProductScreen() {
                     <div className="d-grid">
                       <Button onClick={addToCartHandler} variant="primary" className='shadow-sm'>
                         <Cart3 />&nbsp;
-                        Add ao carrinho
+                        Adicionar
                       </Button>
                     </div>
                   </ListGroup.Item>

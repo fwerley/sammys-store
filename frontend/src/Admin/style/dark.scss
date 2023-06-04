@@ -1,0 +1,65 @@
+@use '../style/variables' as v;
+
+.home.dark {
+    background-color: #111;
+    color: rgb(156, 156, 156);
+
+    .navbar {
+        color: #999;
+        border-color: #333;
+
+        .search {
+            border-color: #333;
+        }
+    }
+
+    .sidebar {
+        border-color: #333;
+
+        .logo {
+            color: v.$primary-color;
+        }
+
+        hr {
+            border-color: #333;
+        }
+
+        .icon {
+            color: v.$primary-color;
+        }
+    }
+
+    .chartGrid {
+        stroke: rgba(228, 228, 228, .219);
+    }
+
+    .table {
+        background-color: #111;
+
+        .image {
+            mix-blend-mode: darken;
+        }
+
+        .tableCell {
+            color: gray;
+        }
+    }
+
+    .datatable {
+        .datagrid {
+            color: gray;
+            border: none;
+
+            .editButton, 
+            .deleteButton,
+            .cellWithStatus {
+                color: gray;
+                border: none;
+            }
+        }
+    }
+
+    input {
+       background-color: transparent; 
+    }
+}

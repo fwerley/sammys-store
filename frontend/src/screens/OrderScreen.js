@@ -315,8 +315,8 @@ export default function OrderScreen() {
               <ListGroup variant="flush">
                 {order.orderItems.map((item) => (
                   <ListGroup.Item key={item.product.id}>
-                    <Row className="align-item-center">
-                      <Col md={6}>
+                    <Row className="d-flex align-items-center">
+                      <Col md={9}>
                         <img
                           src={item.product.image}
                           alt={item.product.name}
@@ -324,10 +324,10 @@ export default function OrderScreen() {
                         />{' '}
                         <Link to={`/product/${item.product.slug}`}>{item.product.name}</Link>
                       </Col>
-                      <Col md={3}>
+                      <Col md={1}>
                         <span>{item.quantity}</span>
                       </Col>
-                      <Col md={3}>{formatCoin(item.product.price)}</Col>
+                      <Col md={2}>{formatCoin(item.product.price)}</Col>
                     </Row>
                   </ListGroup.Item>
                 ))}

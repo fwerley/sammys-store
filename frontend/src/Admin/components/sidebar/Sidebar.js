@@ -13,31 +13,46 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
+import { Link } from 'react-router-dom';
+import { DarkModeContext } from '../../context/darkModeContext';
+import { useContext } from 'react';
+
 export default function Sidebar() {
+
+    const { dispatch } = useContext(DarkModeContext)
+
     return (
         <div className='sidebar'>
             <div className="top">
-                <span className="logo">
-                    Sammy Admin
-                </span>
+                <Link to="/">
+                    <span className="logo">
+                        Sammy Admin
+                    </span>
+                </Link>
             </div>
             <hr />
             <div className="center">
                 <ul>
                     <p className="title">PRINCIPAL</p>
-                    <li>
-                        <DashboardIcon className="icon" />
-                        <span>Dashboad</span>
-                    </li>
+                    <Link to="/">
+                        <li>
+                            <DashboardIcon className="icon" />
+                            <span>Dashboad</span>
+                        </li>
+                    </Link>
                     <p className="title">LISTAS</p>
-                    <li>
-                        <PersonOutlineOutlinedIcon className="icon" />
-                        <span>Usuarios</span>
-                    </li>
-                    <li>
-                        <StoreOutlinedIcon className="icon" />
-                        <span>Produtos</span>
-                    </li>
+                    <Link to="/users">
+                        <li>
+                            <PersonOutlineOutlinedIcon className="icon" />
+                            <span>Usuarios</span>
+                        </li>
+                    </Link>
+                    <Link to="/products">
+                        <li>
+                            <StoreOutlinedIcon className="icon" />
+                            <span>Produtos</span>
+                        </li>
+                    </Link>
                     <li>
                         <LowPriorityOutlinedIcon className="icon" />
                         <span>Pedidos</span>
@@ -80,8 +95,8 @@ export default function Sidebar() {
                 </ul>
             </div>
             <div className="bottom">
-                <div className="colorOption"></div>
-                <div className="colorOption"></div>
+                <div className="colorOption" onClick={() => dispatch({ type: "LIGHT" })}></div>
+                <div className="colorOption" onClick={() => dispatch({ type: "DARK" })}></div>
             </div>
         </div>
     )

@@ -174,8 +174,12 @@ main {
 }
 
 .rating span {
-  color: #ffc000;
+  color: rgb(var(--primary-color));
   font-size: small;
+}
+
+.list-group-item p {
+  margin-bottom: 0.2rem;
 }
 
 .social-login button {
@@ -666,17 +670,18 @@ button.thumbnail {
   }
 }
 
-.table .text-success{
+.table .text-success {
   padding: 5px 10px;
   background: #d2fccf;
   border-radius: 2rem;
 }
 
-.table .text-danger{
+.table .text-danger {
   padding: 5px 10px;
   background: #fccfcf;
   border-radius: 2rem;
 }
+
 /*End Pulse indicator chat Support */
 
 /* Chatbox */

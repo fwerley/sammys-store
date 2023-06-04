@@ -1,4 +1,4 @@
-.navbar {
+.AppAdmin .navbar {
     padding: 0;
     height: 51.4px;
     border-bottom: 0.5px solid rgb(231, 228, 228);
@@ -44,6 +44,7 @@
 
                 .icon {
                     font-size: 20px;
+                    cursor: pointer;
                 }
 
                 .avatar {

@@ -35,7 +35,7 @@ function Product(props) {
   };
 
   return (
-    <Card className='h-100' onMouseEnter={() => setHoverButton('')} onMouseLeave={() => setHoverButton('d-none')}>
+    <Card className='h-100 shadow-sm' onMouseEnter={() => setHoverButton('')} onMouseLeave={() => setHoverButton('d-none')}>
       <Link to={`/product/${product.slug}`}>
         <img src={product.image} className="card-img-top" alt={product.image} />
       </Link>
@@ -43,7 +43,7 @@ function Product(props) {
         <Link to={`/product/${product.slug}`}>
           <Card.Title className='h6'>{product.name}</Card.Title>
         </Link>
-        <Rating rating={product.rating} numReviews={product.numReviews} />
+        <Rating rating={product.rating} numReviews={product.numReviews} caption />
         <Card.Text>
           <div className='d-flex justify-content-between'>
             <strong>R$ {product.price},00</strong>

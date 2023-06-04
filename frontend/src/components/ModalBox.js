@@ -163,7 +163,7 @@ const ComponentChild = (typeRender) => {
                                         </ListGroup.Item>
                                         <ListGroup.Item>
                                             <Row>
-                                                <Col sm={6}>
+                                                <Col sm={7}>
                                                     <Form.Group
                                                         className="mb-3"
                                                         controlId="cardNumber"
@@ -184,7 +184,7 @@ const ComponentChild = (typeRender) => {
                                                         />
                                                     </Form.Group>
                                                 </Col>
-                                                <Col sm={6}>
+                                                <Col sm={5}>
                                                     <Form.Group className="mb-3" controlId="installments">
                                                         <Form.Label>CPF do titular</Form.Label>
                                                         <Form.Control

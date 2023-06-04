@@ -51,7 +51,7 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import ConfirmAccountScreen from './screens/ConfirmAccountScreen';
 import { UserIcon } from './components/UserIcon';
 import PoliciesPrivacy from './screens/PoliciesPrivacy';
-import AppAdmin from './screens/Admin/AppAdmin';
+import AppAdmin from './Admin/AppAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -145,7 +145,7 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => eventCollapse(!navbarExpanded)} />
               <Navbar.Collapse id='basic-navbar-nav'>
                 <SearchBox eventCollapse={eventCollapse} />
-                <Nav className='justify-content-end'>
+                <Nav className='justify-content-end align-items-center'>
                   <Link to="/cart" className="nav-link" onClick={() => eventCollapse(false)}>
                     <div className="cart-container">
                       <div className="circle">
