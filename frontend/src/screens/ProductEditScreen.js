@@ -27,15 +27,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import { CirclePicker, TwitterPicker } from 'react-color';
 
-import { DraftailEditor, BLOCK_TYPE, INLINE_STYLE } from 'draftail';
-
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
-import "draft-js/dist/Draft.css"
-import "draftail/dist/draftail.css"
 import CropImage from '../components/CropImage';
+import DraftEditor from '../components/DraftEditor';
 
 export default function ProductEditScreen() {
     const params = useParams();
@@ -45,7 +42,6 @@ export default function ProductEditScreen() {
     const { userInfo } = useSelector(selectUser);
     const { loading, error, product, loadingUpload } = useSelector(selectProduct);
 
-    const initial = JSON.parse(sessionStorage.getItem("draftail:content"))
     const [name, setName] = useState(product.name || '');
     const [slug, setSlug] = useState(product.slug || '');
     const [price, setPrice] = useState(String(product.price) || '');
@@ -61,6 +57,7 @@ export default function ProductEditScreen() {
     const [countInStock, setCountInStock] = useState(String(product.countInStock) || '');
     const [brand, setBrand] = useState(product.brand || '');
     const [description, setDescription] = useState(product.description || '');
+    const [fullDescription, setFullDescription] = useState(product.fullDescription || '');
 
     const defaultColorsPicker = [
         "#f44336", "#e91e63", "#FFFFFF", "#9c27b0",
@@ -87,7 +84,8 @@ export default function ProductEditScreen() {
                 category,
                 countInStock: Number(countInStock),
                 brand,
-                description
+                description,
+                fullDescription
             }, {
                 headers: { authorization: `Bearer ${userInfo.token}` }
             })
@@ -155,11 +153,6 @@ export default function ProductEditScreen() {
         )
     }
 
-    const onSave = (content) => {
-        console.log("saving", content)
-        sessionStorage.setItem("draftail:content", JSON.stringify(content))
-    }
-
     const nameAndSlug = (e) => {
         setName(e.target.value);
         setSlug(e.target.value.replaceAll(" ", "-").toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
@@ -185,6 +178,7 @@ export default function ProductEditScreen() {
                 setCountInStock(data.countInStock);
                 setBrand(data.brand);
                 setDescription(data.description);
+                setFullDescription(data.fullDescription)
                 dispatch(fetchSuccessProduct(data));
             } catch (error) {
                 dispatch(fetchFailureProduct(getError(error)));
@@ -421,15 +415,7 @@ export default function ProductEditScreen() {
                         </Col>
                         <Col md={6}>
                             <h4>Descrição detalhada do item</h4>
-                            <DraftailEditor
-                                rawContentState={initial || null}
-                                onSave={onSave}
-                                blockTypes={[
-                                    { type: BLOCK_TYPE.HEADER_THREE },
-                                    { type: BLOCK_TYPE.UNORDERED_LIST_ITEM },
-                                ]}
-                                inlineStyles={[{ type: INLINE_STYLE.BOLD }, { type: INLINE_STYLE.ITALIC }]}
-                            />
+                            {fullDescription === '' ? <LoadingBox /> : <DraftEditor setDescription={setFullDescription} value={fullDescription} />}
                         </Col>
                     </Row>
 

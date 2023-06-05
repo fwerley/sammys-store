@@ -13,6 +13,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       description: 'Estampado Na Palmilha Estampado No Cabedal Estampado No Solado Estampado Na Lingueta',
+      fullDescription: ''
     },
     {
       // _id: '1',
@@ -27,6 +28,7 @@ const data = {
       rating: 4.5,
       numReviews: 6,
       description: 'Materiais altamente funcionais que tiram o suor da sua pele e ajudam a mantê-lo seco e confortável durante o exercício.',
+      fullDescription: ''
     },
     {
       // _id: '1',
@@ -41,6 +43,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       description: 'high quality shirt',
+      fullDescription: ''
     },
     {
       // _id: '2',
@@ -55,6 +58,7 @@ const data = {
       rating: 4.0,
       numReviews: 10,
       description: 'high quality product',
+      fullDescription: ''
     },
     {
       // _id: '3',
@@ -69,6 +73,7 @@ const data = {
       rating: 4.5,
       numReviews: 14,
       description: 'high quality product',
+      fullDescription: ''
     },
     {
       // _id: '4',
@@ -83,6 +88,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       description: 'high quality product',
+      fullDescription: ''
     },
   ],
 };

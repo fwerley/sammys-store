@@ -34,7 +34,8 @@ export default {
         countInStock: 0,
         rating: 0,
         numReviews: 0,
-        description: 'sample description'
+        description: 'sample description',
+        fullDescription: ''
       }
     });
     res.send({ message: 'Produto criado', product: createdProduct });
@@ -43,7 +44,7 @@ export default {
   async update(req: Request, res: Response) {
 
     const productId = req.params.id;
-    const { name, slug, price, image, images, sizes, colors, variants, category, countInStock, brand, description } = req.body;
+    const { name, slug, price, image, images, sizes, colors, variants, category, countInStock, brand, description, fullDescription } = req.body;
     try {
       const product = await prismaClient.product.update({
         where: {
@@ -61,7 +62,8 @@ export default {
           category,
           countInStock,
           brand,
-          description
+          description,
+          fullDescription
         }
       });
       res.send({ message: 'Produto atualizado', product })
@@ -245,6 +247,7 @@ export default {
         colors: true,
         countInStock: true,
         description: true,
+        fullDescription: true,
         discount: true,
         freeDelivery: true,
         image: true,

@@ -21,30 +21,31 @@ model ReviewProduct {
 }
 
 model Product {
-  id           String          @id @default(cuid())
-  name         String          @unique
-  slug         String          @unique
-  image        String
-  images       String[]
-  sizes        String[]
-  colors       String[]
-  variants     String[]
-  brand        String
-  category     String
-  subCategory  String[]
-  description  String
-  price        Float
-  reviews      ReviewProduct[]
-  freeDelivery Boolean         @default(false)
-  discount     Float           @default(0)
-  rating       Float
-  seller       Seller          @relation(fields: [sellerId], references: [id])
-  createdAt    DateTime        @default(now()) @map("created_at")
-  updatedAt    DateTime        @updatedAt @map("updated_at")
-  countInStock Int             @map("count_in_stock")
-  numReviews   Int             @map("num_reviews")
-  OrderItem    OrderItem[]
-  sellerId     String
+  id              String          @id @default(cuid())
+  name            String          @unique
+  slug            String          @unique
+  image           String
+  images          String[]
+  sizes           String[]
+  colors          String[]
+  variants        String[]
+  brand           String
+  category        String
+  subCategory     String[]
+  description     String
+  fullDescription String
+  price           Float
+  reviews         ReviewProduct[]
+  freeDelivery    Boolean         @default(false)
+  discount        Float           @default(0)
+  rating          Float
+  seller          Seller          @relation(fields: [sellerId], references: [id])
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  countInStock    Int             @map("count_in_stock")
+  numReviews      Int             @map("num_reviews")
+  OrderItem       OrderItem[]
+  sellerId        String
 
   @@map("products")
 }
