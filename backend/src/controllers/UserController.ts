@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import axios from 'axios';
+import { User } from '@prisma/client';
 
 const HOST = process.env.HOSTNAME || 'http://localhost:5000';
 const DOMINIO = 'https://sammystore.com.br'
@@ -109,6 +110,27 @@ export default {
       res.status(404).send({ message: 'Erro ao deletar o usuário' });
     }
 
+  },
+
+  async signinAdmin(req: Request, res: Response) {
+    if (req.user) {
+      const userAdmin = {
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        mobile: req.user.mobile,
+        isAdmin: req.user.isAdmin,
+        isSeller: req.user.isSeller,
+        seller: req.user.isSeller ? req.user.seller : {},
+        document: req.user.document,
+        token: req.body.token,
+      }
+      res.status(200).send(userAdmin);
+    } else {
+      res.status(404).send({
+        message: 'Requisição de acesso não autorizada'
+      });
+    }
   },
 
   async signin(req: Request, res: Response) {

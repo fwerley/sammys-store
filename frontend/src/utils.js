@@ -71,3 +71,33 @@ export const estados = [
   { "label": "Sergipe", "sigla": "SE" },
   { "label": "Tocantins", "sigla": "TO" }
 ]
+
+export const subtractMonths = (date, months) => {
+  date.setMonth(date.getMonth() - months);
+  return date;
+}
+
+export const arrayMonth = [
+  "janeiro",
+  "fevereiro",
+  "março",
+  "abril",
+  "maio",
+  "junho",
+  "julho",
+  "agosto",
+  "setembro",
+  "outubro",
+  "novembro",
+  "dezembro"
+]
+
+export const translatePaymentMethod = (status) => {
+  const statusMap = {
+    CREDIT_CARD: "Cartão de crédito",
+    BILLET: "Boleto",
+    PIX: "PIX",
+  }
+
+  return statusMap[status]
+}

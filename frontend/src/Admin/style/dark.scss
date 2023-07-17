@@ -4,6 +4,14 @@
     background-color: #111;
     color: rgb(156, 156, 156);
 
+    .single {
+        .singleContainer {
+            .editButton {
+                color: lightgray !important;
+            }
+        }
+    }
+
     .navbar {
         color: #999;
         border-color: #333;
@@ -50,7 +58,7 @@
             color: gray;
             border: none;
 
-            .editButton, 
+            .editButton,
             .deleteButton,
             .cellWithStatus {
                 color: gray;
@@ -60,6 +68,6 @@
     }
 
     input {
-       background-color: transparent; 
+        background-color: transparent;
     }
 }

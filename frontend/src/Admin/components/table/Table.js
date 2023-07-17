@@ -6,8 +6,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useSelector } from 'react-redux';
+import { selectDashboard } from '../../../slice/dashboardSlice';
+import LoadingBox from '../../../components/LoadingBox';
+import { formatCoin, formatedDate, translatePaymentMethod } from '../../../utils';
 
-export default function List() {
+export default function List({ data }) {
 
     const rows = [
         {
@@ -61,8 +65,9 @@ export default function List() {
             status: "Pending",
         },
     ];
-
+    const { loadingTransaction } = useSelector(selectDashboard);
     return (
+
         <TableContainer component={Paper} className='table'>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -77,28 +82,29 @@ export default function List() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                        >
-                            <TableCell component="th" scope="row" className="tableCell">
-                                {row.id}
-                            </TableCell>
-                            <TableCell className="tableCell">
-                                <div className="cellWrapper">
-                                    <img src={row.img} alt="" className="image" />
-                                    {row.product}
-                                </div>
-                            </TableCell>
-                            <TableCell className="tableCell">{row.customer}</TableCell>
-                            <TableCell className="tableCell">{row.date}</TableCell>
-                            <TableCell className="tableCell">{row.amount}</TableCell>
-                            <TableCell className="tableCell">{row.method}</TableCell>
-                            <TableCell className="tableCell">
-                                <span className={`status ${row.status}`}>{row.status}</span>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {loadingTransaction ? <LoadingBox /> :
+                        data.map((row) => (
+                            <TableRow
+                                key={row.id}
+                            >
+                                <TableCell component="th" scope="row" className="tableCell">
+                                    {row.id}
+                                </TableCell>
+                                <TableCell className="tableCell">
+                                    <div className="cellWrapper">
+                                        <img src={row.orderItems[0].product.image} alt="" className="image" />
+                                        {row.product}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="tableCell">{row.user.name}</TableCell>
+                                <TableCell className="tableCell">{formatedDate(row.createdAt)}</TableCell>
+                                <TableCell className="tableCell">{formatCoin(row.orderPrice.totalPrice)}</TableCell>
+                                <TableCell className="tableCell">{translatePaymentMethod(row.paymentMethod)}</TableCell>
+                                <TableCell className="tableCell">
+                                    <span className={`status ${row.isPaid ? 'Approved' : 'Pending'}`}>{row.isPaid ? 'Aprovado' : 'Pendente'}</span>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>

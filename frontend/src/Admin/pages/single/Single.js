@@ -1,8 +1,40 @@
+import { useDispatch, useSelector } from 'react-redux';
 import Chart from '../../components/Chart/Chart';
 import List from '../../components/table/Table';
 import './single.scss';
+import { selectUser, userFailure, userResquest, userResquestSuccess } from '../../../slice/userSlice';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { getError } from '../../../utils';
 
 export default function Single() {
+    const params = useParams();
+    const dispatch = useDispatch()
+    const [user, setUser] = useState('')
+    const { userInfo } = useSelector(selectUser);
+    const { userId } = params;
+    const { users } = useSelector(selectUser);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                dispatch(userResquest());
+                const { data } = await axios.get(`/api/users/${userId}`, {
+                    headers: { authorization: `Bearer ${userInfo.token}` }
+                })
+                dispatch(userResquestSuccess())
+                setUser(data)
+            } catch (err) {
+                dispatch(userFailure(getError(err)))
+            }
+        }
+        let user = users.filter(user => user.id === userId);
+        if (user.length > 0) {
+            setUser(user[0])
+        } else {
+            fetchData();
+        }
+    }, [userId])
     return (
         <div className="single">
             <div className="singleContainer">
@@ -11,16 +43,16 @@ export default function Single() {
                         <div className="editButton">Editar</div>
                         <h1 className="title">Informações</h1>
                         <div className="item">
-                            <img src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="avatar" className='itemImg' />
+                            <img src={false || "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Images.png"} alt="avatar" className='itemImg' />
                             <div className="details">
-                                <h1 className="itemTitle">Jane Doe</h1>
+                                <h2 className="itemTitle">{user.name}</h2>
                                 <div className="detailItem">
                                     <span className="itemKey">Email:</span>
-                                    <span className="itemValue">janedoe@gmail.com</span>
+                                    <span className="itemValue">{user.email}</span>
                                 </div>
                                 <div className="detailItem">
                                     <span className="itemKey">Tel:</span>
-                                    <span className="itemValue">88 891522160</span>
+                                    <span className="itemValue">{user.mobile}</span>
                                 </div>
                                 <div className="detailItem">
                                     <span className="itemKey">Endereço:</span>

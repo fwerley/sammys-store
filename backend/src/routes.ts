@@ -9,6 +9,7 @@ import { isAdmin, isAuth, isSellerOrAdmin } from './utils';
 import PostBackController from './controllers/PostBackControler';
 import UploadController from './controllers/UploadController';
 import SellerController from './controllers/SellerController';
+import DashboardController from './controllers/DashboardController';
 
 const routes = express.Router();
 const upload = multer();
@@ -36,9 +37,11 @@ routes.post('/api/upload/image', isAuth, isAdmin, upload.single('file'), UploadC
 // Users section
 routes.get('/api/users', isAuth, isAdmin, UserController.store);
 routes.get('/api/users/:id', isAuth, isAdmin, UserController.find);
+routes.get('/api/users/:id/orders', isAuth, isAdmin, UserController.find);
 routes.put('/api/users/profile', isAuth, UserController.profile);
 routes.put('/api/users/:id', isAuth, isAdmin, UserController.update);
 routes.delete('/api/users/:id', isAuth, isAdmin, UserController.delete);
+routes.post('/api/users/admin/signin', isAuth, isAdmin, UserController.signinAdmin);
 routes.post('/api/users/signin', UserController.signin);
 routes.get('/api/google/url-auth', UserController.getGoogleAuthURL);
 routes.get('/api/facebook/url-auth', UserController.getFacebookAuthURL);
@@ -72,5 +75,11 @@ routes.post('/api/webhook/pagarme', PostBackController.pagarme)
 // Seller section
 routes.get('/api/sellers/:id', SellerController.find)
 routes.get('/api/sellers/:id/products', SellerController.products)
+
+// Dashboard section
+routes.get('/api/dashboard/sales-today', DashboardController.salesToday)
+routes.get('/api/dashboard/sales-last-week', DashboardController.salesLastWeek)
+routes.get('/api/dashboard/sales-last-month', DashboardController.salesLastMonth)
+routes.get('/api/dashboard/last-transactions', DashboardController.lastTransactions)
 
 export { routes };

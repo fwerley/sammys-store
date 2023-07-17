@@ -107,9 +107,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path='/*' element={
-            // <AdminRoute>
-              <AppAdmin />
-            // </AdminRoute>
+            <AppAdmin />
           } />
         </Routes>
       </BrowserRouter>
@@ -220,6 +218,12 @@ function App() {
                       id="admin-nav-dropdown"
                       onSelect={() => eventCollapse(false)}
                     >
+                      <a
+                        className='dropdown-item'
+                        href={`${document.location.protocol}//admin.${document.location.host}/login/token/${userInfo.token}`
+                        } target='_blank'>
+                        Dashboard 2.0
+                      </a>
                       <LinkContainer to="/admin/dashboard">
                         <NavDropdown.Item>Dashboard</NavDropdown.Item>
                       </LinkContainer>

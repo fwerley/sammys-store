@@ -4,19 +4,30 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import { useSelector } from 'react-redux';
+
+import { selectDashboard } from '../../../slice/dashboardSlice';
+import { Link } from 'react-router-dom';
+import { formatCoin } from '../../../utils';
 
 export default function Widget({ type }) {
+
+    const { loading, summary, error } = useSelector(selectDashboard);
     let data
     // temporario
     const amount = 100;
-    const diff = 20;
+    const diff = 20;    
 
     switch (type) {
         case "user":
             data = {
                 title: "USUÁRIOS",
                 isMoney: false,
-                link: "Lista de usuários",
+                amount:
+                    summary.users && summary.users._count
+                        ? summary.users._count
+                        : 0,
+                link: (<Link to={'users'}>Lista de usuários</Link>),
                 icon: (
                     <PersonOutlineOutlinedIcon
                         className='icon'
@@ -32,7 +43,11 @@ export default function Widget({ type }) {
             data = {
                 title: "PEDIDOS",
                 isMoney: false,
-                link: "Lista de pedidos",
+                amount:
+                    summary.orders && summary.orders._count
+                        ? summary.orders._count
+                        : 0,
+                link: (<Link to={'orders'}>Lista de pedidos</Link>),
                 icon: (
                     <ShoppingCartOutlinedIcon
                         className='icon'
@@ -48,6 +63,7 @@ export default function Widget({ type }) {
             data = {
                 title: "FATURAMENTO",
                 isMoney: true,
+                // amount: formatCoin(summary.ordersApproved._sum.totalPrice),
                 link: "Detalhamento",
                 icon: (
                     <MonetizationOnOutlinedIcon
@@ -66,12 +82,12 @@ export default function Widget({ type }) {
                 isMoney: false,
                 link: "Detalhamento",
                 icon: (
-                    <AccountBalanceWalletOutlinedIcon 
-                    className='icon' 
-                    style={{
-                        color: "purple",
-                        backgroundColor: "rgba(128,0,128,0.2)"
-                    }}
+                    <AccountBalanceWalletOutlinedIcon
+                        className='icon'
+                        style={{
+                            color: "purple",
+                            backgroundColor: "rgba(128,0,128,0.2)"
+                        }}
                     />
                 )
             }
@@ -84,7 +100,7 @@ export default function Widget({ type }) {
         <div className="widget">
             <div className="left">
                 <span className="title">{data.title}</span>
-                <span className="counter">{data.isMoney && "R$"} {amount}</span>
+                <span className="counter">{data.amount}</span>
                 <span className="link">{data.link}</span>
             </div>
             <div className="right">

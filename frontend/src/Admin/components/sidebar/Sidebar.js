@@ -16,10 +16,18 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { Link } from 'react-router-dom';
 import { DarkModeContext } from '../../context/darkModeContext';
 import { useContext } from 'react';
+import { userSignout } from '../../../slice/userSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Sidebar() {
 
-    const { dispatch } = useContext(DarkModeContext)
+    const newDispatch = useDispatch()
+    const { dispatch } = useContext(DarkModeContext);
+
+    const signoutHandler = () => {
+        newDispatch(userSignout());
+        window.location.href = `${document.location.protocol}//${document.location.host.split(".")[1]}/signin`
+      };
 
     return (
         <div className='sidebar'>
@@ -88,10 +96,16 @@ export default function Sidebar() {
                         <AccountCircleOutlinedIcon className="icon" />
                         <span>Perfil</span>
                     </li>
-                    <li>
-                        <LogoutOutlinedIcon className="icon" />
-                        <span>Sair</span>
-                    </li>
+                    <Link
+                        className="dropdown-item"
+                        to="#signout"
+                        onClick={signoutHandler}
+                    >
+                        <li>
+                            <LogoutOutlinedIcon className="icon" />
+                            <span>Sair</span>
+                        </li>
+                    </Link>
                 </ul>
             </div>
             <div className="bottom">

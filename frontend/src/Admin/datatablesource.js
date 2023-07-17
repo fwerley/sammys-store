@@ -1,18 +1,20 @@
 export const userColumns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'id', headerName: 'ID', width: 170 },
     {
         field: 'user', headerName: 'Usuario', width: 230, renderCell: (params) => (
             <div className="cellWithImg">
-                <img className="cellImg" src={params.row.img} alt="avatar" />
-                {params.row.username}
+                <img className="cellImg" src={params.row.img || "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Images.png"} alt="avatar" />
+                {params.row.name}
             </div>
         )
     },
     { field: "email", headerName: "Email", width: 230 },
-    { field: "age", headerName: "Idade", width: 100 },
+    { field: "age", headerName: "Vendedor", width: 100, renderCell: (params) => (
+        <div className={`cellWithStatus ${params.row.isSeller ? 'active': 'passive'}`}>{params.row.isSeller? 'Sim' : 'Não'}</div>
+    ) },
     {
-        field: "status", headerName: "Status", width: 160, renderCell: (params) => (
-            <div className={`cellWithStatus ${params.row.status}`}>{params.row.status}</div>
+        field: "status", headerName: "Status", width: 100, renderCell: (params) => (
+            <div className={`cellWithStatus ${params.row.active ? 'active': 'passive'}`}>{params.row.active ? 'Ativo' : 'Inativo'}</div>
         )
     }
 ]

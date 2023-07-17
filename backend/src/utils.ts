@@ -7,6 +7,40 @@ import nodemailer from 'nodemailer';
 import { StatusType } from './services/IPaymentProvider';
 import { google } from 'googleapis';
 
+interface MonthDays {
+  firstDay: Date,
+  lastDay: Date
+}
+
+export const subtractMonths = (date: Date, months: number) => {
+  date.setMonth(date.getMonth() - months);
+  return date;
+}
+
+export const arrayMonth = [
+  "janeiro",
+  "fevereiro",
+  "março",
+  "abril",
+  "maio",
+  "junho",
+  "julho",
+  "agosto",
+  "setembro",
+  "outubro",
+  "novembro",
+  "dezembro"
+]
+
+export const firstAndLastDayMonth = (date: Date): MonthDays => {
+  var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return {
+    firstDay,
+    lastDay
+  }
+}
+
 export const generateToken = (user: User) => {
   const keySecret = '' + process.env.JWT_SECRET;
   return jwt.sign(user, keySecret, {
@@ -137,7 +171,7 @@ export const translatePaymentMethod = (status: string): any => {
 }
 
 export const decodeQR = async (dataImg: string) => {
-  
+
 }
 
 export const payOrderEmailTemplate = (order: (

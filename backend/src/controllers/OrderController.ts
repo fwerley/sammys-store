@@ -1,13 +1,15 @@
 import { OrderItem } from '@prisma/client';
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
+import { firstAndLastDayMonth, subtractMonths } from '../utils';
 
 interface IDailyOrders {
   _sum: {
     totalPrice: number | null,
     totalPriceApproved: number | null
   }
-  createdAt: Date
+  // createdAt: Date
+  createdAt: number
 }
 
 export default {
@@ -17,7 +19,7 @@ export default {
     let shippingPrice = orderPrice.shippingPrice;
     let taxPrice = orderPrice.taxPrice;
     let installments = orderPrice.installments;
-    const {colorsSelect: colors, sizesSelect: sizes, variantsSelect: variants} = orderItems;
+    const {colorsSelect: colors , sizesSelect: sizes, variantsSelect: variants} = orderItems;
 
     // Verificação backend do produto. Evitar fraudes na alteração manual do preço dos itens
     const priceItems = await orderItems.reduce(
@@ -41,9 +43,9 @@ export default {
           createMany: {
             data: orderItems.map((item: OrderItem) => ({
               quantity: item.quantity,
-              sizes,
-              colors,
-              variants,
+              sizes: sizes || undefined,
+              colors: colors || undefined,
+              variants: variants || undefined,
               productId: item.id,
             })),
           },
@@ -145,6 +147,25 @@ export default {
       _count: true
     });
 
+    let month = 0;
+    let salesPerMonth = new Map()
+    while (month < 6) {
+      let dataOrders = await prismaClient.priceOrder.aggregate({
+        _sum: {
+          totalPrice: true
+        },
+        where: {
+          createdAt: {
+            gte: firstAndLastDayMonth(subtractMonths(new Date(), month)).firstDay,
+            lte: firstAndLastDayMonth(subtractMonths(new Date(), month)).lastDay                              
+          }
+        }        
+      });
+      salesPerMonth.set(
+        firstAndLastDayMonth(subtractMonths(new Date(), month)).firstDay.getMonth(), dataOrders._sum.totalPrice || 0
+      )
+      month++;
+    }
     const ordersApproved = await prismaClient.priceOrder.aggregate({
       _sum: {
         totalPrice: true
@@ -192,21 +213,22 @@ export default {
 
     });
 
-    let myNewOrdersSum = dailyOrders.map(order => {
+    let myNewOrdersSum = new Array()
+    salesPerMonth.forEach((element, i) => {
       let item = dailyOrdersOpproved.reduce((sum, record) => {
-        return (Number(record.createdAt) === Number(order.createdAt)) ? sum + record._sum.totalPrice! : sum
-      }, 0)
+        return (Number(record.createdAt.getMonth()) === Number(i)) ? sum + record._sum.totalPrice! : sum
+      }, 0)      
       const newItem: IDailyOrders = {
         _sum: {
-          totalPrice: order._sum.totalPrice,
+          totalPrice: salesPerMonth.get(i),
           totalPriceApproved: item
         },
-        createdAt: order.createdAt
+        createdAt: i
       }
-      return newItem;
+      myNewOrdersSum.push(newItem);
     })
 
-    res.send({ orders, ordersApproved, users, dailyOrders: myNewOrdersSum, productCategories })
+    res.send({ orders, ordersApproved, users, dailyOrders, monthOrders: myNewOrdersSum, productCategories })
   },
 
   async mine(req: Request, res: Response) {

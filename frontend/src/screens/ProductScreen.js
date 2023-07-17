@@ -14,6 +14,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 import {
   fetchFailureProduct,
@@ -102,8 +103,8 @@ function ProductScreen() {
       const arrayVariants = existItem && existItem.variantsSelect ? [...existItem.variantsSelect, variant] : [variant]
       productChooses = { ...productChooses, variantsSelect: arrayVariants }
     }
-    dispatch(addCartItem({ ...productChooses, quantity }));
     !sellerIdCart && dispatch(addSeller(product.seller.id))
+    dispatch(addCartItem({ ...productChooses, quantity }));
     navigate('/cart');
   };
 
@@ -134,6 +135,10 @@ function ProductScreen() {
       dispatch(reviewFail())
     }
   }
+
+  const sanitizedData = () => ({
+    __html: DOMPurify.sanitize(product.fullDescription)
+  })
 
   return loading ? (
     <div className="d-flex justify-content-center">
@@ -344,7 +349,7 @@ function ProductScreen() {
             className="mt-4"
           >
             <Tab eventKey="description" title="Detalhes">
-              <div dangerouslySetInnerHTML={{__html: product.fullDescription}}></div>
+              <div dangerouslySetInnerHTML={{ __html: product.fullDescription }} />
             </Tab>
             <Tab eventKey="avaliacao" title="Avaliações">
               <div className='my-3'>
